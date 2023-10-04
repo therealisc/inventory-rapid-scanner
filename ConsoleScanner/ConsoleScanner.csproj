@@ -10,6 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\DScannerLibrary\DScannerLibrary.csproj" />
   </ItemGroup>
 
   <ItemGroup>

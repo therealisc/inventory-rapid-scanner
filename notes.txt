@@ -1,1 +1,11 @@
-1. Preiau datele din raportul situatie stocuri - export excel
+1. Am toate datele in dbf-uri
+2. Introduc produsul si cantitatea (verificare cantitate)
+3. Se pune automat gestiunea
+4. Se creeaza iesirea
+
+O sa apara in stocuri doar daca a fost validat
+Totul e in tabela iesiri si iesiri det
+
+Un fisier cu iesirile pentru extra-backup
+
+Back-up dupa fiecare zi!!

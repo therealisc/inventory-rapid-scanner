@@ -1,7 +1,9 @@
+namespace DScannerLibrary.Models;
+
 public class InventoryExitModel
 {
     public decimal id_u { get; set; }
-    public int id_iesire { get; set; }
+    public decimal id_iesire { get; set; }
     public string? gestiune { get; set; }
     public string? den_gest { get; set; }
     public string? cod { get; set; }
