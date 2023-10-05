@@ -6,11 +6,11 @@ namespace DScannerLibrary.DataAccess;
 
 public class DbfDataAccess
 {
-    string constr = $"Provider=VFPOLEDB;Data Source=C:\\SAGA PS.3.0\\0001\\";
+    string connectionString = $"Provider=VFPOLEDB;Data Source=C:\\SAGA PS.3.0\\0002\\";
 
     public DataTable ReadDbf(string str_sql)
     {
-        using (var connection = new OleDbConnection(constr))
+        using (var connection = new OleDbConnection(connectionString))
         {
             OleDbDataAdapter adapter = new OleDbDataAdapter(str_sql, connection);
             DataTable dt = new DataTable();
@@ -19,22 +19,17 @@ public class DbfDataAccess
         }
     }
 
-    public int InsertIntoDbf<T>(T item)
+    public int InsertIntoIesiriDbf<T>(T item)
     {
-        using (OleDbConnection myCon = new OleDbConnection(null))
+        using (OleDbConnection myCon = new OleDbConnection(connectionString))
         {
-            OleDbCommand cmd = new OleDbCommand();
-            cmd.CommandType = CommandType.Text;
-
+            var command = new OleDbCommand();
+            //command.CommandType = CommandType.Text;
             StringBuilder commandText = new("insert into ies_det (");
-
             Type t = item.GetType();
-
-            Console.WriteLine("Type is: {0}", t.Name);
+            //Console.WriteLine("Type is: {0}", t.Name);
             var props = t.GetProperties();
-
-            Console.WriteLine("Properties (N = {0}):",
-                              props.Length);
+            //Console.WriteLine("Properties (N = {0}):", props.Length);
 
             foreach (var prop in props)
             {
@@ -42,11 +37,8 @@ public class DbfDataAccess
 
                 if (prop.GetIndexParameters().Length == 0)
                 {
-                    cmd.Parameters.AddWithValue($"@{prop.Name}", prop.GetValue(item));
-
-                    Console.WriteLine("   {0} ({1}): {2}", prop.Name,
-                                      prop.PropertyType.Name,
-                                      prop.GetValue(item));
+                    command.Parameters.AddWithValue($"@{prop.Name}", prop.GetValue(item));
+                    //Console.WriteLine("   {0} ({1}): {2}", prop.Name, prop.PropertyType.Name, prop.GetValue(item));
                 }
             }
 
@@ -62,9 +54,25 @@ public class DbfDataAccess
             commandText.Remove(commandText.Length - 1, 1);
             commandText.Append(")");
 
-            cmd.CommandText = commandText.ToString();
-            cmd.Connection = myCon;
-            return cmd.ExecuteNonQuery();
+            command.CommandText = commandText.ToString();
+            command.Connection = myCon;
+
+            int rowsAffected = 0;
+            try
+            {
+                myCon.Open();
+                rowsAffected = command.ExecuteNonQuery();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                myCon.Close();
+            }
+
+            return rowsAffected;
         }
     }
 }

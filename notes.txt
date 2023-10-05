@@ -6,9 +6,10 @@
 O sa apara in stocuri doar daca a fost validat
 Totul e in tabela iesiri si iesiri det
 
-Un fisier cu iesirile pentru extra-backup zilnic
+? Un fisier cu iesirile pentru extra-backup zilnic
 
 Back-up dupa fiecare zi!!
 
 La pc unde se va instala:
 De verficat Provider=VFPOLEDB;Data Source=C:\\SAGA PS.3.0\\0001\\
+- se face un nou folder pentru fiecare unitate
