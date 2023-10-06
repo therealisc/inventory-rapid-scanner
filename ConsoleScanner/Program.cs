@@ -20,61 +20,65 @@ if (exitDocumentId.Rows.Count == 0)
 
 Console.WriteLine(exitDocumentId.Rows[0][0]);
 
-
-Console.WriteLine("Type the id");
-var articleCode = Console.ReadLine();
-
-//00000001
-articleCode = "00000066";
-
-// articole pe gestiuni, article list va avea atatea randuri cate gestiuni sunt
-var articleMovementsDataTable = da.ReadDbf($"Select * from miscari where cod_art='{articleCode}'");
-var inventoryMovements = articleMovementsDataTable.ConvertDataTable<InventoryMovementModel>();
-
-if (inventoryMovements.Count == 1)
+while (true)
 {
-    var inventoryMovement = inventoryMovements.FirstOrDefault();
+    Console.WriteLine("Enter the barcode:");
+    var articleBarCode = Console.ReadLine();
 
-    Console.WriteLine("Type quantity");
-    var quantity = Console.ReadLine();
-
-    //ID_U,N,10,0	ID,N,10,0	DATA,D	COD_ART,C,16	
-    //GESTIUNE,C,4	CANTITATE,N,14,3	CANT_NESTI,N,14,3	PRET,N,15,4	TIP_DOC,C,10	NR_DOC,C,16	SUMA_DESC,N,15,4
-    var lastExitId = da.ReadDbf("Select top 1 id_u from ies_det order by id_u desc").Rows[0][0];
-    var articleAsDataTable = da.ReadDbf($"Select * from articole where cod='{articleCode}'");
+    // articole pe gestiuni, article list va avea atatea randuri cate gestiuni sunt
+    var articleAsDataTable = da.ReadDbf($"Select * from articole where cod_bare={articleBarCode}");
     var articleAsList = articleAsDataTable.ConvertDataTable<ArticleModel>();
-    var article = articleAsList.SingleOrDefault();
 
-    // Iesire simpla pe aceeasi gestiune
-    var inventoryExit = new InventoryExitModel
+    var articleMovementsDataTable = da.ReadDbf($"Select * from miscari where cod_art='{articleAsList.FirstOrDefault().cod}'");
+    var inventoryMovements = articleMovementsDataTable.ConvertDataTable<InventoryMovementModel>();
+
+    if (inventoryMovements.Count == 1)
     {
-        id_u = (decimal)lastExitId + 1,
-        id_iesire = (decimal)exitDocumentId.Rows[0][0],
-        gestiune = inventoryMovement?.gestiune,
-        den_gest = article?.den_gest,
-        cod = inventoryMovement?.cod_art,
-        denumire = article?.denumire,
-        cantitate = Convert.ToDecimal(quantity),
-        den_tip = "Marfuri",
-        um = "BUC",
-    };
+        var inventoryMovement = inventoryMovements.FirstOrDefault();
 
-    Console.WriteLine("Rows affected: " + da.InsertIntoIesiriDbf(inventoryExit));
-}
+        Console.WriteLine("Type quantity");
+        var quantity = Console.ReadLine();
+        if (Convert.ToDecimal(quantity) > 100000)
+        {
+            quantity = "1";
+        }
 
-if (inventoryMovements.Count > 1)
-{
-    // Iesire alternativa, cate o bucata din fiecare gestiune pe rand!
+        //ID_U,N,10,0	ID,N,10,0	DATA,D	COD_ART,C,16	
+        //GESTIUNE,C,4	CANTITATE,N,14,3	CANT_NESTI,N,14,3	PRET,N,15,4	TIP_DOC,C,10	NR_DOC,C,16	SUMA_DESC,N,15,4
+        var lastExitId = da.ReadDbf("Select top 1 id_u from ies_det order by id_u desc").Rows[0][0];
+        var article = articleAsList.SingleOrDefault();
 
-    // Daca exista, caut daca mai exista o pozitie din acelasi produs
-    // daca nu, adaug o pozitie cu cantitatea 1 sau adaug mai multe pozitii (maximum cate gestiuni sunt) in distribui alternativ cantitatea
-    // daca mai exista pozitii din nou continui cu urmatorea gestiune 
-    // ATENTIE! conteaza cantitatea pe gestiune deci o gestiune poate avea mai putine bucati => cand nu mai are nu mai descarc de acolo
-}
+        // Iesire simpla pe aceeasi gestiune
+        var inventoryExit = new InventoryExitModel
+        {
+            id_u = (decimal)lastExitId + 1,
+            id_iesire = (decimal)exitDocumentId.Rows[0][0],
+            gestiune = inventoryMovement?.gestiune,
+            den_gest = article?.den_gest,
+            cod = inventoryMovement?.cod_art,
+            denumire = article?.denumire,
+            cantitate = Convert.ToDecimal(quantity),
+            den_tip = "Marfuri",
+            um = "BUC",
+        };
 
-if (inventoryMovements.Count == 0)
-{
-    Console.WriteLine("Nu au fost gasite intrari pentru acest produs");
+        Console.WriteLine("Rows affected: " + da.InsertIntoIesiriDbf(inventoryExit));
+    }
+
+    if (inventoryMovements.Count > 1)
+    {
+        // Iesire alternativa, cate o bucata din fiecare gestiune pe rand!
+
+        // Daca exista, caut daca mai exista o pozitie din acelasi produs
+        // daca nu, adaug o pozitie cu cantitatea 1 sau adaug mai multe pozitii (maximum cate gestiuni sunt) in distribui alternativ cantitatea
+        // daca mai exista pozitii din nou continui cu urmatorea gestiune 
+        // ATENTIE! conteaza cantitatea pe gestiune deci o gestiune poate avea mai putine bucati => cand nu mai are nu mai descarc de acolo
+    }
+
+    if (inventoryMovements.Count == 0)
+    {
+        Console.WriteLine("Nu au fost gasite intrari pentru acest produs");
+    }
 }
 
 //var foxProDbfDateTable = da.ReadDbf("Select top 1 * from ies_det order by id_u desc");
