@@ -1,71 +1,91 @@
 ﻿using DScannerLibrary.Extensions;
 using DScannerLibrary.Models;
 using DScannerLibrary.DataAccess;
+using DScannerLibrary.BusinessLogic;
+
+
+Console.BackgroundColor = ConsoleColor.White;
+Console.Clear();
+Console.ForegroundColor = ConsoleColor.Black;
 
 if (IntPtr.Size == 8)
 {
     Console.WriteLine("Sorry this is not going to work in 64 bits");
     return;
 }
-var da = new DbfDataAccess();
 
-// Caut documentul de iesire din aceasta zi si daca nu exista dau mesaj ca nu exista
-// Works fine
-var exitDocumentId = da.ReadDbf("Select top 1 id_iesire from iesiri where data = DATE() order by data desc");
-if (exitDocumentId.Rows.Count == 0)
+decimal exitDocumentId = 0;
+
+do
 {
-    Console.WriteLine("Adauga o iesire cu data de azi mai intai!");
-    return;
-}
+    var exitDocumentCheck = new ExitDocumentCheck();
+    exitDocumentId = exitDocumentCheck.GetExitDocumentId();
 
-Console.WriteLine(exitDocumentId.Rows[0][0]);
+    if (exitDocumentId == 0)
+    {
+        Console.WriteLine("Adauga in SAGA o iesire cu data de azi mai intai!");
+        Thread.Sleep(5000);
+    }
+
+} while (exitDocumentId == 0);
+
+
+var da = new DbfDataAccess();
 
 while (true)
 {
-    Console.WriteLine("Enter the barcode:");
-    var articleBarCode = Console.ReadLine();
+    string? barcode;
 
-    // articole pe gestiuni, article list va avea atatea randuri cate gestiuni sunt
-    var articleAsDataTable = da.ReadDbf($"Select * from articole where cod_bare={articleBarCode}");
-    var articleAsList = articleAsDataTable.ConvertDataTable<ArticleModel>();
-
-    var articleMovementsDataTable = da.ReadDbf($"Select * from miscari where cod_art='{articleAsList.FirstOrDefault().cod}'");
-    var inventoryMovements = articleMovementsDataTable.ConvertDataTable<InventoryMovementModel>();
-
-    if (inventoryMovements.Count == 1)
+    var quantity = InputQuantity();
+    if (quantity > 10000)
     {
-        var inventoryMovement = inventoryMovements.FirstOrDefault();
+        barcode = quantity.ToString();
+        quantity = 1; // default quantity is 1
+    }
+    else
+    {
+        barcode = InputBarCode();
+    }
 
-        Console.WriteLine("Type quantity");
-        var quantity = Console.ReadLine();
-        if (Convert.ToDecimal(quantity) > 100000)
-        {
-            quantity = "1";
-        }
+    var articleSearchLogic = new ArticleSearchLogic();
+    var article = articleSearchLogic.GetArticleByBarcode(barcode);
 
-        //ID_U,N,10,0	ID,N,10,0	DATA,D	COD_ART,C,16	
-        //GESTIUNE,C,4	CANTITATE,N,14,3	CANT_NESTI,N,14,3	PRET,N,15,4	TIP_DOC,C,10	NR_DOC,C,16	SUMA_DESC,N,15,4
-        var lastExitId = da.ReadDbf("Select top 1 id_u from ies_det order by id_u desc").Rows[0][0];
-        var article = articleAsList.SingleOrDefault();
+    // so far so good
+    // articole pe gestiuni, inventoryMovements va avea atatea randuri cate gestiuni sunt
+    var articleMovementsDataTable = da.ReadDbf($"Select * from miscari where cod_art='{article?.cod}'");
+    var inventoryMovements = articleMovementsDataTable.ConvertDataTable<InventoryMovementModel>();
+    var numberOfInventories = inventoryMovements.Count;
+
+    if (numberOfInventories == 1)
+    {
+        var inventoryMovement = inventoryMovements.SingleOrDefault();
+
+        var numberOfExists = da.ReadDbf($"Select count(*) id_u from ies_det where id_iesire={exitDocumentId}").Rows[0][0];
+        //var id = DateTime.Now.ToString("yyyyMMddHHmmssf");
+        var id = DateTime.Now.ToString("yyMMdd");
+        id = id + numberOfExists;
+        var idAsDecimal = Convert.ToDecimal(id);
+        //id_u = (decimal)DateTime.Now.Ticks,
 
         // Iesire simpla pe aceeasi gestiune
         var inventoryExit = new InventoryExitModel
         {
-            id_u = (decimal)lastExitId + 1,
-            id_iesire = (decimal)exitDocumentId.Rows[0][0],
+            id_u = idAsDecimal,
+            id_iesire = exitDocumentId,
             gestiune = inventoryMovement?.gestiune,
-            den_gest = article?.den_gest,
+            //den_gest = article?.den_gest,
             cod = inventoryMovement?.cod_art,
             denumire = article?.denumire,
             cantitate = Convert.ToDecimal(quantity),
             den_tip = "Marfuri",
             um = "BUC",
+            text_supl = $"articol scanat la {DateTime.Now}"
         };
 
         Console.WriteLine("Rows affected: " + da.InsertIntoIesiriDbf(inventoryExit));
     }
 
-    if (inventoryMovements.Count > 1)
+    if (numberOfInventories > 1)
     {
         // Iesire alternativa, cate o bucata din fiecare gestiune pe rand!
 
@@ -75,19 +95,49 @@ while (true)
         // ATENTIE! conteaza cantitatea pe gestiune deci o gestiune poate avea mai putine bucati => cand nu mai are nu mai descarc de acolo
     }
 
-    if (inventoryMovements.Count == 0)
+    if (numberOfInventories == 0)
     {
-        Console.WriteLine("Nu au fost gasite intrari pentru acest produs");
+        Console.WriteLine("Nu au fost gasite intrari pentru acest produs!");
+        if (article != null)
+        {
+            Console.WriteLine($"Adauga intrari in SAGA pentru {article?.denumire?.Trim()}.");
+        }
     }
 }
 
-//var foxProDbfDateTable = da.ReadDbf("Select top 1 * from ies_det order by id_u desc");
-//
-//var foxProDbfAsList = foxProDbfDateTable.ConvertDataTable<InventoryExitModel>();
-//
-//foreach (var item in foxProDbfAsList)
-//{
-//    Console.WriteLine(item.id_u);
-//}
+string InputBarCode()
+{
+    string? articleBarCode = "";
 
-//da.InsertIntoDbf<InventoryExitModel>();
+    do
+    {
+        Console.WriteLine("Enter the barcode:");
+        articleBarCode = Console.ReadLine();
+
+    } while (string.IsNullOrWhiteSpace(articleBarCode) || Decimal.TryParse(articleBarCode, out decimal result) == false);
+
+    if (articleBarCode == "exit")
+    {
+        Environment.Exit(0);
+    }
+
+    return articleBarCode;
+}
+
+decimal InputQuantity()
+{
+    decimal quantity = 1;
+    string? quantityAsString = "";
+
+    do
+    {
+        Console.WriteLine("Introdu cantitatea sau scaneaza un articol si cantitatea va fi implicit 1:");
+        quantityAsString = Console.ReadLine();
+
+    } while (string.IsNullOrWhiteSpace(quantityAsString) || Decimal.TryParse(quantityAsString, out decimal result) == false || result == 0);
+
+    quantity = Convert.ToDecimal(quantityAsString);
+
+    return quantity;
+}
+
