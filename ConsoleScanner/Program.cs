@@ -25,7 +25,7 @@ do
 
 } while (exitDocumentId == 0);
 
-Console.WriteLine("Asigura-te ca atunci cand scanezi produse ai selectat aceasta fereastra!");
+Console.WriteLine("Asigura-te ca atunci cand scanezi produse ai selectat aceasta fereastra!\n");
 
 while (true)
 {
@@ -42,39 +42,8 @@ while (true)
         barcode = InputBarCode();
     }
 
-    var articleSearchLogic = new ArticleSearchLogic();
-    var article = articleSearchLogic.GetArticleByBarcode(barcode);
-
-    var inventoryMovementsLogic = new InventoryMovementsLogic();
-
-    // articole pe gestiuni: inventoryMovements va avea atatea randuri cate gestiuni sunt
-    var inventoryMovements = inventoryMovementsLogic.GetInventoryMovements(article?.cod);
-
-    var numberOfInventories = inventoryMovements.Count;
-    if (numberOfInventories == 1)
-    {
-        Console.WriteLine($"Rows affected: {inventoryMovementsLogic.ProcessSingleInventoryExit(exitDocumentId, inventoryMovements, article, quantity)}");
-    }
-
-    if (numberOfInventories > 1)
-    {
-        // Iesire alternativa, cate o bucata din fiecare gestiune pe rand!
-
-        // Daca exista, caut daca mai exista o pozitie din acelasi produs
-        // daca nu, adaug o pozitie cu cantitatea 1 sau adaug mai multe pozitii (maximum cate gestiuni sunt) in distribui alternativ cantitatea
-        // daca mai exista pozitii din nou continui cu urmatorea gestiune 
-        // ATENTIE! conteaza cantitatea pe gestiune deci o gestiune poate avea mai putine bucati => cand nu mai are nu mai descarc de acolo
-        Console.WriteLine("More than one inventory");
-    }
-
-    if (numberOfInventories == 0)
-    {
-        Console.WriteLine("Nu au fost gasite intrari pentru acest produs!");
-        if (article != null)
-        {
-            Console.WriteLine($"Adauga intrari in SAGA pentru {article?.denumire?.Trim()}.");
-        }
-    }
+    var inventoryMovements = new InventoryMovementsLogic();
+    Console.WriteLine($"Rows affected: {await inventoryMovements.ProcessInventoryExit(exitDocumentId, barcode, quantity)}");
 }
 
 string InputBarCode()
