@@ -52,42 +52,50 @@ public class InventoryMovementsLogic
                 Console.WriteLine(item.cod_art + " " + item.gestiune + " " + item.cantitate);
             }
 
-            // ultimul produs iesit -> ce gestiune are?
-            var lastInventoryExitOfArticleDataTable = _dataAccess.ReadDbf($"Select top 1 * from ies_det where cod='{article.cod}' order by gestiune desc");
-            var lastInventoryExitOfArticle = lastInventoryExitOfArticleDataTable.ConvertDataTable<InventoryExitModel>();
-            var inventoryExitOfArticle = lastInventoryExitOfArticle.FirstOrDefault();
+            var lastMultipleInventoryExit = GetLastMultipleInventoryExit(article, exitDocumentId);
+            var actualInventoriesQuantities = CalculateAvailableInventory(inventoryMovements);
 
-
-            // daca nu exista ultimul produs (in tabela iesir detatlii), First where max(cantitate) si sa fie mai mare de 0
             if (quantity == 1)
             {
                 // gestiunea care trebuie atribuita
                 string? lastInventory = "";
                 // works very well
-                if (inventoryExitOfArticle == null)
+                if (lastMultipleInventoryExit == null)
                 {
                     try
                     {
-                        Console.WriteLine("null - none exit of this product");
-                        lastInventory = inventoryMovements.OrderByDescending(x => x.cantitate).First().gestiune;
+                        Console.WriteLine("First exit of this product ever.");
+                        lastInventory = inventoryMovements
+                            .Where(x => x.cantitate > 0)
+                            .OrderByDescending(x => x.cantitate)
+                            .First().gestiune;
                     }
                     catch (Exception e)
                     {
+                        // TODO: de testat cu first sa crape
                         throw e;
                     }
                 }
                 else
                 {
-                    // schimb gestiunea pe rand in functie de cod
-                    // de gandit ......lastInventory = inventoryMovements. inventoryExitOfArticle.gestiune;
-                    // HACK
-                    var list = inventoryMovements.Select(x => x.gestiune).ToList();
-                    list.Remove(inventoryExitOfArticle.gestiune);
+                    Console.WriteLine("Nu e prima iesire din acest produs.");
+                    Console.WriteLine("gestiunea precedenta " + lastMultipleInventoryExit.gestiune + " " + lastMultipleInventoryExit.den_gest);
 
-                    lastInventory = (list.FirstOrDefault());
+                    foreach (var item in actualInventoriesQuantities)
+                    {
+                        Console.WriteLine($"Stoc actual: {item.Key} {item.Value}");
+                    }
+
+                    var gestiuniSortate = inventoryMovements.Select(x => x.gestiune).Order().ToList();
+                    gestiuniSortate.ForEach(x => Console.WriteLine(x));
+
+                    // schimb gestiunea pe rand in functie de cod
+                    // HACK
+                    //lastInventory = urmatoarea gestiune din array ul sortat mereu la fel
+
                 }
 
-                // fac iesirea
+                // fac iesirea - TODO: refactor
                 var generatedId = GenerateId(exitDocumentId);
 
                 var inventoryName = _dataAccess.ReadDbf($"Select denumire from gestiuni where cod='{lastInventory}'").Rows[0][0];
@@ -112,8 +120,6 @@ public class InventoryMovementsLogic
                     text_supl = $"articol scanat la {DateTime.Now}"
                 };
 
-                lastInventory = "";
-
                 await AddExitToBackupFile(new List<InventoryExitModel>() { inventoryExit });
 
                 return _dataAccess.InsertIntoIesiriDbf(inventoryExit);
@@ -122,11 +128,9 @@ public class InventoryMovementsLogic
 
             if (quantity > 1)
             {
-                Console.WriteLine("More than one quantity");
+                Console.WriteLine("Momentan nu se pot opera iesiri cu cantitatea mai mare ca 1 pentru produse in mai multe gestiuni.");
+                Console.WriteLine("Scaneaza fiecare produs in parte, fara a introduce cantitatea.");
             }
-
-
-
         }
 
         if (numberOfInventories == 0)
@@ -208,5 +212,50 @@ public class InventoryMovementsLogic
         id = id + numberOfExistsOnCurrentDocument;
 
         return Convert.ToDecimal(id);
+    }
+
+    InventoryExitModel? GetLastMultipleInventoryExit(ArticleModel article, decimal exitDocumentId)
+    {
+        var lastInventoryExitOfArticleDataTable = _dataAccess
+            .ReadDbf($"Select * from ies_det where id_iesire={exitDocumentId} and cod='{article.cod}'");
+
+        if (lastInventoryExitOfArticleDataTable.Rows.Count == 0)
+        {
+            lastInventoryExitOfArticleDataTable = _dataAccess
+                .ReadDbf($"Select * from ies_det where cod='{article.cod}'");
+        }
+
+        if (lastInventoryExitOfArticleDataTable.Rows.Count == 0)
+        {
+            return null;
+        }
+
+        var lastInventoryExitOfArticle = lastInventoryExitOfArticleDataTable.ConvertDataTable<InventoryExitModel>();
+
+        return lastInventoryExitOfArticle.Last();
+    }
+
+    Dictionary<string, decimal> CalculateAvailableInventory(List<InventoryMovementModel> registeredInventory)
+    {
+        var availableInventories = new Dictionary<string, decimal>();
+
+        foreach (var item in registeredInventory)
+        {
+            decimal exitQuantity = 0;
+
+            var queryResult =_dataAccess
+                .ReadDbf($"Select sum(cantitate) as CantitateIesita from ies_det where cod='{item.cod_art}' and gestiune='{item.gestiune}'").Rows[0][0];
+
+            if (queryResult.Equals(DBNull.Value) == false)
+            {
+                exitQuantity = (decimal)queryResult;
+            }
+
+            var actualQuantity = item.cantitate - exitQuantity;
+
+            availableInventories.Add(item.gestiune, actualQuantity);
+        }
+
+        return availableInventories;
     }
 }
