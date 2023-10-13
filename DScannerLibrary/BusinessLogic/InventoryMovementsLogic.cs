@@ -71,8 +71,8 @@ public class InventoryMovementsLogic
                 }
                 else
                 {
-                    Console.WriteLine("Nu e prima iesire din acest produs.");
-                    Console.WriteLine("gestiunea precedenta " + lastMultipleInventoryExit.gestiune + " " + lastMultipleInventoryExit.den_gest);
+                    //Console.WriteLine("Nu e prima iesire din acest produs.");
+                    //Console.WriteLine("gestiunea precedenta " + lastMultipleInventoryExit.gestiune + " " + lastMultipleInventoryExit.den_gest);
 
                     foreach (var item in actualInventoriesQuantities)
                     {

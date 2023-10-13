@@ -36,7 +36,14 @@ while (true)
         barcode = InputBarCode();
     }
 
-    var inventoryMovements = new InventoryMovementsLogic();
+	exitDocumentId = GetExitDocument();
+
+	if (exitDocumentId == 0)
+	{
+		continue;
+	}
+
+	var inventoryMovements = new InventoryMovementsLogic();
     Console.WriteLine($"Rows affected: {await inventoryMovements.ProcessInventoryExit(exitDocumentId, barcode, quantity)}");
 }
 

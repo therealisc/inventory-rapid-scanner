@@ -13,3 +13,6 @@ Back-up dupa fiecare zi!!
 La pc unde se va instala:
 De verficat Provider=VFPOLEDB;Data Source=C:\\SAGA PS.3.0\\0001\\
 - se face un nou folder pentru fiecare unitate
+
+
+De eliminat o linie din csv atunci cand se adauga ceva nou si csv-ul are peste 100.000 linii
