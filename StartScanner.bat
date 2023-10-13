@@ -1,5 +1,6 @@
-cd ~
+cd /
+cd inventory-rapid-scanner
 git pull
 
-cd inventory-rapid-scanner/ConsoleScanner
+cd ConsoleScanner
 dotnet run
