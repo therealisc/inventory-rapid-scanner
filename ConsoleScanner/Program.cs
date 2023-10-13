@@ -12,23 +12,23 @@ if (IntPtr.Size == 8)
 
 decimal exitDocumentId = 0;
 
-do
-{
-    var exitDocumentCheck = new ExitDocumentCheck();
-    exitDocumentId = exitDocumentCheck.GetExitDocumentId();
-
-    if (exitDocumentId == 0)
-    {
-        Console.WriteLine("Adauga in SAGA o iesire cu data de azi mai intai!");
-        Thread.Sleep(5000);
-    }
-
-} while (exitDocumentId == 0);
+//do
+//{
+//    exitDocumentId = GetExitDocument();
+//
+//} while (exitDocumentId == 0);
 
 Console.WriteLine("Asigura-te ca atunci cand scanezi produse ai selectat aceasta fereastra!\n");
 
 while (true)
 {
+    exitDocumentId = GetExitDocument();
+
+    if (exitDocumentId == 0)
+    {
+        continue;
+    }
+
     string? barcode;
 
     var quantity = InputQuantity();
@@ -80,5 +80,19 @@ decimal InputQuantity()
     quantity = Convert.ToDecimal(quantityAsString);
 
     return quantity;
+}
+
+decimal GetExitDocument()
+{
+    var exitDocumentCheck = new ExitDocumentCheck();
+    var exitDocumentId = exitDocumentCheck.GetExitDocumentId();
+
+    if (exitDocumentId == 0)
+    {
+        Console.WriteLine("Adauga in SAGA o iesire cu data de azi mai intai!\n");
+        Console.WriteLine("Asigura-te ca documentul de iesire nu este validat!\n");
+        Thread.Sleep(3000);
+    }
+    return exitDocumentId;
 }
 

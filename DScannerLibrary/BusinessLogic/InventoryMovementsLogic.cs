@@ -17,7 +17,7 @@ public class InventoryMovementsLogic
     public List<InventoryMovementModel> GetInventoryMovements(string? articleCode)
     {
         var articleMovementsDataTable = _dataAccess.ReadDbf($"Select cod_art, gestiune, SUM(cantitate) as cantitate from miscari " +
-            $"where cod_art='{articleCode}' group by cod_art, gestiune");
+            $"where cod_art='{articleCode}' group by cod_art, gestiune order by gestiune");
         var inventoryMovements = articleMovementsDataTable.ConvertDataTable<InventoryMovementModel>();
 
         return inventoryMovements;
@@ -55,17 +55,23 @@ public class InventoryMovementsLogic
             var lastMultipleInventoryExit = GetLastMultipleInventoryExit(article, exitDocumentId);
             var actualInventoriesQuantities = CalculateAvailableInventory(inventoryMovements);
 
+            if (actualInventoriesQuantities.Sum(x => x.Value) == 0)
+            {
+                Console.WriteLine("Stocul este 0 din acest produs pe toate gestiunile! Adauga intrari mai intai!");
+                return 0;
+            }
+
             if (quantity == 1)
             {
                 // gestiunea care trebuie atribuita
-                string? lastInventory = "";
+                string? nextInventory = "";
                 // works very well
                 if (lastMultipleInventoryExit == null)
                 {
                     try
                     {
                         Console.WriteLine("First exit of this product ever.");
-                        lastInventory = inventoryMovements
+                        nextInventory = inventoryMovements
                             .Where(x => x.cantitate > 0)
                             .OrderByDescending(x => x.cantitate)
                             .First().gestiune;
@@ -86,25 +92,20 @@ public class InventoryMovementsLogic
                         Console.WriteLine($"Stoc actual: {item.Key} {item.Value}");
                     }
 
-                    var gestiuniSortate = inventoryMovements.Select(x => x.gestiune).Order().ToList();
-                    gestiuniSortate.ForEach(x => Console.WriteLine(x));
-
-                    // schimb gestiunea pe rand in functie de cod
-                    // HACK
-                    //lastInventory = urmatoarea gestiune din array ul sortat mereu la fel
-
+                    var rotationAlgorithm = new InventoryRotationAlgorithm();
+                    nextInventory = rotationAlgorithm.GetNextInventoryForExitProcess(actualInventoriesQuantities, lastMultipleInventoryExit);
                 }
 
                 // fac iesirea - TODO: refactor
                 var generatedId = GenerateId(exitDocumentId);
 
-                var inventoryName = _dataAccess.ReadDbf($"Select denumire from gestiuni where cod='{lastInventory}'").Rows[0][0];
+                var inventoryName = _dataAccess.ReadDbf($"Select denumire from gestiuni where cod='{nextInventory}'").Rows[0][0];
 
                 var inventoryExit = new InventoryExitModel
                 {
                     id_u = generatedId,
                     id_iesire = exitDocumentId,
-                    gestiune = lastInventory,
+                    gestiune = nextInventory,
                     den_gest = (string)inventoryName,
                     cod = article?.cod,
                     denumire = article?.denumire,
@@ -243,7 +244,7 @@ public class InventoryMovementsLogic
         {
             decimal exitQuantity = 0;
 
-            var queryResult =_dataAccess
+            var queryResult = _dataAccess
                 .ReadDbf($"Select sum(cantitate) as CantitateIesita from ies_det where cod='{item.cod_art}' and gestiune='{item.gestiune}'").Rows[0][0];
 
             if (queryResult.Equals(DBNull.Value) == false)

@@ -13,7 +13,7 @@ public class ExitDocumentCheck
 
     public decimal GetExitDocumentId()
     {
-        var exitDocumentDataTable = _dataAccess.ReadDbf("Select top 1 id_iesire from iesiri where data = DATE() order by data desc");
+        var exitDocumentDataTable = _dataAccess.ReadDbf("Select top 1 id_iesire from iesiri where data = DATE() and Validat <>'V' order by data desc");
 
         if (exitDocumentDataTable.Rows.Count == 0)
             return 0;
