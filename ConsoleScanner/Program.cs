@@ -12,12 +12,6 @@ if (IntPtr.Size == 8)
 
 decimal exitDocumentId = 0;
 
-//do
-//{
-//    exitDocumentId = GetExitDocument();
-//
-//} while (exitDocumentId == 0);
-
 Console.WriteLine("Asigura-te ca atunci cand scanezi produse ai selectat aceasta fereastra!\n");
 
 while (true)

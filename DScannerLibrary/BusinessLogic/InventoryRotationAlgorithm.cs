@@ -15,7 +15,6 @@ public class InventoryRotationAlgorithm
             nextIndexInList = 0;
         }
 
-        //while (inventories.Sum(x => x.Value) > 0)
         while (true)
         {
             var nextInventory = inventoryList[nextIndexInList];

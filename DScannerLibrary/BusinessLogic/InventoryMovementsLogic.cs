@@ -39,19 +39,6 @@ public class InventoryMovementsLogic
 
         if (numberOfInventories > 1)
         {
-            // Iesire alternativa, cate o bucata din fiecare gestiune pe rand!
-
-            // daca nu, adaug o pozitie cu cantitatea 1 sau adaug mai multe pozitii (maximum cate gestiuni sunt) in distribui alternativ cantitatea
-            // daca mai exista pozitii din nou continui cu urmatorea gestiune 
-            // ATENTIE! conteaza cantitatea pe gestiune deci o gestiune poate avea mai putine bucati => cand nu mai are nu mai descarc de acolo
-
-            Console.WriteLine("More than one inventory");
-
-            foreach (var item in inventoryMovements)
-            {
-                Console.WriteLine(item.cod_art + " " + item.gestiune + " " + item.cantitate);
-            }
-
             var lastMultipleInventoryExit = GetLastMultipleInventoryExit(article, exitDocumentId);
             var actualInventoriesQuantities = CalculateAvailableInventory(inventoryMovements);
 
