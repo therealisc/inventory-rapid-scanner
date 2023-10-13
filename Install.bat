@@ -1,5 +1,5 @@
 winget install -e --id Git.Git
-winget winget install Microsoft.DotNet.SDK.7
+winget install Microsoft.DotNet.SDK.7
 
 cd /
 git clone https://github.com/therealisc/inventory-rapid-scanner.git
