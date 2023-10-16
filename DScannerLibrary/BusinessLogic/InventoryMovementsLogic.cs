@@ -23,107 +23,41 @@ public class InventoryMovementsLogic
         return inventoryMovements;
     }
 
-    public async Task<int> ProcessInventoryExit(decimal exitDocumentId, string barcode, decimal quantity)
+    public async Task<int> GenerateInventoryExits(decimal exitDocumentId, string barcode, decimal quantity)
     {
         var articleSearchLogic = new ArticleSearchLogic();
         var article = articleSearchLogic.GetArticleByBarcode(barcode);
 
-        // articole pe gestiuni: inventoryMovements va avea atatea randuri cate gestiuni sunt
+        // inventoryMovements va avea atatea randuri cate gestiuni sunt
         var inventoryMovements = GetInventoryMovements(article?.cod);
 
         var numberOfInventories = inventoryMovements.Count;
         if (numberOfInventories == 1)
         {
-            return await ProcessSingleInventoryExit(exitDocumentId, inventoryMovements, article, quantity);
+            var inventoryMovement = inventoryMovements.Single();
+            return await ProcessInventoryExit(exitDocumentId, article, quantity, inventoryMovement.gestiune);
         }
 
         if (numberOfInventories > 1)
         {
-            var lastMultipleInventoryExit = GetLastMultipleInventoryExit(article, exitDocumentId);
-            var actualInventoriesQuantities = CalculateAvailableInventory(inventoryMovements);
-
-            if (actualInventoriesQuantities.Sum(x => x.Value) == 0)
+            for (int i = 0; i < quantity; i++)
             {
-                Console.WriteLine("Stocul este 0 din acest produs pe toate gestiunile! Adauga intrari mai intai!");
-                return 0;
-            }
+                var lastMultipleInventoryExit = GetLastMultipleInventoryExit(article, exitDocumentId);
+                var actualInventoriesQuantities = CalculateAvailableInventory(inventoryMovements);
 
-            if (quantity == 1)
-            {
-                // gestiunea care trebuie atribuita
-                string? nextInventory = "";
-                // works very well
-                if (lastMultipleInventoryExit == null)
+                if (actualInventoriesQuantities.Sum(x => x.Value) == 0)
                 {
-                    try
-                    {
-                        Console.WriteLine("First exit of this product ever.");
-                        nextInventory = inventoryMovements
-                            .Where(x => x.cantitate > 0)
-                            .OrderByDescending(x => x.cantitate)
-                            .First().gestiune;
-                    }
-                    catch (Exception e)
-                    {
-                        // TODO: de testat cu first sa crape
-                        throw e;
-                    }
-                }
-                else
-                {
-                    //Console.WriteLine("Nu e prima iesire din acest produs.");
-                    //Console.WriteLine("gestiunea precedenta " + lastMultipleInventoryExit.gestiune + " " + lastMultipleInventoryExit.den_gest);
-
-                    foreach (var item in actualInventoriesQuantities)
-                    {
-                        Console.WriteLine($"Stoc actual: {item.Key} {item.Value}");
-                    }
-
-                    var rotationAlgorithm = new InventoryRotationAlgorithm();
-                    nextInventory = rotationAlgorithm.GetNextInventoryForExitProcess(actualInventoriesQuantities, lastMultipleInventoryExit);
+                    Console.WriteLine("Stocul este 0 din acest produs pe toate gestiunile! Adauga intrari mai intai!");
+                    return 0;
                 }
 
-                // fac iesirea - TODO: refactor
-                var generatedId = GenerateId(exitDocumentId);
-
-                var inventoryName = _dataAccess.ReadDbf($"Select denumire from gestiuni where cod='{nextInventory}'").Rows[0][0];
-
-                var inventoryExit = new InventoryExitModel
-                {
-                    id_u = generatedId,
-                    id_iesire = exitDocumentId,
-                    gestiune = nextInventory,
-                    den_gest = (string)inventoryName,
-                    cod = article?.cod,
-                    denumire = article?.denumire,
-                    cantitate = quantity,
-                    pret_unitar = article.pret_vanz,
-                    valoare = quantity * article.pret_vanz,
-                    total = (quantity * article.pret_vanz) + ((article.tva / 100) * article.pret_vanz),
-                    tva_art = article.tva,
-                    tva_ded = ((article.tva / 100) * article.pret_vanz),
-                    cont = "707",
-                    den_tip = "Marfuri",
-                    um = "BUC",
-                    text_supl = $"articol scanat la {DateTime.Now}"
-                };
-
-                await AddExitToBackupFile(new List<InventoryExitModel>() { inventoryExit });
-
-                return _dataAccess.InsertIntoIesiriDbf(inventoryExit);
-
-            }
-
-            if (quantity > 1)
-            {
-                Console.WriteLine("Momentan nu se pot opera iesiri cu cantitatea mai mare ca 1 pentru produse in mai multe gestiuni.");
-                Console.WriteLine("Scaneaza fiecare produs in parte, fara a introduce cantitatea.");
+                var inventoryCode = GetCorrectInventoryCode(lastMultipleInventoryExit, inventoryMovements, actualInventoriesQuantities);
+                return await ProcessInventoryExit(exitDocumentId, article, quantity, inventoryCode);
             }
         }
 
         if (numberOfInventories == 0)
         {
-            // de sters
             Console.WriteLine("Nu au fost gasite intrari pentru acest produs!");
             if (article != null)
             {
@@ -134,25 +68,56 @@ public class InventoryMovementsLogic
         return 0;
     }
 
-    /// <summary>
-    /// Creates an exit record for the only available inventory, without checking the available quantity.
-    /// </summary>
-    public async Task<int> ProcessSingleInventoryExit(decimal exitDocumentId,
-        List<InventoryMovementModel> inventoryMovements,
-        ArticleModel article,
-        decimal quantity)
+    string GetCorrectInventoryCode(InventoryExitModel lastMultipleInventoryExit,
+            List<InventoryMovementModel> inventoryMovements,
+            Dictionary<string, decimal> actualInventoriesQuantities)
     {
-        var inventoryMovement = inventoryMovements.Single();
+        // gestiunea care trebuie atribuita
+        string? nextInventory = "";
+        if (lastMultipleInventoryExit == null)
+        {
+            try
+            {
+                Console.WriteLine("First exit of this product ever.");
+                nextInventory = inventoryMovements
+                    .Where(x => x.cantitate > 0)
+                    .OrderByDescending(x => x.cantitate)
+                    .First().gestiune;
+            }
+            catch (Exception e)
+            {
+                // TODO: de testat cu first sa crape
+                throw e;
+            }
+        }
+        else
+        {
+            foreach (var item in actualInventoriesQuantities)
+            {
+                Console.WriteLine($"Stoc actual: {item.Key} {item.Value}");
+            }
+
+            var rotationAlgorithm = new InventoryRotationAlgorithm();
+            nextInventory = rotationAlgorithm.GetNextInventoryForExitProcess(actualInventoriesQuantities, lastMultipleInventoryExit);
+        }
+
+        return nextInventory;
+    }
+
+    public async Task<int> ProcessInventoryExit(decimal exitDocumentId,
+        ArticleModel article,
+        decimal quantity,
+        string inventoryCode)
+    {
 
         var generatedId = GenerateId(exitDocumentId);
-
-        var inventoryName = _dataAccess.ReadDbf($"Select denumire from gestiuni where cod='{inventoryMovement?.gestiune}'").Rows[0][0];
+        var inventoryName = _dataAccess.ReadDbf($"Select denumire from gestiuni where cod='{inventoryCode}'").Rows[0][0];
 
         var inventoryExit = new InventoryExitModel
         {
             id_u = generatedId,
             id_iesire = exitDocumentId,
-            gestiune = inventoryMovement?.gestiune,
+            gestiune = inventoryCode,
             den_gest = (string)inventoryName,
             cod = article.cod,
             denumire = article?.denumire,

@@ -24,12 +24,9 @@ public class DbfDataAccess
         using (OleDbConnection myCon = new OleDbConnection(connectionString))
         {
             var command = new OleDbCommand();
-            //command.CommandType = CommandType.Text;
             StringBuilder commandText = new("insert into ies_det (");
             Type t = item.GetType();
-            //Console.WriteLine("Type is: {0}", t.Name);
             var props = t.GetProperties();
-            //Console.WriteLine("Properties (N = {0}):", props.Length);
 
             foreach (var prop in props)
             {
@@ -38,7 +35,6 @@ public class DbfDataAccess
                 if (prop.GetIndexParameters().Length == 0)
                 {
                     command.Parameters.AddWithValue($"@{prop.Name}", prop.GetValue(item));
-                    //Console.WriteLine("   {0} ({1}): {2}", prop.Name, prop.PropertyType.Name, prop.GetValue(item));
                 }
             }
 
