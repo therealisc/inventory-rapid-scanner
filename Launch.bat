@@ -1,0 +1,2 @@
+cd ConsoleScanner
+dotnet run
