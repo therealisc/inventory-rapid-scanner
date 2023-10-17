@@ -1,18 +1,14 @@
-1. Am toate datele in dbf-uri
-2. Introduc produsul si cantitatea (verificare cantitate)
-3. Se pune automat gestiunea
-4. Se creeaza iesirea
+1. Vizualizare in fereastra total/gestiune/zi
+2. Benchmark durata iesire (StopWatch?)
+3. Modificare explicatii sa cuprinda al catealea articol este (ex 1/3, 2/3, 3/3)
+4. Calculare corecta adaos
+5. Better backup
 
-O sa apara in stocuri doar daca a fost validat
-Totul e in tabela iesiri si iesiri det
-
-? Un fisier cu iesirile pentru extra-backup zilnic
-
-Back-up dupa fiecare zi!!
+De eliminat o linie din csv atunci cand se adauga ceva nou si csv-ul are peste 100.000 linii?
 
 La pc unde se va instala:
 De verficat Provider=VFPOLEDB;Data Source=C:\\SAGA PS.3.0\\0001\\
 - se face un nou folder pentru fiecare unitate
+- se foloseste momentan ultimul folder de 4 cifre
 
 
-De eliminat o linie din csv atunci cand se adauga ceva nou si csv-ul are peste 100.000 linii

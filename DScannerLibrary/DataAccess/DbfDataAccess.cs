@@ -1,27 +1,52 @@
 using System.Data;
 using System.Text;
 using System.Data.OleDb;
+using System.Text.RegularExpressions;
+using DScannerLibrary.Extensions;
 
 namespace DScannerLibrary.DataAccess;
 
 public class DbfDataAccess
 {
-    string connectionString = $"Provider=VFPOLEDB;Data Source=C:\\SAGA PS.3.0\\0002\\";
+    private string _connectionString;
 
-    public DataTable ReadDbf(string str_sql)
+    public DbfDataAccess()
     {
-        using (var connection = new OleDbConnection(connectionString))
+        _connectionString = GetConnectionString();
+    }
+
+    string GetConnectionString()
+    {
+        // TODO urgent refactoring
+        //var sagaDbfsPath = Directory.GetFiles("C:\\SAGA C.3.0\\").First(x => x.);
+        var dirInfo = new DirectoryInfo("C:\\SAGA C.3.0\\");
+        var sagaDbfsPath = dirInfo.GetDirectories()
+            .Where(x => Regex.IsMatch(x.Name, @"^\d{4}$"))
+            .OrderByDescending(x => x.Name)
+            .First();
+
+        string connectionString = $"Provider=VFPOLEDB;Data Source={sagaDbfsPath}";
+        //string connectionString = $"Provider=VFPOLEDB;Data Source=C:\\SAGA C.3.0\\0001\\";
+        return connectionString;
+    }
+
+    public List<T> ReadDbf<T>(string str_sql)
+    {
+        Console.WriteLine("database read...");
+
+        using (var connection = new OleDbConnection(_connectionString))
         {
-            OleDbDataAdapter adapter = new OleDbDataAdapter(str_sql, connection);
-            DataTable dt = new DataTable();
-            adapter.Fill(dt);
-            return dt;
+            var adapter = new OleDbDataAdapter(str_sql, connection);
+            var dataTable = new DataTable();
+            adapter.Fill(dataTable);
+
+            return DataTableToListExtension.ConvertDataTable<T>(dataTable);
         }
     }
 
     public int InsertIntoIesiriDbf<T>(T item)
     {
-        using (OleDbConnection myCon = new OleDbConnection(connectionString))
+        using (OleDbConnection myCon = new OleDbConnection(_connectionString))
         {
             var command = new OleDbCommand();
             StringBuilder commandText = new("insert into ies_det (");

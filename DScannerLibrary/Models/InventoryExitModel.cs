@@ -17,7 +17,7 @@ public class InventoryExitModel
     public decimal tva_ded { get; set; }
     public decimal total { get; set; }
     public decimal adaos { get; set; }
-    public string? tip_o { get; set; }
+    //public string? tip_o { get; set; }
     public string? cont { get; set; }
     public string? text_supl { get; set; }
     public decimal discount { get; set; }

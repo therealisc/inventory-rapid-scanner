@@ -1,4 +1,5 @@
 using DScannerLibrary.DataAccess;
+using DScannerLibrary.Models;
 
 namespace DScannerLibrary.BusinessLogic;
 
@@ -13,11 +14,13 @@ public class ExitDocumentCheck
 
     public decimal GetExitDocumentId()
     {
-        var exitDocumentDataTable = _dataAccess.ReadDbf("Select top 1 id_iesire from iesiri where data = DATE() and Validat <>'V' order by data desc");
+        var exitDocument = _dataAccess
+            .ReadDbf<InventoryExitModel>("Select top 1 id_iesire from iesiri where data = DATE() and Validat <>'V' order by data desc")
+            .SingleOrDefault();
 
-        if (exitDocumentDataTable.Rows.Count == 0)
+        if (exitDocument == null)
             return 0;
 
-        return Convert.ToDecimal(exitDocumentDataTable.Rows[0][0]);
+        return exitDocument.id_iesire;
     }
 }

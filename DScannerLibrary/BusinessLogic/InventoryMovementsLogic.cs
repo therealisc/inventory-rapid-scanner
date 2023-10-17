@@ -1,5 +1,4 @@
 using DScannerLibrary.DataAccess;
-using DScannerLibrary.Extensions;
 using DScannerLibrary.Models;
 using System.ComponentModel;
 
@@ -8,38 +7,41 @@ namespace DScannerLibrary.BusinessLogic;
 public class InventoryMovementsLogic
 {
     private readonly DbfDataAccess _dataAccess;
+    private readonly ArticleSearchLogic _articleSearchLogic;
 
     public InventoryMovementsLogic()
     {
         _dataAccess = new DbfDataAccess();
+        _articleSearchLogic = new ArticleSearchLogic();
     }
 
     public List<InventoryMovementModel> GetInventoryMovements(string? articleCode)
     {
-        var articleMovementsDataTable = _dataAccess.ReadDbf($"Select cod_art, gestiune, SUM(cantitate) as cantitate from miscari " +
+        var inventoryMovements = _dataAccess.ReadDbf<InventoryMovementModel>($"Select cod_art, gestiune, SUM(cantitate) as cantitate from miscari " +
             $"where cod_art='{articleCode}' group by cod_art, gestiune order by gestiune");
-        var inventoryMovements = articleMovementsDataTable.ConvertDataTable<InventoryMovementModel>();
 
         return inventoryMovements;
     }
 
     public async Task<int> GenerateInventoryExits(decimal exitDocumentId, string barcode, decimal quantity)
     {
-        var articleSearchLogic = new ArticleSearchLogic();
-        var article = articleSearchLogic.GetArticleByBarcode(barcode);
+        var article = _articleSearchLogic.GetArticleByBarcode(barcode);
 
         // inventoryMovements va avea atatea randuri cate gestiuni sunt
         var inventoryMovements = GetInventoryMovements(article?.cod);
 
         var numberOfInventories = inventoryMovements.Count;
-        if (numberOfInventories == 1)
+
+        if (numberOfInventories == 1 && article != null)
         {
-            var inventoryMovement = inventoryMovements.Single();
-            return await ProcessInventoryExit(exitDocumentId, article, quantity, inventoryMovement.gestiune);
+            var inventoryMovement = inventoryMovements.SingleOrDefault();
+            if (inventoryMovement?.gestiune != null)
+                return await ProcessInventoryExit(exitDocumentId, article, quantity, inventoryMovement.gestiune);
         }
 
         if (numberOfInventories > 1)
         {
+            int rowsInserted = 0;
             for (int i = 0; i < quantity; i++)
             {
                 var lastMultipleInventoryExit = GetLastMultipleInventoryExit(article, exitDocumentId);
@@ -52,8 +54,9 @@ public class InventoryMovementsLogic
                 }
 
                 var inventoryCode = GetCorrectInventoryCode(lastMultipleInventoryExit, inventoryMovements, actualInventoriesQuantities);
-                return await ProcessInventoryExit(exitDocumentId, article, quantity, inventoryCode);
+                rowsInserted += await ProcessInventoryExit(exitDocumentId, article, 1, inventoryCode);
             }
+            return rowsInserted;
         }
 
         if (numberOfInventories == 0)
@@ -111,14 +114,16 @@ public class InventoryMovementsLogic
     {
 
         var generatedId = GenerateId(exitDocumentId);
-        var inventoryName = _dataAccess.ReadDbf($"Select denumire from gestiuni where cod='{inventoryCode}'").Rows[0][0];
+        var inventoryName = _dataAccess
+            .ReadDbf<InventoryMovementModel>($"Select denumire as gestiune from gestiuni where cod='{inventoryCode}'")
+            .SingleOrDefault();
 
         var inventoryExit = new InventoryExitModel
         {
             id_u = generatedId,
             id_iesire = exitDocumentId,
             gestiune = inventoryCode,
-            den_gest = (string)inventoryName,
+            den_gest = inventoryName?.gestiune,
             cod = article.cod,
             denumire = article?.denumire,
             cantitate = quantity,
@@ -160,32 +165,36 @@ public class InventoryMovementsLogic
 
     decimal GenerateId(decimal exitDocumentId)
     {
-        var numberOfExistsOnCurrentDocument = _dataAccess.ReadDbf($"Select count(*) id_u from ies_det where id_iesire={exitDocumentId}").Rows[0][0];
+        var numberOfExistsOnCurrentDocument = _dataAccess
+            .ReadDbf<InventoryExitModel>($"Select count(*) as id_u from ies_det where id_iesire={exitDocumentId}")
+            .SingleOrDefault();
+
+        if (numberOfExistsOnCurrentDocument == null)
+            numberOfExistsOnCurrentDocument.id_u = 0;
+
         var id = DateTime.Now.ToString("yyMMdd");
-        id = id + numberOfExistsOnCurrentDocument;
+        id = id + numberOfExistsOnCurrentDocument.id_u.ToString();
 
         return Convert.ToDecimal(id);
     }
 
     InventoryExitModel? GetLastMultipleInventoryExit(ArticleModel article, decimal exitDocumentId)
     {
-        var lastInventoryExitOfArticleDataTable = _dataAccess
-            .ReadDbf($"Select * from ies_det where id_iesire={exitDocumentId} and cod='{article.cod}'");
+        var articleExistsList = _dataAccess
+            .ReadDbf<InventoryExitModel>($"Select * from ies_det where id_iesire={exitDocumentId} and cod='{article.cod}'");
 
-        if (lastInventoryExitOfArticleDataTable.Rows.Count == 0)
+        if (articleExistsList.Count == 0)
         {
-            lastInventoryExitOfArticleDataTable = _dataAccess
-                .ReadDbf($"Select * from ies_det where cod='{article.cod}'");
+            articleExistsList = _dataAccess
+                .ReadDbf<InventoryExitModel>($"Select * from ies_det where cod='{article.cod}'");
         }
 
-        if (lastInventoryExitOfArticleDataTable.Rows.Count == 0)
+        if (articleExistsList.Count == 0)
         {
             return null;
         }
 
-        var lastInventoryExitOfArticle = lastInventoryExitOfArticleDataTable.ConvertDataTable<InventoryExitModel>();
-
-        return lastInventoryExitOfArticle.Last();
+        return articleExistsList.Last();
     }
 
     Dictionary<string, decimal> CalculateAvailableInventory(List<InventoryMovementModel> registeredInventory)
@@ -194,19 +203,18 @@ public class InventoryMovementsLogic
 
         foreach (var item in registeredInventory)
         {
-            decimal exitQuantity = 0;
+            var exitQuantity = _dataAccess
+                .ReadDbf<InventoryExitModel>($"Select sum(cantitate) as cantitate from ies_det where cod='{item.cod_art}' and gestiune='{item.gestiune}'")
+                .SingleOrDefault()?.cantitate;
 
-            var queryResult = _dataAccess
-                .ReadDbf($"Select sum(cantitate) as CantitateIesita from ies_det where cod='{item.cod_art}' and gestiune='{item.gestiune}'").Rows[0][0];
-
-            if (queryResult.Equals(DBNull.Value) == false)
+            if (exitQuantity == null)
             {
-                exitQuantity = (decimal)queryResult;
+                exitQuantity = 0;
             }
 
             var actualQuantity = item.cantitate - exitQuantity;
 
-            availableInventories.Add(item.gestiune, actualQuantity);
+            availableInventories.Add(item.gestiune, actualQuantity.Value);
         }
 
         return availableInventories;
