@@ -9,7 +9,7 @@ De eliminat o linie din csv atunci cand se adauga ceva nou si csv-ul are peste 1
 
 La pc unde se va instala:
 De verficat Provider=VFPOLEDB;Data Source=C:\\SAGA PS.3.0\\0001\\
-- se face un nou folder pentru fiecare unitate
+- se face un nou folder pentru fiecare unitate implicit de catre SAGA
 - se foloseste momentan ultimul folder de 4 cifre
 
 

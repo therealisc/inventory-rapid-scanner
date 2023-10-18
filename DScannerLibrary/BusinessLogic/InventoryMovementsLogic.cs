@@ -36,7 +36,7 @@ public class InventoryMovementsLogic
         {
             var inventoryMovement = inventoryMovements.SingleOrDefault();
             if (inventoryMovement?.gestiune != null)
-                return await ProcessInventoryExit(exitDocumentId, article, quantity, inventoryMovement.gestiune);
+                return await ProcessInventoryExit(exitDocumentId, article, quantity, inventoryMovement.gestiune, quantity, quantity);
         }
 
         if (numberOfInventories > 1)
@@ -54,7 +54,7 @@ public class InventoryMovementsLogic
                 }
 
                 var inventoryCode = GetCorrectInventoryCode(lastMultipleInventoryExit, inventoryMovements, actualInventoriesQuantities);
-                rowsInserted += await ProcessInventoryExit(exitDocumentId, article, 1, inventoryCode);
+                rowsInserted += await ProcessInventoryExit(exitDocumentId, article, 1, inventoryCode, i + 1, quantity);
             }
             return rowsInserted;
         }
@@ -109,8 +109,10 @@ public class InventoryMovementsLogic
 
     public async Task<int> ProcessInventoryExit(decimal exitDocumentId,
         ArticleModel article,
-        decimal quantity,
-        string inventoryCode)
+        decimal exitQuantity,
+        string inventoryCode,
+        decimal currentMultipleInventoryIteration,
+        decimal totalQuantity)
     {
 
         var generatedId = GenerateId(exitDocumentId);
@@ -126,16 +128,16 @@ public class InventoryMovementsLogic
             den_gest = inventoryName?.gestiune,
             cod = article.cod,
             denumire = article?.denumire,
-            cantitate = quantity,
+            cantitate = exitQuantity,
             pret_unitar = article.pret_vanz,
-            valoare = quantity * article.pret_vanz,
-            total = (quantity * article.pret_vanz) + ((article.tva / 100) * article.pret_vanz),
+            valoare = exitQuantity * article.pret_vanz,
+            total = (exitQuantity * article.pret_vanz) + ((article.tva / 100) * article.pret_vanz),
             tva_art = article.tva,
             tva_ded = ((article.tva / 100) * article.pret_vanz),
             cont = "707",
             den_tip = "Marfuri",
             um = "BUC",
-            text_supl = $"articol scanat la {DateTime.Now}"
+            text_supl = $"{currentMultipleInventoryIteration}/{totalQuantity} articol(e) scanat(e) la {DateTime.Now}"
         };
 
         await AddExitToBackupFile(new List<InventoryExitModel>() { inventoryExit });
@@ -203,19 +205,18 @@ public class InventoryMovementsLogic
 
         foreach (var item in registeredInventory)
         {
-            // TODO: FIX THIS
             var exitQuantity = _dataAccess
                 .ReadDbf<InventoryExitModel>($"Select sum(cantitate) as cantitate from ies_det where cod='{item.cod_art}' and gestiune='{item.gestiune}'")
-                .SingleOrDefault()?.cantitate;
+                .SingleOrDefault();
 
             if (exitQuantity == null)
             {
-                exitQuantity = 0;
+                exitQuantity = new InventoryExitModel { cantitate = 0 };
             }
 
-            var actualQuantity = item.cantitate - exitQuantity;
+            var actualQuantity = item.cantitate - exitQuantity.cantitate;
 
-            availableInventories.Add(item.gestiune, actualQuantity.Value);
+            availableInventories.Add(item.gestiune, actualQuantity);
         }
 
         return availableInventories;

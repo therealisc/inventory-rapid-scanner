@@ -24,7 +24,7 @@ public static class DataTableToListExtension
         {
             foreach (PropertyInfo pro in temp.GetProperties())
             {
-                if (pro.Name == column.ColumnName)
+                if (dr[column.ColumnName] != System.DBNull.Value && pro.Name == column.ColumnName)
                     pro.SetValue(obj, dr[column.ColumnName], null);
                 else
                     continue;
