@@ -3,6 +3,7 @@
 3. Modificare explicatii sa cuprinda al catealea articol este (ex 1/3, 2/3, 3/3)
 4. Calculare corecta adaos
 5. Better backup
+6. Verficare si corectare integritate date din tabela ies_det (contul nu e bun sigur)
 
 De eliminat o linie din csv atunci cand se adauga ceva nou si csv-ul are peste 100.000 linii?
 

@@ -203,6 +203,7 @@ public class InventoryMovementsLogic
 
         foreach (var item in registeredInventory)
         {
+            // TODO: FIX THIS
             var exitQuantity = _dataAccess
                 .ReadDbf<InventoryExitModel>($"Select sum(cantitate) as cantitate from ies_det where cod='{item.cod_art}' and gestiune='{item.gestiune}'")
                 .SingleOrDefault()?.cantitate;
