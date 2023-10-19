@@ -1,9 +1,10 @@
-1. Vizualizare in fereastra total/gestiune/zi
-2. Benchmark durata iesire (StopWatch?)
-3. Modificare explicatii sa cuprinda al catealea articol este (ex 1/3, 2/3, 3/3)
-4. Calculare corecta adaos
-5. Better backup
-6. Verficare si corectare integritate date din tabela ies_det (contul nu e bun sigur)
+- Vizualizare in fereastra total/gestiune/zi
+- Benchmark durata iesire (StopWatch?)
+- Calculare corecta adaos
+- Better backup
+- Verficare si corectare integritate date din tabela ies_det (contul nu e bun sigur)
+
+- Optimizare spre final: mai putine call-uri la db
 
 De eliminat o linie din csv atunci cand se adauga ceva nou si csv-ul are peste 100.000 linii?
 

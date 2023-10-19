@@ -26,8 +26,24 @@ public class DbfDataAccess
             .First();
 
         string connectionString = $"Provider=VFPOLEDB;Data Source={sagaDbfsPath}";
-        //string connectionString = $"Provider=VFPOLEDB;Data Source=C:\\SAGA C.3.0\\0001\\";
         return connectionString;
+    }
+
+    public List<T> ReadDbf<T>(string sqlCommand, OleDbParameter[] parameters)
+    {
+        using (var connection = new OleDbConnection(_connectionString))
+        {
+            var command = new OleDbCommand();
+            command.CommandText = sqlCommand;
+            command.Parameters.AddRange(parameters);
+            command.Connection = connection;
+
+            var adapter = new OleDbDataAdapter(command);
+            var dataTable = new DataTable();
+            adapter.Fill(dataTable);
+
+            return DataTableToListExtension.ConvertDataTable<T>(dataTable);
+        }
     }
 
     public List<T> ReadDbf<T>(string str_sql)

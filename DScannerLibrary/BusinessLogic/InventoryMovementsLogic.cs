@@ -1,6 +1,7 @@
 using DScannerLibrary.DataAccess;
 using DScannerLibrary.Models;
 using System.ComponentModel;
+using System.Data.OleDb;
 
 namespace DScannerLibrary.BusinessLogic;
 
@@ -15,7 +16,23 @@ public class InventoryMovementsLogic
         _articleSearchLogic = new ArticleSearchLogic();
     }
 
-    public List<InventoryMovementModel> GetInventoryMovements(string? articleCode)
+    public List<InventoryExitModel> GetInventoryExitsByDate(DateTime? exitDate)
+    {
+        var parameters = new List<OleDbParameter>()
+        {
+            new OleDbParameter { Value = exitDate }
+        };
+
+        var inventoryExists = _dataAccess
+            .ReadDbf<InventoryExitModel>(
+                    $"Select d.den_gest, d.cod, d.denumire, d.den_tip, d.um, d.cantitate, d.pret_unitar, d.valoare, d.total, d.adaos, d.cont, d.text_supl " +
+                    "from ies_det d inner join iesiri i on d.id_iesire = i.id_iesire where i.data=?",
+                    parameters.ToArray());
+
+        return inventoryExists;
+    }
+
+    public List<InventoryMovementModel> GetInventoryMovementsForArticle(string? articleCode)
     {
         var inventoryMovements = _dataAccess.ReadDbf<InventoryMovementModel>($"Select cod_art, gestiune, SUM(cantitate) as cantitate from miscari " +
             $"where cod_art='{articleCode}' group by cod_art, gestiune order by gestiune");
@@ -28,7 +45,7 @@ public class InventoryMovementsLogic
         var article = _articleSearchLogic.GetArticleByBarcode(barcode);
 
         // inventoryMovements va avea atatea randuri cate gestiuni sunt
-        var inventoryMovements = GetInventoryMovements(article?.cod);
+        var inventoryMovements = GetInventoryMovementsForArticle(article?.cod);
 
         var numberOfInventories = inventoryMovements.Count;
 
