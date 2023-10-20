@@ -44,7 +44,7 @@ while (true)
 	}
 
 	var inventoryMovements = new InventoryMovementsLogic();
-    Console.WriteLine($"Rows affected: {await inventoryMovements.GenerateInventoryExits(exitDocumentId, barcode, quantity)}");
+    Console.WriteLine($"Rows affected: {await inventoryMovements.GenerateInventoryExits(barcode, quantity)}");
 }
 
 string InputBarCode()

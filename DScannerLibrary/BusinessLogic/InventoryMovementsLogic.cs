@@ -40,8 +40,17 @@ public class InventoryMovementsLogic
         return inventoryMovements;
     }
 
-    public async Task<int> GenerateInventoryExits(decimal exitDocumentId, string barcode, decimal quantity)
+    public async Task<int> GenerateInventoryExits(string barcode, decimal quantity)
     {
+        var exitDocumentCheck = new ExitDocumentCheck();
+        var exitDocumentId = exitDocumentCheck.GetExitDocumentId();
+
+        if (exitDocumentId == 0)
+        {
+            throw new Exception(
+                    "Adauga in SAGA o iesire cu data de azi mai intai!\nAsigura-te ca documentul de iesire nu este validat!\n");
+        }
+
         var article = _articleSearchLogic.GetArticleByBarcode(barcode);
 
         // inventoryMovements va avea atatea randuri cate gestiuni sunt
@@ -66,8 +75,7 @@ public class InventoryMovementsLogic
 
                 if (actualInventoriesQuantities.Sum(x => x.Value) == 0)
                 {
-                    Console.WriteLine("Stocul este 0 din acest produs pe toate gestiunile! Adauga intrari mai intai!");
-                    return 0;
+                    throw new Exception("Stocul este 0 din acest produs pe toate gestiunile! Adauga intrari mai intai!");
                 }
 
                 var inventoryCode = GetCorrectInventoryCode(lastMultipleInventoryExit, inventoryMovements, actualInventoriesQuantities);
@@ -78,11 +86,14 @@ public class InventoryMovementsLogic
 
         if (numberOfInventories == 0)
         {
-            Console.WriteLine("Nu au fost gasite intrari pentru acest produs!");
+            var errorMessage = "Nu au fost gasite intrari pentru acest produs!\n";
+
             if (article != null)
             {
-                Console.WriteLine($"Adauga intrari in SAGA pentru {article?.denumire?.Trim()}.");
+                errorMessage += $"Adauga intrari in SAGA pentru {article?.denumire?.Trim()}.";
             }
+
+            throw new Exception(errorMessage);
         }
 
         return 0;
