@@ -7,9 +7,9 @@ public class ArticleSearchLogic
 {
     private readonly DbfDataAccess _dataAccess;
 
-    public ArticleSearchLogic()
+    public ArticleSearchLogic(DbfDataAccess dbfDataAccess)
     {
-        _dataAccess = new DbfDataAccess();
+        _dataAccess = dbfDataAccess;
     }
 
     public ArticleModel? GetArticleByBarcode(string articleBarcode)

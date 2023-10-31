@@ -17,11 +17,11 @@ public partial class MainWindow : Window
 
 	private List<InventoryExitDisplayModel> InventoryExitsForDisplay { get; set; } = new();
 
-	public MainWindow()
+	public MainWindow(InventoryMovementsLogic inventoryMovementsLogic)
 	{
 		InitializeComponent();
 		_mapper = new Mapper(MapperConfig.GetAdapterConfig());
-		_inventoryMovementsLogic = new InventoryMovementsLogic();
+		_inventoryMovementsLogic = inventoryMovementsLogic;
 		ExitsDatePicker.SelectedDate = DateTime.Now;
 	}
 
@@ -42,9 +42,9 @@ public partial class MainWindow : Window
 			if (InventoryExitsForDisplay.Any())
 			{
 				InventoryExitsDataGrid.SelectedItem = InventoryExitsForDisplay[^1];
+				InventoryExitsDataGrid.ScrollIntoView(InventoryExitsDataGrid.SelectedItem);
 			}
 
-			InventoryExitsDataGrid.ScrollIntoView(InventoryExitsDataGrid.SelectedItem);
 			CalculateInventoryTotals(InventoryExitsForDisplay);
 		}
 		catch (Exception ex)

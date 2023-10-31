@@ -5,11 +5,11 @@ namespace DScannerLibrary.BusinessLogic;
 
 public class ExitDocumentCheck
 {
-    private readonly DbfDataAccess _dataAccess;
+    private DbfDataAccess _dataAccess;
 
-    public ExitDocumentCheck()
+    public ExitDocumentCheck(DbfDataAccess dbfDataAccess)
     {
-        _dataAccess = new DbfDataAccess();
+        _dataAccess = dbfDataAccess;
     }
 
     public decimal GetExitDocumentId()

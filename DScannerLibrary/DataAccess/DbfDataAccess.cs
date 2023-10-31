@@ -33,14 +33,18 @@ public class DbfDataAccess
     {
         using (var connection = new OleDbConnection(_connectionString))
         {
-            var command = new OleDbCommand();
+            connection.Open();
+
+            using var command = new OleDbCommand();
             command.CommandText = sqlCommand;
             command.Parameters.AddRange(parameters);
             command.Connection = connection;
 
-            var adapter = new OleDbDataAdapter(command);
+            using var adapter = new OleDbDataAdapter(command);
             var dataTable = new DataTable();
             adapter.Fill(dataTable);
+
+            connection.Close();
 
             return DataTableToListExtension.ConvertDataTable<T>(dataTable);
         }
@@ -52,9 +56,13 @@ public class DbfDataAccess
 
         using (var connection = new OleDbConnection(_connectionString))
         {
-            var adapter = new OleDbDataAdapter(str_sql, connection);
+            connection.Open();
+
+            using var adapter = new OleDbDataAdapter(str_sql, connection);
             var dataTable = new DataTable();
             adapter.Fill(dataTable);
+
+            connection.Close();
 
             return DataTableToListExtension.ConvertDataTable<T>(dataTable);
         }

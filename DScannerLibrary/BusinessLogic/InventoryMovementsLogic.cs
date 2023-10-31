@@ -9,11 +9,13 @@ public class InventoryMovementsLogic
 {
     private readonly DbfDataAccess _dataAccess;
     private readonly ArticleSearchLogic _articleSearchLogic;
+    private readonly ExitDocumentCheck _exitDocumentCheck;
 
-    public InventoryMovementsLogic()
+    public InventoryMovementsLogic(DbfDataAccess dbfDataAccess, ArticleSearchLogic articleSearchLogic, ExitDocumentCheck exitDocumentCheck)
     {
-        _dataAccess = new DbfDataAccess();
-        _articleSearchLogic = new ArticleSearchLogic();
+        _dataAccess = dbfDataAccess;
+        _articleSearchLogic = articleSearchLogic;
+        _exitDocumentCheck = exitDocumentCheck;
     }
 
     public List<InventoryExitModel> GetInventoryExitsByDate(DateTime? exitDate)
@@ -34,6 +36,7 @@ public class InventoryMovementsLogic
 
     public List<InventoryMovementModel> GetInventoryMovementsForArticle(string? articleCode)
     {
+        var _dataAccess = new DbfDataAccess();
         var inventoryMovements = _dataAccess.ReadDbf<InventoryMovementModel>($"Select cod_art, gestiune, SUM(cantitate) as cantitate from miscari " +
             $"where cod_art='{articleCode}' group by cod_art, gestiune order by gestiune");
 
@@ -42,8 +45,7 @@ public class InventoryMovementsLogic
 
     public async Task<int> GenerateInventoryExits(string barcode, decimal quantity)
     {
-        var exitDocumentCheck = new ExitDocumentCheck();
-        var exitDocumentId = exitDocumentCheck.GetExitDocumentId();
+        var exitDocumentId = _exitDocumentCheck.GetExitDocumentId();
 
         if (exitDocumentId == 0)
         {
@@ -54,6 +56,7 @@ public class InventoryMovementsLogic
         var article = _articleSearchLogic.GetArticleByBarcode(barcode);
 
         // inventoryMovements va avea atatea randuri cate gestiuni sunt
+        // TODO: fix bug when adding a new article and the both apps are open
         var inventoryMovements = GetInventoryMovementsForArticle(article?.cod);
 
         var numberOfInventories = inventoryMovements.Count;
