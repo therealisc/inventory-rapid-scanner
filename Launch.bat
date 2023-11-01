@@ -1,3 +1,2 @@
 dotnet build InventoryReaderHack\InventoryReaderHack.csproj
-cd DScanner
-dotnet run
+dotnet run --project DSCanner\DSCanner.csproj

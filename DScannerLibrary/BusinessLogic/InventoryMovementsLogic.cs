@@ -38,7 +38,7 @@ public class InventoryMovementsLogic
     public List<InventoryMovementModel> GetInventoryMovementsForArticle(string? articleCode)
     {
         var currentDir = Directory.GetCurrentDirectory();
-        var exe = Path.Combine(@"..\", currentDir, @"InventoryReaderHack\bin\Debug\net7.0\win-x86\InventoryReaderHack.exe");
+        var exe = Path.Combine(currentDir, @"InventoryReaderHack\bin\Debug\net7.0\win-x86\InventoryReaderHack.exe");
         Process process = Process.Start($"{exe}", articleCode);
         process.StartInfo.UseShellExecute = false;
         process.StartInfo.CreateNoWindow = true;
