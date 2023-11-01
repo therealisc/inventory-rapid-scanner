@@ -52,8 +52,6 @@ public class DbfDataAccess
 
     public List<T> ReadDbf<T>(string str_sql)
     {
-        Console.WriteLine("database read...");
-
         using (var connection = new OleDbConnection(_connectionString))
         {
             connection.Open();

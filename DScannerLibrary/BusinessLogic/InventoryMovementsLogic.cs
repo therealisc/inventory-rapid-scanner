@@ -2,6 +2,7 @@ using DScannerLibrary.DataAccess;
 using DScannerLibrary.Models;
 using System.ComponentModel;
 using System.Data.OleDb;
+using System.Diagnostics;
 
 namespace DScannerLibrary.BusinessLogic;
 
@@ -36,11 +37,24 @@ public class InventoryMovementsLogic
 
     public List<InventoryMovementModel> GetInventoryMovementsForArticle(string? articleCode)
     {
-        var _dataAccess = new DbfDataAccess();
-        var inventoryMovements = _dataAccess.ReadDbf<InventoryMovementModel>($"Select cod_art, gestiune, SUM(cantitate) as cantitate from miscari " +
-            $"where cod_art='{articleCode}' group by cod_art, gestiune order by gestiune");
+        var currentDir = Directory.GetCurrentDirectory();
+        var exe = Path.Combine(currentDir,@"InventoryReaderHack\bin\Debug\net7.0\win-x86\InventoryReaderHack.exe");
+        Process process = Process.Start($"{exe}", articleCode);
+        process.StartInfo.UseShellExecute = false;
+        process.StartInfo.CreateNoWindow = true;
+        process.StartInfo.RedirectStandardOutput = true;
+        process.StartInfo.RedirectStandardError = true;
+        process.Start();
 
-        return inventoryMovements;
+        string output = process.StandardOutput.ReadToEnd();
+        process.WaitForExit();
+
+        throw new Exception(output);
+        return null;
+        //var inventoryMovements = _dataAccess.ReadDbf<InventoryMovementModel>($"Select cod_art, gestiune, SUM(cantitate) as cantitate from miscari " +
+        //    $"where cod_art='{articleCode}' group by cod_art, gestiune order by gestiune");
+
+        //return inventoryMovements;
     }
 
     public async Task<int> GenerateInventoryExits(string barcode, decimal quantity)
