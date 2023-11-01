@@ -8,7 +8,7 @@ namespace DScannerLibrary.DataAccess;
 
 public class DbfDataAccess
 {
-    private string _connectionString;
+    public string _connectionString;
 
     public DbfDataAccess()
     {

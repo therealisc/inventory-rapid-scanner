@@ -3,6 +3,7 @@ using DScannerLibrary.Models;
 using System.ComponentModel;
 using System.Data.OleDb;
 using System.Diagnostics;
+using System.Text.Json;
 
 namespace DScannerLibrary.BusinessLogic;
 
@@ -39,7 +40,7 @@ public class InventoryMovementsLogic
     {
         var currentDir = Directory.GetCurrentDirectory();
         var exe = Path.Combine(currentDir, @"InventoryReaderHack\bin\Debug\net7.0\win-x86\InventoryReaderHack.exe");
-        Process process = Process.Start($"{exe}", articleCode);
+        Process process = Process.Start($"{exe}", $"{articleCode}");
         process.StartInfo.UseShellExecute = false;
         process.StartInfo.CreateNoWindow = true;
         process.StartInfo.RedirectStandardOutput = true;
@@ -49,12 +50,13 @@ public class InventoryMovementsLogic
         string output = process.StandardOutput.ReadToEnd();
         process.WaitForExit();
 
-        throw new Exception(output);
-        return null;
-        //var inventoryMovements = _dataAccess.ReadDbf<InventoryMovementModel>($"Select cod_art, gestiune, SUM(cantitate) as cantitate from miscari " +
-        //    $"where cod_art='{articleCode}' group by cod_art, gestiune order by gestiune");
+        if (string.IsNullOrWhiteSpace(output))
+        {
+            return new List<InventoryMovementModel>();
+        }
 
-        //return inventoryMovements;
+        var inventoryMovements = JsonSerializer.Deserialize<List<InventoryMovementModel>>(output);
+        return inventoryMovements;
     }
 
     public async Task<int> GenerateInventoryExits(string barcode, decimal quantity)
