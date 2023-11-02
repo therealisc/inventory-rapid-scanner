@@ -1,14 +1,14 @@
 using System.Data;
 using System.Text;
 using System.Data.OleDb;
-using System.Text.RegularExpressions;
 using DScannerLibrary.Extensions;
+using DScannerLibrary.Helpers;
 
 namespace DScannerLibrary.DataAccess;
 
 public class DbfDataAccess
 {
-    public string _connectionString;
+    private readonly string _connectionString;
 
     public DbfDataAccess()
     {
@@ -17,15 +17,7 @@ public class DbfDataAccess
 
     string GetConnectionString()
     {
-        // TODO urgent refactoring
-        //var sagaDbfsPath = Directory.GetFiles("C:\\SAGA C.3.0\\").First(x => x.);
-        var dirInfo = new DirectoryInfo("C:\\SAGA C.3.0\\");
-        var sagaDbfsPath = dirInfo.GetDirectories()
-            .Where(x => Regex.IsMatch(x.Name, @"^\d{4}$"))
-            .OrderByDescending(x => x.Name)
-            .First();
-
-        string connectionString = $"Provider=VFPOLEDB;Data Source={sagaDbfsPath}";
+        string connectionString = $"Provider=VFPOLEDB;Data Source={DatabaseDirectoryHelper.GetDatabaseDirectory()}";
         return connectionString;
     }
 
@@ -33,8 +25,6 @@ public class DbfDataAccess
     {
         using (var connection = new OleDbConnection(_connectionString))
         {
-            connection.Open();
-
             using var command = new OleDbCommand();
             command.CommandText = sqlCommand;
             command.Parameters.AddRange(parameters);
@@ -44,8 +34,6 @@ public class DbfDataAccess
             var dataTable = new DataTable();
             adapter.Fill(dataTable);
 
-            connection.Close();
-
             return DataTableToListExtension.ConvertDataTable<T>(dataTable);
         }
     }
@@ -54,13 +42,9 @@ public class DbfDataAccess
     {
         using (var connection = new OleDbConnection(_connectionString))
         {
-            connection.Open();
-
             using var adapter = new OleDbDataAdapter(str_sql, connection);
             var dataTable = new DataTable();
             adapter.Fill(dataTable);
-
-            connection.Close();
 
             return DataTableToListExtension.ConvertDataTable<T>(dataTable);
         }

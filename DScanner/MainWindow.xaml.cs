@@ -89,6 +89,7 @@ public partial class MainWindow : Window
             if (e.Key == (Key)6)
             {
                 Barcode = Barcode.Replace("D", "").Replace("Return", "");
+                BarcodeTesting.Text = Barcode;
                 await _inventoryMovementsLogic.GenerateInventoryExits(Barcode, 1);
                 Barcode = string.Empty;
                 LoadInventoryExitsFromDatabase();
@@ -96,6 +97,7 @@ public partial class MainWindow : Window
         }
         catch (Exception ex)
         {
+            Barcode = string.Empty;
             MessageBox.Show(ex.Message, "Atentie", MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
         }

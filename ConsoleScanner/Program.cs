@@ -43,8 +43,10 @@ while (true)
 		continue;
 	}
 
-	var inventoryMovements = new InventoryMovementsLogic();
-    Console.WriteLine($"Rows affected: {await inventoryMovements.GenerateInventoryExits(barcode, quantity)}");
+	var inventoryMovements = new InventoryMovementsLogic(null, null, null);
+    inventoryMovements.GetInventoryMovementsForArticle("00000376");
+	//var inventoryMovements = new InventoryMovementsLogic();
+    //Console.WriteLine($"Rows affected: {await inventoryMovements.GenerateInventoryExits(barcode, quantity)}");
 }
 
 string InputBarCode()
@@ -85,7 +87,7 @@ decimal InputQuantity()
 
 decimal GetExitDocument()
 {
-    var exitDocumentCheck = new ExitDocumentCheck();
+    var exitDocumentCheck = new ExitDocumentCheck(new DScannerLibrary.DataAccess.DbfDataAccess());
     var exitDocumentId = exitDocumentCheck.GetExitDocumentId();
 
     if (exitDocumentId == 0)

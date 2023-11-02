@@ -72,6 +72,8 @@
 
                 </StackPanel>
 
+                <TextBlock x:Name="BarcodeTesting" Grid.Row="1" Height="23"/>
+
                 <StackPanel Grid.Column="1" Orientation="Horizontal">
                     <StackPanel>
                         <TextBlock Text="Total pret articole selectate"/>
