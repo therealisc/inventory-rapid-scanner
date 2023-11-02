@@ -39,97 +39,10 @@ public class InventoryMovementsLogic
 
     public List<InventoryMovementModel> GetInventoryMovementsForArticle(string? articleCode)
     {
-        var options = new DbfDataReaderOptions
-        {
-            SkipDeletedRecords = true,
-        };
-
-        var dbfPath = $"{DatabaseDirectoryHelper.GetDatabaseDirectory()}\\miscari.dbf";
-
-        var inventoryMovements = new List<InventoryMovementModel>();
-
-        using (var dbfTable = new DbfTable(dbfPath, Encoding.UTF8))
-        {
-            var dbfRecord = new DbfRecord(dbfTable);
-
-            while (dbfTable.Read(dbfRecord))
-            {
-                if (dbfRecord.IsDeleted)
-                {
-                    continue;
-                }
-
-                // forth column is article code -> take just necessary articles
-                if ((dbfRecord.Values[3].ToString() != articleCode))
-                {
-                    continue;
-                }
-
-                inventoryMovements.Add(new InventoryMovementModel
-                {
-                    cod_art = dbfRecord.Values[3].ToString(),
-                    gestiune = dbfRecord.Values[4].ToString(),
-                    cantitate = (decimal)dbfRecord.Values[5].GetValue(),
-                });
-            }
-        }
-
-        inventoryMovements = inventoryMovements
-            .GroupBy(x => new { x.cod_art, x.gestiune })
-            .Select(i => new InventoryMovementModel
-            {
-                cod_art = i.Key.cod_art,
-                gestiune = i.Key.gestiune,
-                cantitate = i.Select(x => x.cantitate).Sum()
-            }).ToList();
-
-        //var totalsPerInventory = inventoryExits
-        //    .GroupBy(x => x.Gestiune)
-        //    .Select(x => new { Gestiune = x.Key, Total = x.Sum(article => article.Total) });
-
-        //InventoryTotalsDataGrid.ItemsSource = totalsPerInventory;
-
-        //using (var dbfDataReader = new DbfDataReader.DbfDataReader(dbfPath, options))
-        //{
-        //    while (dbfDataReader.Read())
-        //    {
-        //        inventoryMovements.Add(new InventoryMovementModel
-        //        {
-        //            cod_art = dbfDataReader.GetString(3),
-        //            gestiune = dbfDataReader.GetString(4),
-        //            cantitate = dbfDataReader.GetDecimal(5)
-        //        });
-        //    }
-        //}
-
-        inventoryMovements.ForEach(x => Console.WriteLine($"{x.cod_art} {x.gestiune} {x.cantitate}"));
+        var inventoryMovements = _dataAccess.ReadDbf<InventoryMovementModel>($"Select cod_art, gestiune, SUM(cantitate) as cantitate from miscari " +
+            $"where cod_art='{articleCode}' group by cod_art, gestiune order by gestiune");
 
         return inventoryMovements;
-
-        //var inventoryMovements = ReadDbf<InventoryMovementModel>($"Select cod_art, gestiune, SUM(cantitate) as cantitate from miscari " +
-        //    $"where cod_art='{args[0]}' group by cod_art, gestiune order by gestiune");
-
-        //var currentDir = Directory.GetCurrentDirectory();
-        //var exe = Path.Combine(currentDir, @"InventoryReaderHack.exe");
-        ////var exe = Path.Combine(currentDir, @"InventoryReaderHack\bin\Debug\net7.0\win-x86\InventoryReaderHack.exe");
-        //Process process = Process.Start($"{exe}", $"{articleCode}");
-        //process.StartInfo.UseShellExecute = false;
-        //process.StartInfo.CreateNoWindow = true;
-        //process.StartInfo.RedirectStandardOutput = true;
-        //process.StartInfo.RedirectStandardError = true;
-        //process.Start();
-
-        //string output = process.StandardOutput.ReadToEnd();
-        //process.WaitForExit();
-
-        //if (string.IsNullOrWhiteSpace(output))
-        //{
-        //    return new List<InventoryMovementModel>();
-        //}
-
-        //var inventoryMovements = JsonSerializer.Deserialize<List<InventoryMovementModel>>(output);
-        //return inventoryMovements;
-
     }
 
     public async Task<int> GenerateInventoryExits(string barcode, decimal quantity)
