@@ -82,10 +82,16 @@ public partial class MainWindow : Window
 	public string Barcode { get; set; } = string.Empty;
 	private async void Window_PreviewKeyDown(object sender, KeyEventArgs e)
 	{
+		if (BarcodeTextbox.IsFocused || QuantityTextBox.IsFocused)
+		{
+			return;
+		}
+
 		try
 		{
 			if ((int)e.Key >= 34 && ((int)e.Key) <= 43) e.Handled = true;
 			Barcode += e.Key;
+
 
 			if (e.Key == (Key)6)
 			{
@@ -94,11 +100,16 @@ public partial class MainWindow : Window
 				if (Barcode.Contains("Return"))
 				{
 					Barcode = Barcode.Replace("Return", "");
-					//BarcodeTesting.Text = Barcode;
 					BarcodeTextbox.Text = Barcode;
-					await _inventoryMovementsLogic.GenerateInventoryExits(Barcode, 1);
+
+					var quantity = QuantityTextBox.Text;
+					if (string.IsNullOrWhiteSpace(quantity) || decimal.TryParse(quantity, out decimal decimalQuantity) == false)
+						throw new Exception("Cantitatea nu e completata cum trebuie sau nu e un numar");
+
+					await _inventoryMovementsLogic.GenerateInventoryExits(Barcode, decimalQuantity);
 					Barcode = string.Empty;
 					LoadInventoryExitsFromDatabase();
+					QuantityTextBox.Text = 1.ToString();
 				}
 			}
 		}
@@ -124,11 +135,38 @@ public partial class MainWindow : Window
 
 			await _inventoryMovementsLogic.GenerateInventoryExits(barcode, decimalQuantity);
 			LoadInventoryExitsFromDatabase();
+			QuantityTextBox.Text = 1.ToString();
 		}
 		catch (Exception ex)
 		{
 			MessageBox.Show(ex.Message, "Atentie", MessageBoxButton.OK, MessageBoxImage.Warning);
 			return;
+		}
+	}
+
+	private void DecreaseQuantityButton_Click(object sender, RoutedEventArgs e)
+	{
+		var quantity = QuantityTextBox.Text;
+		if (decimal.TryParse(quantity, out decimal decimalQuantity))
+		{
+			if (decimalQuantity == 1)
+			{
+				return;
+			}
+
+			decimalQuantity -= 1;
+
+			QuantityTextBox.Text = decimalQuantity.ToString();
+		}
+	}
+
+	private void IncreaseQuantityButton_Click(object sender, RoutedEventArgs e)
+	{
+		var quantity = QuantityTextBox.Text;
+		if (decimal.TryParse(quantity, out decimal decimalQuantity))
+		{
+			decimalQuantity += 1;
+			QuantityTextBox.Text = decimalQuantity.ToString();
 		}
 	}
 }

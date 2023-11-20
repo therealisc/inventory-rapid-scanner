@@ -47,6 +47,12 @@
                 </Grid.ColumnDefinitions>
 
                 <StackPanel Grid.Row="0" Orientation="Horizontal">
+                    <Button VerticalAlignment="Bottom" 
+                            x:Name="DecreaseQuantityButton"
+                            Content="-" 
+                            FontSize="20"
+                            Margin="0 0 3 0"
+                            Height="30" Width="30" Click="DecreaseQuantityButton_Click"/>
                     <StackPanel>
                         <TextBlock Text="Cantitate"/>
                         <TextBox Width="100" 
@@ -56,16 +62,21 @@
                                  VerticalContentAlignment="Center"/>
                     </StackPanel>
 
+                    <Button Content="+" x:Name="IncreaseQuantityButton" 
+                            VerticalAlignment="Bottom"
+                            FontSize="20"
+                            Margin="3 0 0 0"
+                            Height="30" Width="30" Click="IncreaseQuantityButton_Click"/>
                     <StackPanel Margin="10 0 0 0">
                         <TextBlock Text="Cod de bare" Margin="0 0 0 0"/>
-                        <TextBox Width="200" 
+                        <TextBox Width="180" 
                                  HorizontalAlignment="Left" 
                                  x:Name="BarcodeTextbox"
                                  Height="30" 
                                  VerticalContentAlignment="Center"/>
                     </StackPanel>
 
-                    <StackPanel Margin="10 0 0 0">
+                    <StackPanel Margin="3 0 0 0">
                         <TextBlock Margin="0 0 0 0"/>
                         <Button Content="Proceseaza Iesire" x:Name="ProcessInventoryExitButton" Padding="2 0" Height="30" HorizontalAlignment="Left" Click="ProcessInventoryExitButton_Click"/>
                     </StackPanel>
@@ -90,8 +101,34 @@
                     </StackPanel>
 
                 </StackPanel>
-          
-                
+
+                <TextBlock Grid.Row="2" Margin="0 15 10 0">
+                    <Rectangle Width="10" Height="10">
+                        <Rectangle.Resources>
+                            <SolidColorBrush x:Key="canvas" Opacity="0" />
+                            <SolidColorBrush x:Key="light-blue-10" Color="#005dba" Opacity="0.1" />
+                            <SolidColorBrush x:Key="light-blue" Color="#005dba" Opacity="1" />
+                        </Rectangle.Resources>
+                        <Rectangle.Fill>
+                            <DrawingBrush Stretch="None">
+                                <DrawingBrush.Drawing>
+                                    <DrawingGroup>
+                                        <DrawingGroup x:Name="canvas">
+                                            <GeometryDrawing Brush="{DynamicResource canvas}" Geometry="F1M11,11H0V0H11Z" />
+                                        </DrawingGroup>
+                                        <DrawingGroup x:Name="level_1">
+                                            <GeometryDrawing Brush="{DynamicResource light-blue-10}" Geometry="F1M9.5,5.5a4,4,0,1,1-4-4A4,4,0,0,1,9.5,5.5Z" />
+                                            <GeometryDrawing Brush="{DynamicResource light-blue}" Geometry="F1M5.5,1A4.5,4.5,0,1,0,10,5.5,4.505,4.505,0,0,0,5.5,1Zm0,8A3.5,3.5,0,1,1,9,5.5,3.5,3.5,0,0,1,5.5,9Z" />
+                                            <GeometryDrawing Brush="{DynamicResource light-blue}" Geometry="F1M5,5H6V8H5Zm.5-2.125a.625.625,0,1,0,.625.625A.625.625,0,0,0,5.5,2.875Z" />
+                                        </DrawingGroup>
+                                    </DrawingGroup>
+                                </DrawingBrush.Drawing>
+                            </DrawingBrush>
+                        </Rectangle.Fill>
+                    </Rectangle>
+                    <TextBlock Text="Pozitioneaza cursorul pe gridul de mai sus atunci cand scanezi" Foreground="#FF575757"
+                               ></TextBlock>
+                </TextBlock>
                 
                 <DataGrid Grid.Column="1" 
                           x:Name="InventoryTotalsDataGrid"
