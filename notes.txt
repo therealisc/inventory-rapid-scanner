@@ -1,9 +1,6 @@
-- Vizualizare in fereastra total/gestiune/zi
 - Benchmark durata iesire (StopWatch?)
 - Calculare corecta adaos
 - Better backup
-- Verficare si corectare integritate date din tabela ies_det (contul nu e bun sigur)
-
 - Optimizare spre final: mai putine call-uri la db
 
 De eliminat o linie din csv atunci cand se adauga ceva nou si csv-ul are peste 100.000 linii?
@@ -12,3 +9,11 @@ La pc unde se va instala:
 De verficat Provider=VFPOLEDB;Data Source=C:\\SAGA PS.3.0\\0001\\
 - se face un nou folder pentru fiecare unitate implicit de catre SAGA
 - se foloseste momentan ultimul folder de 4 cifre
+
+Other features:
+Installer
+Remove VFPOLEDB
+
+Obs:
+Pretul de vanzare si pretul unitar in urma carora rezulta adaosul se seteaza in intrari.
+Adaos = Pretul vanzare din intrari - pretul unitar articole

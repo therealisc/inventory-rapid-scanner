@@ -1,4 +1,4 @@
-cd /
+cd "C:\"
 cd inventory-rapid-scanner
 git pull
 
