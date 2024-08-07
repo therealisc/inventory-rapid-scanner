@@ -12,7 +12,8 @@ De verficat Provider=VFPOLEDB;Data Source=C:\\SAGA PS.3.0\\0001\\
 
 Other features:
 Installer
-Remove VFPOLEDB
+
+Remove VFPOLEDB - in progress
 
 Obs:
 Pretul de vanzare si pretul unitar in urma carora rezulta adaosul se seteaza in intrari.
