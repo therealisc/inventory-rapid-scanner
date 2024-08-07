@@ -1,7 +1,7 @@
 version: 2
 updates:
 - package-ecosystem: nuget
-  directory: "/"
+  directory: "/DScannerX/DScannerX"
   schedule:
     interval: weekly
     time: "10:00"
