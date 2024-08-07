@@ -5,6 +5,10 @@ updates:
   schedule:
     interval: weekly
     time: "10:00"
+  ignore:
+    - dependency-name: "Xamarin.UITest"
+    - dependency-name: "Microsoft.NET.Test.Sdk"
+    - dependency-name: "NUnit3TestAdapter"
   open-pull-requests-limit: 10
   labels:
   - kind/dependency
