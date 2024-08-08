@@ -19,11 +19,23 @@
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
             Spacing="16">
+
+            <ListView Name="ListX" Height ="200">
+
+            </ListView>
+
+
+
         <TextBox Text="{Binding Name, Mode=TwoWay}"
             PlaceholderText="Enter your name:" />
+
         <Button Content="Go to Second Page"
             AutomationProperties.AutomationId="SecondPageButton"
             Command="{Binding GoToSecond}" />
+
+        <Button Content="Load"
+            AutomationProperties.AutomationId="SecondPageButton"
+            Command="{Binding LoadDbf}" />
       </StackPanel>
     </Grid>
   </ScrollViewer>

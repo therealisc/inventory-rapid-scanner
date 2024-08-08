@@ -80,6 +80,7 @@ public partial class App : Application
                 {
                     // TODO: Register your services
                     //services.AddSingleton<IMyService, MyService>();
+                    services.AddSingleton<ProductsCache>();
                 })
                 .UseNavigation(RegisterRoutes)
             );

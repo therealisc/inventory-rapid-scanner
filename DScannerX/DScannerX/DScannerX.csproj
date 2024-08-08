@@ -53,4 +53,8 @@
     <DefineConstants>$(DefineConstants);USE_UITESTS</DefineConstants>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\DScannerLibrary\DScannerLibrary.csproj" />
+  </ItemGroup>
+
 </Project>
