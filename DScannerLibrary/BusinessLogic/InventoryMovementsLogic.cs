@@ -21,6 +21,13 @@ public class InventoryMovementsLogic
         _exitDocumentCheck = exitDocumentCheck;
     }
 
+    public List<string> GetArticlesForTesting(string path)
+    {
+        var articles = _dataAccess.ReadDbf(path);
+
+        return articles;
+    }
+
     public List<InventoryExitModel> GetInventoryExitsByDate(DateTime? exitDate)
     {
         var parameters = new List<OleDbParameter>()

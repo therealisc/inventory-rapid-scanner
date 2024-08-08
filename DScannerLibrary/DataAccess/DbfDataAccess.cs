@@ -3,6 +3,7 @@ using System.Text;
 using System.Data.OleDb;
 using DScannerLibrary.Extensions;
 using DScannerLibrary.Helpers;
+using DbfReaderNET;
 
 namespace DScannerLibrary.DataAccess;
 
@@ -12,13 +13,49 @@ public class DbfDataAccess
 
     public DbfDataAccess()
     {
-        _connectionString = GetConnectionString();
+        //_connectionString = GetConnectionString();
     }
 
     string GetConnectionString()
     {
         string connectionString = $"Provider=VFPOLEDB;Data Source={DatabaseDirectoryHelper.GetDatabaseDirectory()}";
         return connectionString;
+    }
+
+    public List<string> ReadDbf(string path)
+    {
+        if (path == "")
+        {
+            return new List<string>();
+        }
+        var dbf = new Dbf();
+
+        string dbfPath = path;
+        dbf.Read(dbfPath);
+
+        //string cod = DateTime.Now.ToString();
+
+        //DbfRecord r = dbf.CreateRecord();
+
+        //r.Data[0] = cod;
+        //r.Data[1] = "CARTI COPII";
+
+        //dbf.Write(dbfPath, DbfVersion.VisualFoxPro);
+        //
+        var dbfRecords = new List<string>();
+
+        foreach(DbfRecord record in dbf.Records) {
+            var stringRecords = "";
+
+            for(int i = 0;  i < dbf.Fields.Count; i++) {
+                stringRecords += record[i];
+                stringRecords += " ";
+            }
+
+            dbfRecords.Add(stringRecords);
+        }
+
+        return dbfRecords;
     }
 
     public List<T> ReadDbf<T>(string sqlCommand, OleDbParameter[] parameters)

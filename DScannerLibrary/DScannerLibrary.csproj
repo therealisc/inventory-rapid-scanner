@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
@@ -10,4 +10,9 @@
     <PackageReference Include="DbfDataReader" Version="0.9.0" />
     <PackageReference Include="System.Data.OleDb" Version="7.0.0" />
   </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DbfReaderNET\DbfReaderNET.csproj" />
+  </ItemGroup>
+
 </Project>
