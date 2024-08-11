@@ -28,7 +28,7 @@ public partial class MainWindow : Window
     private void Window_Loaded(object sender, RoutedEventArgs e)
     {
         QuantityTextBox.Text = 1.ToString();
-        //LoadInventoryExitsFromDatabase();
+        LoadInventoryExitsFromDatabase();
     }
 
     private void LoadInventoryExitsFromDatabase()
@@ -57,12 +57,12 @@ public partial class MainWindow : Window
 
     private void ExitsDatePicker_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
     {
-        //LoadInventoryExitsFromDatabase();
+        oadInventoryExitsFromDatabase();
     }
 
     private void RefreshButton_Click(object sender, RoutedEventArgs e)
     {
-        //LoadInventoryExitsFromDatabase();
+        LoadInventoryExitsFromDatabase();
     }
 
     private void CalculateInventoryTotals(List<InventoryExitDisplayModel> inventoryExits)
@@ -108,7 +108,7 @@ public partial class MainWindow : Window
 
                     await _inventoryMovementsLogic.GenerateInventoryExits(Barcode, decimalQuantity);
                     Barcode = string.Empty;
-                    //LoadInventoryExitsFromDatabase();
+                    LoadInventoryExitsFromDatabase();
                     QuantityTextBox.Text = 1.ToString();
                 }
             }
@@ -134,7 +134,7 @@ public partial class MainWindow : Window
                 throw new Exception("Cantitatea nu e completata cum trebuie sau nu e un numar");
 
             await _inventoryMovementsLogic.GenerateInventoryExits(barcode, decimalQuantity);
-            //LoadInventoryExitsFromDatabase();
+            LoadInventoryExitsFromDatabase();
             QuantityTextBox.Text = 1.ToString();
         }
         catch (Exception ex)
