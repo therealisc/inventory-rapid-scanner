@@ -13,12 +13,13 @@ public class DbfDataAccess
 
     public DbfDataAccess()
     {
-        //_connectionString = GetConnectionString();
+        _connectionString = GetConnectionString();
     }
 
     string GetConnectionString()
     {
-        string connectionString = $"Provider=VFPOLEDB;Data Source={DatabaseDirectoryHelper.GetDatabaseDirectory()}";
+        //string connectionString = $"Provider=VFPOLEDB;Data Source={DatabaseDirectoryHelper.GetDatabaseDirectory()}";
+        string connectionString = $"Provider=Microsoft.ACE.OLEDB.12.0;Data Source={DatabaseDirectoryHelper.GetDatabaseDirectory()};Extended Properties=dBASE IV;User ID=Admin;Password=;";
         return connectionString;
     }
 
