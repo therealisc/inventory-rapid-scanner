@@ -4,6 +4,13 @@ namespace DScannerLibrary.Helpers;
 
 public static class DatabaseDirectoryHelper
 {
+    public static DirectoryInfo GetDatabaseDirectory(string dirPath)
+    {
+        // TODO urgent refactoring
+        var databaseDirectory = new DirectoryInfo(dirPath);
+        return databaseDirectory;
+    }
+
     public static DirectoryInfo GetDatabaseDirectory()
     {
         // TODO urgent refactoring

@@ -1,4 +1,7 @@
-﻿namespace DScannerX.Presentation;
+﻿using DScannerLibrary.Models;
+using System.Linq;
+
+namespace DScannerX.Presentation;
 
 public sealed partial class MainPage : Page
 {
@@ -9,8 +12,10 @@ public sealed partial class MainPage : Page
 
     private void LoadButton_Click(object sender, RoutedEventArgs e)
     {
-
         var _productsCache = new ProductsCache();
-        ListX.ItemsSource = new List<string>(_productsCache.GetRecords(DbfFilePath.Text));
+	var date = new DateTime(2024, 8, 12);
+
+        var data = new List<InventoryExitModel>(_productsCache.GetRecords(DbfFilePath.Text, date));
+	ListX.ItemsSource = data.Select(x => x.denumire);
     }
 }

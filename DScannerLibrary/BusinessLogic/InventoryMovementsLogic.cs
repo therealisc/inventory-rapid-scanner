@@ -1,10 +1,10 @@
-using DbfDataReader;
 using DScannerLibrary.DataAccess;
 using DScannerLibrary.Helpers;
 using DScannerLibrary.Models;
 using System.ComponentModel;
 using System.Data.OleDb;
 using System.Text;
+using DbfReaderNET;
 
 namespace DScannerLibrary.BusinessLogic;
 
@@ -21,13 +21,6 @@ public class InventoryMovementsLogic
         _exitDocumentCheck = exitDocumentCheck;
     }
 
-    public List<string> GetArticlesForTesting(string path)
-    {
-        var articles = _dataAccess.ReadDbf(path);
-
-        return articles;
-    }
-
     public List<InventoryExitModel> GetInventoryExitsByDate(DateTime? exitDate)
     {
         var parameters = new List<OleDbParameter>()
@@ -42,6 +35,30 @@ public class InventoryMovementsLogic
                     parameters.ToArray());
 
         return inventoryExists;
+    }
+
+    public List<InventoryExitModel> GetInventoryExitsByDate(string dbDirectory, DateTime? exitDate, string dbfName="IES_DET.DBF")
+    {
+	var dbfDataRecords = _dataAccess.ReadDbf(dbDirectory, dbfName);
+
+        var inventoryExitRecords = new List<InventoryExitModel>();
+
+        foreach(DbfRecord record in dbfDataRecords) 
+	{
+	    var exit = new InventoryExitModel()
+	    {
+		    id_u = System.Convert.ToDecimal(record[0]),
+		    id_iesire = System.Convert.ToDecimal(record[1]),
+		    //gestiune = record["gestiune"].ToString(),
+		    //den_gest = record["den_gest"].ToString(),
+		    //cod = record["cod"].ToString(),
+		    denumire = System.Convert.ToString(record[5]),
+	    };
+
+            inventoryExitRecords.Add(exit);
+        }
+
+        return inventoryExitRecords;
     }
 
     public List<InventoryMovementModel> GetInventoryMovementsForArticle(string? articleCode)

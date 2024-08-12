@@ -20,20 +20,19 @@
             VerticalAlignment="Center"
             Spacing="16">
 
-                <ListView Name="ListX" Height ="200">
-
-            </ListView>
+	    <ListView Name="ListX" Height ="400" Width = "800">
+	    </ListView>
 
 
 
         <TextBox Text="{Binding Name, Mode=TwoWay}" Name="DbfFilePath"
             PlaceholderText="Enter your name:" />
 
-        <Button Content="Go to Second Page"
+        <Button Content="Go to Second Page" Width = "300"
             AutomationProperties.AutomationId="SecondPageButton"
             Command="{Binding GoToSecond}" />
 
-        <Button Content="Load" Name="Load" Click="LoadButton_Click"
+        <Button Content="Load" Name="Load" Click="LoadButton_Click" Width = "300"
             AutomationProperties.AutomationId="SecondPageButton" />
       </StackPanel>
     </Grid>

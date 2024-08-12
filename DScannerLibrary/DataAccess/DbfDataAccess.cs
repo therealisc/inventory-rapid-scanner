@@ -13,7 +13,7 @@ public class DbfDataAccess
 
     public DbfDataAccess()
     {
-        _connectionString = GetConnectionString();
+        //_connectionString = GetConnectionString();
     }
 
     string GetConnectionString()
@@ -23,15 +23,11 @@ public class DbfDataAccess
         return connectionString;
     }
 
-    public List<string> ReadDbf(string path)
+    public List<DbfRecord> ReadDbf(string dbDirectory, string dbfName)
     {
-        if (path == "")
-        {
-            return new List<string>();
-        }
         var dbf = new Dbf();
+        string dbfPath = $"{DatabaseDirectoryHelper.GetDatabaseDirectory(dbDirectory)}/{dbfName}";
 
-        string dbfPath = path;
         dbf.Read(dbfPath);
 
         //string cod = DateTime.Now.ToString();
@@ -42,21 +38,24 @@ public class DbfDataAccess
         //r.Data[1] = "CARTI COPII";
 
         //dbf.Write(dbfPath, DbfVersion.VisualFoxPro);
-        //
-        var dbfRecords = new List<string>();
+        
+        //var dbfRecords = new List<dynamic>();
 
-        foreach(DbfRecord record in dbf.Records) {
-            var stringRecords = "";
+        //foreach(DbfRecord record in dbf.Records) {
+        //    var stringRecords = "";
 
-            for(int i = 0;  i < dbf.Fields.Count; i++) {
-                stringRecords += record[i];
-                stringRecords += " ";
-            }
+        //    for(int i = 0;  i < dbf.Fields.Count; i++) {
+        //        stringRecords += record[i];
+        //        stringRecords += " ";
+        //    }
 
-            dbfRecords.Add(stringRecords);
-        }
+        //    dbfRecords.Add(stringRecords);
+        //}
 
-        return dbfRecords;
+        //return dbfRecords;
+
+
+	return dbf.Records;
     }
 
     public List<T> ReadDbf<T>(string sqlCommand, OleDbParameter[] parameters)
