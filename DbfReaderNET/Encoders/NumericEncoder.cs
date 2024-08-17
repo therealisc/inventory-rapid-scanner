@@ -58,10 +58,25 @@
             string text = encoding.GetString(buffer).Trim();
             if (text.Length == 0)
             {
-                return null;
+                return 0;
             }
 
-            return Convert.ToDouble(text, CultureInfo.InvariantCulture);
+	    StringBuilder sb = new StringBuilder();
+	    foreach (char c in text)
+	    {
+		    if (c >= '0' && c <= '9')
+		    {
+			    sb.Append(c);
+		    }
+	    }
+
+	    //TODO Write sth generic not a workaround
+	    if (sb.ToString().Length == 0)
+	    {
+	        return 0;
+	    }
+
+            return Convert.ToDouble(sb.ToString(), CultureInfo.InvariantCulture);
         }
     }
 }

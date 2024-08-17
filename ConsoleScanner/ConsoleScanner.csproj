@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DbfReaderNET\DbfReaderNET.csproj" />
+    <ProjectReference Include="..\DScannerLibrary\DScannerLibrary.csproj" />
   </ItemGroup>
 
   <ItemGroup>

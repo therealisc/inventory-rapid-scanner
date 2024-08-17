@@ -1,37 +1,13 @@
-﻿//using DScannerLibrary.BusinessLogic;
-using DbfReaderNET;
+﻿using DScannerLibrary.BusinessLogic;
+using DScannerLibrary.DataAccess;
 using System;
 
 
-
-var dbf = new Dbf();
-string dbfPath = "/home/therealisc/sagadb/ARTICOLE.DBF";
-dbf.Read(dbfPath);
-
-string cod = DateTime.Now.ToString();
-
-DbfRecord r = dbf.CreateRecord();
-
-r.Data[0] = cod;
-r.Data[1] = "CARTI COPII";
-
-dbf.Write(dbfPath, DbfVersion.VisualFoxPro);
-
-foreach(DbfRecord record in dbf.Records) {
-    for(int i = 0;  i < dbf.Fields.Count; i++) {
-        Console.Write(record[i]);
-        Console.Write(" ");
-    }
-
-    Console.WriteLine();
-}
+var logicCase = new InventoryMovementsLogic(new DbfDataAccess(), null, null);
+logicCase.GetInventoryExitsByDate("/home/therealisc/sagadb", new DateTime(2024, 05, 30));
 
 
 
-
-foreach(DbfField field in dbf.Fields) {
-	Console.WriteLine(field.Name);
-}
 
 //while (true)
 //{

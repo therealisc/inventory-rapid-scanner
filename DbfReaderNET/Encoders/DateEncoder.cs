@@ -35,6 +35,22 @@
         {
             string text = encoding.GetString(buffer).Trim();
             if (text.Length == 0) return null;
+
+	    StringBuilder sb = new StringBuilder();
+	    foreach (char c in text)
+	    {
+		    if (c >= '0' && c <= '9' && c == '.' && c == '/' && c == '-' && c == ':' && c == ' ')
+		    {
+			    sb.Append(c);
+		    }
+	    }
+
+	    //TODO Write sth generic not a workaround
+	    if (sb.ToString().Length == 0)
+	    {
+	        return null;
+	    }
+
             return DateTime.ParseExact(text, format, CultureInfo.InvariantCulture);
         }
     }

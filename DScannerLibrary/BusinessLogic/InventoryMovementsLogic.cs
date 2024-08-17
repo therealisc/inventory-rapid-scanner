@@ -1,10 +1,14 @@
 using DScannerLibrary.DataAccess;
 using DScannerLibrary.Helpers;
 using DScannerLibrary.Models;
+using DScannerLibrary.Helpers;
 using System.ComponentModel;
+using System.Globalization;
 using System.Data.OleDb;
 using System.Text;
+using System;
 using DbfReaderNET;
+using DbfDataReader;
 
 namespace DScannerLibrary.BusinessLogic;
 
@@ -37,25 +41,153 @@ public class InventoryMovementsLogic
         return inventoryExists;
     }
 
-    public List<InventoryExitModel> GetInventoryExitsByDate(string dbDirectory, DateTime? exitDate, string dbfName="IES_DET.DBF")
+    public List<InventoryExitModel> GetInventoryExitsByDate(string dbDirectory, DateTime? selectedExitDate, string dbfName="IESIRI.DBF")
     {
-	var dbfDataRecords = _dataAccess.ReadDbf(dbDirectory, dbfName);
+        string dbfPath = $"{DatabaseDirectoryHelper.GetDatabaseDirectory(dbDirectory)}/{dbfName}";
+        using (var dbfTable = new DbfTable(dbfPath, Encoding.UTF8))
+        {
+            foreach (var column in dbfTable.Columns)
+                Console.WriteLine(column.ColumnName);
+        }
+
+        var options = new DbfDataReaderOptions
+        {
+            SkipDeletedRecords = true,
+            Encoding = Encoding.UTF8
+        };
+
+        var inventoryExitIds = new List<decimal>();
+
+        using (var dbfDataReader = new DbfDataReader.DbfDataReader(dbfPath, options))
+        {
+            while (dbfDataReader.Read())
+            {
+                //var idIesire = dbfDataReader.GetString(1) ?? "0";
+                //Console.Write(idIesire + "->");
+
+                var denumireGestiune = dbfDataReader.GetString(15) ?? "0";
+                //Console.Write(denumireGestiune + "-");
+
+                denumireGestiune = dbfDataReader.GetString(16);
+                //Console.Write(denumireGestiune + "-");
+                denumireGestiune = dbfDataReader.GetString(17);
+                //Console.Write(denumireGestiune + "-");
+
+                var idIesire = dbfDataReader.GetString(18);
+                //Console.Write(idIesire + "-");
+
+                denumireGestiune = dbfDataReader.GetString(19);
+                //Console.Write("|" + denumireGestiune);
+
+                denumireGestiune = dbfDataReader.GetString(20);
+                //Console.Write(denumireGestiune);
+
+
+                //denumireGestiune = dbfDataReader.GetString(21);
+                //Console.Write(denumireGestiune + "-");
+
+                //var val = dbfDataReader.GetString(23);
+                //Console.Write(val);
+
+                var dateAndPriceStrings = dbfDataReader.GetString(24);
+
+                if (dateAndPriceStrings == null)
+                {
+                    continue;
+                }
+
+                if (dateAndPriceStrings.Contains("2"))
+                {
+                    var dateString = dateAndPriceStrings.Substring(1, 8);
+
+                    //var anIesire = valtest.Substring(1,4);
+                    //var lunaIesire = valtest.Substring(5,2);
+                    //var ziIesire = valtest.Substring(7,2);
+
+                    var exitDateTime = DateTime.ParseExact(
+                            dateString, "yyyyMMdd", CultureInfo.InvariantCulture);
+
+                    if (exitDateTime.Date == selectedExitDate.Value.Date)
+                    {
+                        Console.Write($"{exitDateTime}");
+
+                        //Afisare id-uri
+                        var codGestiune = dbfDataReader.GetString(19);
+                        if(codGestiune != null)
+                        {
+                            //   Console.Write("|" + codGestiune.Substring(2, 5) + "[");
+
+                            // Aici se compune id_iesire
+                            var exitId = $"{idIesire}{codGestiune.Substring(0, 2)}";
+
+                            inventoryExitIds.Add(Convert.ToDecimal(exitId));
+                            Console.Write("<" + inventoryExitIds.Last() + ">");
+                        }
+
+                        Console.WriteLine();
+                    }
+
+                }
+
+                //var valtest5 = dbfDataReader.GetString(26);
+                //Console.Write(val);
+
+                //var integerValue = dbfDataReader.GetInt64(27);
+                //Console.Write(integerValue);
+                //val = dbfDataReader.GetString(28);
+                //Console.Write(val);
+                //val = dbfDataReader.GetString(29);
+                //Console.Write(val);
+                //val = dbfDataReader.GetString(30);
+                //Console.Write(val);
+            }
+        }
+
+        dbfName = "IES_DET.DBF";
+
+        // o sa dea eroare mai jos pentru ca e din console app
+
+	    var dbfDataRecords = _dataAccess.ReadDbf(dbDirectory, dbfName);
 
         var inventoryExitRecords = new List<InventoryExitModel>();
 
-        foreach(DbfRecord record in dbfDataRecords) 
-	{
-	    var exit = new InventoryExitModel()
-	    {
-		    id_u = System.Convert.ToDecimal(record[0]),
-		    id_iesire = System.Convert.ToDecimal(record[1]),
-		    //gestiune = record["gestiune"].ToString(),
-		    //den_gest = record["den_gest"].ToString(),
-		    //cod = record["cod"].ToString(),
-		    denumire = System.Convert.ToString(record[5]),
-	    };
+        foreach(var record in dbfDataRecords)
+        {
+            var exit = new InventoryExitModel()
+            {
+                //id_u = Convert.ToDecimal(record[0]),
+                id_iesire = Convert.ToDecimal(record[1]),
+                gestiune = Convert.ToString(record[2]),
+                den_gest = Convert.ToString(record[3]),
+                cod = Convert.ToString(record[4]),
+                denumire = Convert.ToString(record[5]),
 
-            inventoryExitRecords.Add(exit);
+                den_tip = Convert.ToString(record[6]),
+                um = Convert.ToString(record[7]),
+                //tva_art = Convert.ToDecimal(record[8]),
+                cantitate = Convert.ToDecimal(record[9]),
+                pret_unitar = Convert.ToDecimal(record[10]),
+                valoare = Convert.ToDecimal(record[11]),
+                //tva_ded = Convert.ToDecimal(record[12]),
+                total = Convert.ToDecimal(record[13]),
+                adaos = Convert.ToDecimal(record[14]),
+
+                cont = Convert.ToString(record[15]),
+                text_supl = Convert.ToString(record[16]),
+                //discount = Convert.ToDecimal(record[17]),
+                //plan = Convert.ToString(record[18]),
+                //sector = Convert.ToString(record[19]),
+                //sursa = Convert.ToString(record[20]),
+                //articol = Convert.ToString(record[22]),
+                //capitol = Convert.ToString(record[23]),
+                //categorie = Convert.ToString(record[24]),
+            };
+
+
+            if (inventoryExitIds.Contains(exit.id_iesire))
+            {
+                inventoryExitRecords.Add(exit);
+            }
         }
 
         return inventoryExitRecords;
