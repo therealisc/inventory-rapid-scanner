@@ -86,7 +86,7 @@ public class InventoryMovementsLogic
                 den_tip = Convert.ToString(record[6]),
                 um = Convert.ToString(record[7]),
                 //tva_art = Convert.ToDecimal(record[8]),
-                cantitate = Convert.ToDecimal(record[9]),
+                cantitate = Convert.ToInt32(record[9]),
                 pret_unitar = Convert.ToDecimal(record[10]),
                 valoare = Convert.ToDecimal(record[11]),
                 //tva_ded = Convert.ToDecimal(record[12]),
