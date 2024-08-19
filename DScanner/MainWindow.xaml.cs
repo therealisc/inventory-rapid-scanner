@@ -57,7 +57,7 @@ public partial class MainWindow : Window
 
     private void ExitsDatePicker_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
     {
-        oadInventoryExitsFromDatabase();
+        LoadInventoryExitsFromDatabase();
     }
 
     private void RefreshButton_Click(object sender, RoutedEventArgs e)

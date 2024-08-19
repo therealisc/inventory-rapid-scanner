@@ -44,11 +44,8 @@ public class InventoryMovementsLogic
     public List<InventoryExitModel> GetInventoryExitsByDate(string dbDirectory, DateTime? selectedExitDate, string dbfName="IESIRI.DBF")
     {
         string dbfPath = $"{DatabaseDirectoryHelper.GetDatabaseDirectory(dbDirectory)}/{dbfName}";
-        using (var dbfTable = new DbfTable(dbfPath, Encoding.UTF8))
-        {
-            foreach (var column in dbfTable.Columns)
-                Console.WriteLine(column.ColumnName);
-        }
+
+        var inventoryExitIds = new List<decimal>();
 
         var options = new DbfDataReaderOptions
         {
@@ -56,99 +53,23 @@ public class InventoryMovementsLogic
             Encoding = Encoding.UTF8
         };
 
-        var inventoryExitIds = new List<decimal>();
-
         using (var dbfDataReader = new DbfDataReader.DbfDataReader(dbfPath, options))
         {
             while (dbfDataReader.Read())
             {
-                //var idIesire = dbfDataReader.GetString(1) ?? "0";
-                //Console.Write(idIesire + "->");
+                var exitDate = dbfDataReader.GetDateTime(5);
 
-                var denumireGestiune = dbfDataReader.GetString(15) ?? "0";
-                //Console.Write(denumireGestiune + "-");
-
-                denumireGestiune = dbfDataReader.GetString(16);
-                //Console.Write(denumireGestiune + "-");
-                denumireGestiune = dbfDataReader.GetString(17);
-                //Console.Write(denumireGestiune + "-");
-
-                var idIesire = dbfDataReader.GetString(18);
-                //Console.Write(idIesire + "-");
-
-                denumireGestiune = dbfDataReader.GetString(19);
-                //Console.Write("|" + denumireGestiune);
-
-                denumireGestiune = dbfDataReader.GetString(20);
-                //Console.Write(denumireGestiune);
-
-
-                //denumireGestiune = dbfDataReader.GetString(21);
-                //Console.Write(denumireGestiune + "-");
-
-                //var val = dbfDataReader.GetString(23);
-                //Console.Write(val);
-
-                var dateAndPriceStrings = dbfDataReader.GetString(24);
-
-                if (dateAndPriceStrings == null)
+                if( exitDate == selectedExitDate.Value.Date)
                 {
-                    continue;
+                    var idIesire = dbfDataReader.GetInt64(1);
+                    inventoryExitIds.Add(idIesire);
                 }
-
-                if (dateAndPriceStrings.Contains("2"))
-                {
-                    var dateString = dateAndPriceStrings.Substring(1, 8);
-
-                    //var anIesire = valtest.Substring(1,4);
-                    //var lunaIesire = valtest.Substring(5,2);
-                    //var ziIesire = valtest.Substring(7,2);
-
-                    var exitDateTime = DateTime.ParseExact(
-                            dateString, "yyyyMMdd", CultureInfo.InvariantCulture);
-
-                    if (exitDateTime.Date == selectedExitDate.Value.Date)
-                    {
-                        Console.Write($"{exitDateTime}");
-
-                        //Afisare id-uri
-                        var codGestiune = dbfDataReader.GetString(19);
-                        if(codGestiune != null)
-                        {
-                            //   Console.Write("|" + codGestiune.Substring(2, 5) + "[");
-
-                            // Aici se compune id_iesire
-                            var exitId = $"{idIesire}{codGestiune.Substring(0, 2)}";
-
-                            inventoryExitIds.Add(Convert.ToDecimal(exitId));
-                            Console.Write("<" + inventoryExitIds.Last() + ">");
-                        }
-
-                        Console.WriteLine();
-                    }
-
-                }
-
-                //var valtest5 = dbfDataReader.GetString(26);
-                //Console.Write(val);
-
-                //var integerValue = dbfDataReader.GetInt64(27);
-                //Console.Write(integerValue);
-                //val = dbfDataReader.GetString(28);
-                //Console.Write(val);
-                //val = dbfDataReader.GetString(29);
-                //Console.Write(val);
-                //val = dbfDataReader.GetString(30);
-                //Console.Write(val);
             }
         }
 
         dbfName = "IES_DET.DBF";
 
-        // o sa dea eroare mai jos pentru ca e din console app
-
 	    var dbfDataRecords = _dataAccess.ReadDbf(dbDirectory, dbfName);
-
         var inventoryExitRecords = new List<InventoryExitModel>();
 
         foreach(var record in dbfDataRecords)
