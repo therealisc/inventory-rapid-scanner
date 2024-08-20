@@ -25,6 +25,8 @@ public class InventoryMovementsLogic
         _exitDocumentCheck = exitDocumentCheck;
     }
 
+    private static decimal exitDocumentIdToRetain { get; set; }
+
     public List<InventoryExitModel> GetInventoryExitsByDate(DateTime? exitDate)
     {
         var parameters = new List<OleDbParameter>()
@@ -45,6 +47,7 @@ public class InventoryMovementsLogic
     {
         string dbfPath = $"{DatabaseDirectoryHelper.GetDatabaseDirectory(dbDirectory)}/{dbfName}";
 
+        exitDocumentIdToRetain = 0;
         var inventoryExitIds = new List<decimal>();
 
         var options = new DbfDataReaderOptions
@@ -63,6 +66,8 @@ public class InventoryMovementsLogic
                 {
                     var idIesire = dbfDataReader.GetInt64(1);
                     inventoryExitIds.Add(idIesire);
+
+                    exitDocumentIdToRetain = idIesire;
                 }
             }
         }
@@ -126,12 +131,13 @@ public class InventoryMovementsLogic
 
     public async Task<int> GenerateInventoryExits(string barcode, decimal quantity)
     {
-        var exitDocumentId = _exitDocumentCheck.GetExitDocumentId();
+        //var exitDocumentId = _exitDocumentCheck.GetExitDocumentId();
+        var exitDocumentId = exitDocumentIdToRetain;
 
         if (exitDocumentId == 0)
         {
             throw new Exception(
-                    "Adauga in SAGA o iesire cu data de azi mai intai!\nAsigura-te ca documentul de iesire nu este validat!\n");
+                    "Adauga in SAGA o iesire cu data selectata mai intai!\nAsigura-te ca documentul de iesire nu este validat!\n");
         }
 
         var article = _articleSearchLogic.GetArticleByBarcode(barcode);
