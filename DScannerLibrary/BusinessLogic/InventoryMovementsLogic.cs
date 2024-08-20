@@ -86,11 +86,13 @@ public class InventoryMovementsLogic
                 den_tip = Convert.ToString(record[6]),
                 um = Convert.ToString(record[7]),
                 //tva_art = Convert.ToDecimal(record[8]),
-                cantitate = Convert.ToInt32(record[9]),
-                pret_unitar = Convert.ToDecimal(record[10]),
+
+                //HACK: handle extra zeors
+                cantitate = Convert.ToInt32(record[9]) / 1000,
+                pret_unitar = Convert.ToDecimal(record[10]) / 10000,
                 valoare = Convert.ToDecimal(record[11]),
                 //tva_ded = Convert.ToDecimal(record[12]),
-                total = Convert.ToDecimal(record[13]),
+                total = Convert.ToDecimal(record[13]) / 1000,
                 adaos = Convert.ToDecimal(record[14]),
 
                 cont = Convert.ToString(record[15]),
