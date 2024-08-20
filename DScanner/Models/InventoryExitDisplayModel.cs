@@ -9,7 +9,7 @@ public class InventoryExitDisplayModel
     //public string UM { get; set; } = null!;
     public decimal Cantitate { get; set; }
     public decimal PretUnitar { get; set; }
-    public decimal Total { get; set; }
+    public string Total { get; set; }
     public string TextSuplimentar { get; set; } = null!;
     public decimal Adaos { get; set; }
     public decimal Cont { get; set; }

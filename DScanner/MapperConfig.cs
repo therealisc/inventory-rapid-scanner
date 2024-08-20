@@ -17,7 +17,7 @@ public class MapperConfig
             //.Map(dest => dest.UM, src => src.um)
             .Map(dest => dest.Cantitate, src => src.cantitate)
             .Map(dest => dest.PretUnitar, src => src.pret_unitar)
-            .Map(dest => dest.Total, src => src.total)
+            .Map(dest => dest.Total, src => string.Format("{0:0.00}", src.total))
             .Map(dest => dest.Adaos, src => src.adaos)
             .Map(dest => dest.Cont, src => src.cont)
             .Map(dest => dest.TextSuplimentar, src => src.text_supl);
