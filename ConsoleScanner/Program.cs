@@ -8,7 +8,6 @@ logicCase.GetInventoryExitsByDate("/home/therealisc/sagadb", new DateTime(2024, 
 
 
 
-
 //while (true)
 //{
 //    exitDocumentId = GetExitDocument();

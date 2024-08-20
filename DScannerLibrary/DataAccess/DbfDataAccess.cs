@@ -29,33 +29,7 @@ public class DbfDataAccess
         string dbfPath = $"{DatabaseDirectoryHelper.GetDatabaseDirectory(dbDirectory)}/{dbfName}";
 
         dbf.Read(dbfPath);
-
-        //string cod = DateTime.Now.ToString();
-
-        //DbfRecord r = dbf.CreateRecord();
-
-        //r.Data[0] = cod;
-        //r.Data[1] = "CARTI COPII";
-
-        //dbf.Write(dbfPath, DbfVersion.VisualFoxPro);
-        
-        //var dbfRecords = new List<dynamic>();
-
-        //foreach(DbfRecord record in dbf.Records) {
-        //    var stringRecords = "";
-
-        //    for(int i = 0;  i < dbf.Fields.Count; i++) {
-        //        stringRecords += record[i];
-        //        stringRecords += " ";
-        //    }
-
-        //    dbfRecords.Add(stringRecords);
-        //}
-
-        //return dbfRecords;
-
-
-	return dbf.Records;
+        return dbf.Records;
     }
 
     public List<T> ReadDbf<T>(string sqlCommand, OleDbParameter[] parameters)
