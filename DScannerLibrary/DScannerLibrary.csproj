@@ -8,7 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="DbfDataReader" Version="0.9.0" />
-    <PackageReference Include="System.Data.OleDb" Version="7.0.0" />
+    <PackageReference Include="System.Data.OleDb" Version="8.0.0" />
   </ItemGroup>
 
   <ItemGroup>
