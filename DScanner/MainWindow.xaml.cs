@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using DScannerLibrary.BusinessLogic;
@@ -76,7 +77,7 @@ public partial class MainWindow : Window
     private void InventoryExitsDataGrid_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
     {
         var selectedArticles = InventoryExitsDataGrid.SelectedItems.Cast<InventoryExitDisplayModel>();
-        SelectedArticlesPriceTextbox.Text = selectedArticles?.Sum(x => x.Total).ToString();
+        SelectedArticlesPriceTextbox.Text = selectedArticles?.Sum(x => Convert.ToDecimal(x.Total)).ToString();
     }
 
     public string Barcode { get; set; } = string.Empty;
