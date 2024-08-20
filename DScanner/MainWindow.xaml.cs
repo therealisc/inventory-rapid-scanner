@@ -70,7 +70,7 @@ public partial class MainWindow : Window
     {
         var totalsPerInventory = inventoryExits
             .GroupBy(x => x.Gestiune)
-            .Select(x => new { Gestiune = x.Key, Total = x.Sum(article => article.Total), Adaos = x.Sum(article => article.Adaos) });
+            .Select(x => new { Gestiune = x.Key, Total = x.Sum(article => Convert.ToDecimal(article.Total)), Adaos = x.Sum(article => article.Adaos) });
 
         InventoryTotalsDataGrid.ItemsSource = totalsPerInventory;
     }
