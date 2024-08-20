@@ -144,7 +144,7 @@ public class InventoryMovementsLogic
         var exitDocumentId = exitDocumentIdToRetain;
         var isValidated = exitDocumentIsValidated;
 
-        if (exitDocumentId == 0 && isValidated == true)
+        if (exitDocumentId == 0 || isValidated == true)
         {
             throw new Exception(
                     "Adauga in SAGA o iesire cu data selectata mai intai!\nAsigura-te ca documentul de iesire nu este validat!\n");
