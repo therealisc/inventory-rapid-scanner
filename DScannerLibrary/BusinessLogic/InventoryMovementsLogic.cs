@@ -63,7 +63,8 @@ public class InventoryMovementsLogic
             while (dbfDataReader.Read())
             {
                 var exitDate = dbfDataReader.GetDateTime(5);
-                var validated = dbfDataReader.GetString(9);
+
+                var validated = dbfDataReader.GetString(9).Trim();
 
                 if (validated == "V")
                 {
