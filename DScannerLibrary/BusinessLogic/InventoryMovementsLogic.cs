@@ -64,9 +64,9 @@ public class InventoryMovementsLogic
             {
                 var exitDate = dbfDataReader.GetDateTime(5);
 
-                var validated = dbfDataReader.GetString(9).Trim();
+                var validated = dbfDataReader.GetString(9);
 
-                if (validated == "V")
+                if (validated.Trim() == "V")
                 {
                     exitDocumentIsValidated = true;
                 }
