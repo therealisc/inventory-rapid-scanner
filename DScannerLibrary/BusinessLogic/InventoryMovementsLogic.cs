@@ -92,7 +92,7 @@ public class InventoryMovementsLogic
                 pret_unitar = Convert.ToDecimal(record[10]) / 10000,
                 valoare = Convert.ToDecimal(record[11]),
                 //tva_ded = Convert.ToDecimal(record[12]),
-                total = Convert.ToDecimal(record[13]) / 1000,
+                total = Convert.ToDecimal(record[13]) / 100,
                 adaos = Convert.ToDecimal(record[14]),
 
                 cont = Convert.ToString(record[15]),
