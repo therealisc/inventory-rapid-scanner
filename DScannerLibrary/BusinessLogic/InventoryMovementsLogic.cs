@@ -26,6 +26,7 @@ public class InventoryMovementsLogic
     }
 
     private static decimal exitDocumentIdToRetain { get; set; }
+    private static bool exitDocumentIsValidated { get; set; }
 
     public List<InventoryExitModel> GetInventoryExitsByDate(DateTime? exitDate)
     {
@@ -48,6 +49,7 @@ public class InventoryMovementsLogic
         string dbfPath = $"{DatabaseDirectoryHelper.GetDatabaseDirectory(dbDirectory)}/{dbfName}";
 
         exitDocumentIdToRetain = 0;
+        exitDocumentIsValidated = false;
         var inventoryExitIds = new List<decimal>();
 
         var options = new DbfDataReaderOptions
@@ -61,6 +63,12 @@ public class InventoryMovementsLogic
             while (dbfDataReader.Read())
             {
                 var exitDate = dbfDataReader.GetDateTime(5);
+                var validated = dbfDataReader.GetString(9);
+
+                if (validated == "V")
+                {
+                    exitDocumentIsValidated = true;
+                }
 
                 if( exitDate == selectedExitDate.Value.Date)
                 {
@@ -134,7 +142,7 @@ public class InventoryMovementsLogic
         //var exitDocumentId = _exitDocumentCheck.GetExitDocumentId();
         var exitDocumentId = exitDocumentIdToRetain;
 
-        if (exitDocumentId == 0)
+        if (exitDocumentId == 0 && exitDocumentIsValidated == false)
         {
             throw new Exception(
                     "Adauga in SAGA o iesire cu data selectata mai intai!\nAsigura-te ca documentul de iesire nu este validat!\n");
