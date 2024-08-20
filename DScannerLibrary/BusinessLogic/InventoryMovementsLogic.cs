@@ -66,17 +66,17 @@ public class InventoryMovementsLogic
 
                 var validated = dbfDataReader.GetString(9);
 
-                if (validated.Trim() == "V")
-                {
-                    exitDocumentIsValidated = true;
-                }
-
-                if( exitDate == selectedExitDate.Value.Date)
+                if (exitDate == selectedExitDate.Value.Date)
                 {
                     var idIesire = dbfDataReader.GetInt64(1);
                     inventoryExitIds.Add(idIesire);
 
                     exitDocumentIdToRetain = idIesire;
+
+                    if (validated.Trim() == "V")
+                    {
+                        exitDocumentIsValidated = true;
+                    }
                 }
             }
         }
@@ -142,8 +142,9 @@ public class InventoryMovementsLogic
     {
         //var exitDocumentId = _exitDocumentCheck.GetExitDocumentId();
         var exitDocumentId = exitDocumentIdToRetain;
+        var isValidated = exitDocumentIsValidated;
 
-        if (exitDocumentId == 0 && exitDocumentIsValidated == false)
+        if (exitDocumentId == 0 && isValidated == true)
         {
             throw new Exception(
                     "Adauga in SAGA o iesire cu data selectata mai intai!\nAsigura-te ca documentul de iesire nu este validat!\n");
