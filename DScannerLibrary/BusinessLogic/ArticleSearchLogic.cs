@@ -48,7 +48,5 @@ public class ArticleSearchLogic
                 return article;
             }
         }
-
-        return null;
     }
 }
