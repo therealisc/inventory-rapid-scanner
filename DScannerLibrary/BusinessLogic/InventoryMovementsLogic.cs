@@ -152,6 +152,7 @@ public class InventoryMovementsLogic
                     "Adauga in SAGA o iesire cu data selectata mai intai!\nAsigura-te ca documentul de iesire nu este validat!\n");
         }
 
+            throw new Exception($"{barcode} {quantity}");
         var article = _articleSearchLogic.GetArticleByBarcode(barcode);
         if (article == null)
             throw new Exception("null article");

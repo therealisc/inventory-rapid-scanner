@@ -27,7 +27,7 @@ public class ArticleSearchLogic
 
         var dbfName = "ARTICOLE.DBF";
         var dbfPath = $"{DatabaseDirectoryHelper.GetDatabaseDirectory()}/{dbfName}";
-        throw new Exception(dbfPath + " " + articleBarcode);
+        //throw new Exception(dbfPath + " " + articleBarcode);
 
         using (var dbfDataReader = new DbfDataReader.DbfDataReader(dbfPath, options))
         {
