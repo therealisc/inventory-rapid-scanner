@@ -15,7 +15,7 @@ public class ArticleSearchLogic
         _dataAccess = dbfDataAccess;
     }
 
-    public ArticleModel GetArticleByBarcode(string articleBarcode)
+    public ArticleModel? GetArticleByBarcode(string articleBarcode)
     {
         var options = new DbfDataReaderOptions
         {
@@ -27,27 +27,32 @@ public class ArticleSearchLogic
         var dbfPath = $"{DatabaseDirectoryHelper.GetDatabaseDirectory()}\\{dbfName}";
 
         var article = new ArticleModel();
+        var articlesFound = new List<ArticleModel();
 
         using (var dbfDataReader = new DbfDataReader.DbfDataReader(dbfPath, options))
         {
             while (dbfDataReader.Read())
             {
-                article.cod = dbfDataReader.GetString(0);
-                article.denumire = dbfDataReader.GetString(1);
-                article.pret_vanz = dbfDataReader.GetDecimal(7);
-                article.cod_bare = dbfDataReader.GetString(15);
-
-                throw new Exception(article.cod_bare);
-
-                if (article.cod_bare.Trim() != articleBarcode.Trim())
+                var article = new ArticleModel()
                 {
-                    throw new Exception("Codul de bare nu exista sau e gresit! Verifica la articole!");
-                }
+                    cod = dbfDataReader.GetString(0);
+                    denumire = dbfDataReader.GetString(1);
+                    pret_vanz = dbfDataReader.GetDecimal(7);
+                    cod_bare = dbfDataReader.GetString(15);
+                };
 
-                return article;
+                if (article.cod_bare.Contains(articleBarcode))
+                {
+                    articlesFound.Add(article);
+                }
+            }
+
+            if (articlesFound.Count == 0)
+            {
+                throw new Exception("Codul de bare nu exista sau e gresit! Verifica la articole!");
             }
         }
 
-        return article;
+        return articlesFound.LastOrDefault();
     }
 }
