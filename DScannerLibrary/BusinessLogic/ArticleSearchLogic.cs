@@ -40,7 +40,7 @@ public class ArticleSearchLogic
                     cod_bare = dbfDataReader.GetInt64(14),
                 };
 
-                if (article.cod_bare != null)
+                if (article.cod_bare == articleBarcode)
                 {
                     articlesFound.Add(article);
                 }
