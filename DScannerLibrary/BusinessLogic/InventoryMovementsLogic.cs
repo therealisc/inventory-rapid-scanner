@@ -157,7 +157,7 @@ public class InventoryMovementsLogic
             throw new Exception("null article");
 
         // inventoryMovements va avea atatea randuri cate gestiuni sunt
-        var inventoryMovements = GetInventoryMovementsForArticle(article?.cod.Trim());
+        var inventoryMovements = GetInventoryMovementsForArticle(article.cod.Trim());
 
         var numberOfInventories = inventoryMovements.Count;
 
