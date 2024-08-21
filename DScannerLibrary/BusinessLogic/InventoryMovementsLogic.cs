@@ -94,7 +94,7 @@ public class InventoryMovementsLogic
                 var exit = new InventoryExitModel()
                 {
                     //id_u = Convert.ToDecimal(record[0]),
-                    id_iesire = dbfDataReader.GetDecimal(1),
+                    id_iesire = dbfDataReader.GetInt64(1),
                     gestiune = dbfDataReader.GetString(2),
                     den_gest = dbfDataReader.GetString(3),
                     cod = dbfDataReader.GetString(4),
