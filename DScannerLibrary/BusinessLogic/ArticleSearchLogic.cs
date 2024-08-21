@@ -32,10 +32,10 @@ public class ArticleSearchLogic
         {
             while (dbfDataReader.Read())
             {
-                article.cod = dbfDataReader.GetString(0),
-                article.denumire = dbfDataReader.GetString(1),
-                article.pret_vanz = dbfDataReader.GetDecimal(7),
-                article.cod_bare = dbfDataReader.GetString(15),
+                article.cod = dbfDataReader.GetString(0);
+                article.denumire = dbfDataReader.GetString(1);
+                article.pret_vanz = dbfDataReader.GetDecimal(7);
+                article.cod_bare = dbfDataReader.GetString(15);
 
                 if (article.cod_bare.Trim() != articleBarcode.Trim())
                 {
