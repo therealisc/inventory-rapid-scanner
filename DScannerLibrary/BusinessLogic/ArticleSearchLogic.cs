@@ -26,32 +26,33 @@ public class ArticleSearchLogic
         var dbfName = "ARTICOLE.DBF";
         var dbfPath = $"{DatabaseDirectoryHelper.GetDatabaseDirectory()}\\{dbfName}";
 
-        var articlesFound = new List<ArticleModel>();
-
         using (var dbfDataReader = new DbfDataReader.DbfDataReader(dbfPath, options))
         {
             while (dbfDataReader.Read())
             {
-                var article = new ArticleModel()
+                try
                 {
-                    cod = dbfDataReader.GetString(0),
-                    denumire = dbfDataReader.GetString(1),
-                    pret_vanz = dbfDataReader.GetDecimal(7),
-                    cod_bare = dbfDataReader.GetInt64(14),
-                };
+                    var article = new ArticleModel()
+                    {
+                        cod = dbfDataReader.GetString(0),
+                        denumire = dbfDataReader.GetString(1),
+                        pret_vanz = dbfDataReader.GetDecimal(7),
+                        cod_bare = dbfDataReader.GetInt64(14),
+                    };
 
-                if (article.cod_bare == Convert.ToInt64(articleBarcode))
+                    if (article.cod_bare == Convert.ToInt64(articleBarcode))
+                    {
+                        return article;
+                    }
+                }
+                catch (Exception ex)
                 {
-                    articlesFound.Add(article);
+                    throw new Exception(
+                            $"Verifica toate codurile de bare. E posibil sa fie produse care nu au cod de bare.\n{ex.Message}");
                 }
             }
 
-            if (articlesFound.Count == 0)
-            {
-                throw new Exception($"Codul de bare {articleBarcode} nu exista sau e gresit! Verifica la articole!");
-            }
+            throw new Exception($"Codul de bare {articleBarcode} nu exista sau e gresit! Verifica la articole!");
         }
-
-        return articlesFound.LastOrDefault();
     }
 }
