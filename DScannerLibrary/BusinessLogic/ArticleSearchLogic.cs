@@ -14,9 +14,36 @@ public class ArticleSearchLogic
 
     public ArticleModel? GetArticleByBarcode(string articleBarcode)
     {
-        var articles = _dataAccess.ReadDbf<ArticleModel>($"Select * from articole where cod_bare={articleBarcode}");
-        var article = articles.SingleOrDefault();
+        var options = new DbfDataReaderOptions
+        {
+            SkipDeletedRecords = true,
+            Encoding = Encoding.UTF8
+        };
 
-        return article;
+        dbfName = "ARTICOLE.DBF";
+        dbfPath = $"{DatabaseDirectoryHelper.GetDatabaseDirectory()}/{dbfName}";
+
+	    var dbfDataRecords = _dataAccess.ReadDbf(dbDirectory, dbfName);
+        var inventoryExitRecords = new List<InventoryExitModel>();
+
+        using (var dbfDataReader = new DbfDataReader.DbfDataReader(dbfPath, options))
+        {
+            while (dbfDataReader.Read())
+            {
+                var article = new ArticleModel()
+                {
+                    cod = dbfDataReader.GetString(0),
+                    denumire = dbfDataReader.GetString(1),
+                    pret_vanz = dbfDataReader.GetDecimal(7),
+                };
+
+                if (article.cod_bare.Trim() != articleBarcode.Trim())
+                {
+                    return null;
+                }
+
+                return article;
+            }
+        }
     }
 }
