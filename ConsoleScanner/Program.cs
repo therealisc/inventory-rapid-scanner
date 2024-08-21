@@ -3,8 +3,10 @@ using DScannerLibrary.DataAccess;
 using System;
 
 
-var logicCase = new InventoryMovementsLogic(new DbfDataAccess(), null, null);
-logicCase.GetInventoryExitsByDate("/home/therealisc/sagadb", new DateTime(2024, 05, 30));
+var logicCase = new ArticleSearchLogic(new DbfDataAccess());
+logicCase.GetInventoryExitsByDate("/home/therealisc/sagadb", new DateTime(2024, 08, 21));
+
+
 
 
 
@@ -92,4 +94,3 @@ logicCase.GetInventoryExitsByDate("/home/therealisc/sagadb", new DateTime(2024, 
 //    }
 //    return exitDocumentId;
 //}
-
