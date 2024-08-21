@@ -24,7 +24,7 @@ public class ArticleSearchLogic
         };
 
         var dbfName = "ARTICOLE.DBF";
-        var dbfPath = $"{DatabaseDirectoryHelper.GetDatabaseDirectory()}/{dbfName}";
+        var dbfPath = $"{DatabaseDirectoryHelper.GetDatabaseDirectory()}\\{dbfName}";
 
         var article = new ArticleModel();
 
@@ -36,6 +36,8 @@ public class ArticleSearchLogic
                 article.denumire = dbfDataReader.GetString(1);
                 article.pret_vanz = dbfDataReader.GetDecimal(7);
                 article.cod_bare = dbfDataReader.GetString(15);
+
+                throw new Exception(article.cod_bare);
 
                 if (article.cod_bare.Trim() != articleBarcode.Trim())
                 {
