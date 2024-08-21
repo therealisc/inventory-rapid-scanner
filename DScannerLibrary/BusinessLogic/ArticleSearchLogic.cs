@@ -40,7 +40,7 @@ public class ArticleSearchLogic
                     cod_bare = dbfDataReader.GetString(15),
                 };
 
-                if (article.cod_bare != null && article.cod_bare.Contains(articleBarcode))
+                if (article.cod_bare != null && article.cod_bare.Trim().Contains(articleBarcode))
                 {
                     articlesFound.Add(article);
                 }
