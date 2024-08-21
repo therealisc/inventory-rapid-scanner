@@ -26,8 +26,7 @@ public class ArticleSearchLogic
         var dbfName = "ARTICOLE.DBF";
         var dbfPath = $"{DatabaseDirectoryHelper.GetDatabaseDirectory()}\\{dbfName}";
 
-        var article = new ArticleModel();
-        var articlesFound = new List<ArticleModel();
+        var articlesFound = new List<ArticleModel>();
 
         using (var dbfDataReader = new DbfDataReader.DbfDataReader(dbfPath, options))
         {
@@ -35,10 +34,10 @@ public class ArticleSearchLogic
             {
                 var article = new ArticleModel()
                 {
-                    cod = dbfDataReader.GetString(0);
-                    denumire = dbfDataReader.GetString(1);
-                    pret_vanz = dbfDataReader.GetDecimal(7);
-                    cod_bare = dbfDataReader.GetString(15);
+                    cod = dbfDataReader.GetString(0),
+                    denumire = dbfDataReader.GetString(1),
+                    pret_vanz = dbfDataReader.GetDecimal(7),
+                    cod_bare = dbfDataReader.GetString(15),
                 };
 
                 if (article.cod_bare.Contains(articleBarcode))
