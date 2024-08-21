@@ -105,12 +105,12 @@ public class InventoryMovementsLogic
                     //tva_art = Convert.ToDecimal(record[8]),
 
                     //HACK: handle extra zeors
-                    cantitate = dbfDataReader.GetInt32(9) / 1000,
-                    pret_unitar = dbfDataReader.GetDecimal(10) / 10000,
+                    cantitate = dbfDataReader.GetDecimal(9),
+                    pret_unitar = dbfDataReader.GetDecimal(10),
                     valoare = dbfDataReader.GetDecimal(11),
                     //tva_ded = Convert.ToDecimal(record[12]),
-                    total = dbfDataReader.GetDecimal(13) / 100,
-                    adaos = dbfDataReader.GetDecimal(14) / 100,
+                    total = dbfDataReader.GetDecimal(13),
+                    adaos = dbfDataReader.GetDecimal(14),
 
                     cont = dbfDataReader.GetString(15),
                     text_supl = dbfDataReader.GetString(16),
