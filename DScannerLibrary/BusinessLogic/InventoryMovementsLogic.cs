@@ -82,50 +82,97 @@ public class InventoryMovementsLogic
         }
 
         dbfName = "IES_DET.DBF";
+        dbfPath = $"{DatabaseDirectoryHelper.GetDatabaseDirectory(dbDirectory)}/{dbfName}";
 
 	    var dbfDataRecords = _dataAccess.ReadDbf(dbDirectory, dbfName);
         var inventoryExitRecords = new List<InventoryExitModel>();
 
-        foreach(var record in dbfDataRecords)
+        using (var dbfDataReader = new DbfDataReader.DbfDataReader(dbfPath, options))
         {
-            var exit = new InventoryExitModel()
+            while (dbfDataReader.Read())
             {
-                //id_u = Convert.ToDecimal(record[0]),
-                id_iesire = Convert.ToDecimal(record[1]),
-                gestiune = Convert.ToString(record[2]),
-                den_gest = Convert.ToString(record[3]),
-                cod = Convert.ToString(record[4]),
-                denumire = Convert.ToString(record[5]),
+                var exitDate = dbfDataReader.GetDateTime(5);
 
-                den_tip = Convert.ToString(record[6]),
-                um = Convert.ToString(record[7]),
-                //tva_art = Convert.ToDecimal(record[8]),
+                var exit = new InventoryExitModel()
+                {
+                    //id_u = Convert.ToDecimal(record[0]),
+                    id_iesire = dbfDataReader.GetDecimal(1),
+                    gestiune = dbfDataReader.GetString(2),
+                    den_gest = dbfDataReader.GetString(3),
+                    cod = dbfDataReader.GetString(4),
+                    denumire = dbfDataReader.GetString(5),
 
-                //HACK: handle extra zeors
-                cantitate = Convert.ToInt32(record[9]) / 1000,
-                pret_unitar = Convert.ToDecimal(record[10]) / 10000,
-                valoare = Convert.ToDecimal(record[11]),
-                //tva_ded = Convert.ToDecimal(record[12]),
-                total = Convert.ToDecimal(record[13]) / 100,
-                adaos = Convert.ToDecimal(record[14]) / 100,
+                    den_tip = dbfDataReader.GetString(6),
+                    um = dbfDataReader.GetString(7),
+                    //tva_art = Convert.ToDecimal(record[8]),
 
-                cont = Convert.ToString(record[15]),
-                text_supl = Convert.ToString(record[16]),
-                //discount = Convert.ToDecimal(record[17]),
-                //plan = Convert.ToString(record[18]),
-                //sector = Convert.ToString(record[19]),
-                //sursa = Convert.ToString(record[20]),
-                //articol = Convert.ToString(record[22]),
-                //capitol = Convert.ToString(record[23]),
-                //categorie = Convert.ToString(record[24]),
-            };
+                    //HACK: handle extra zeors
+                    cantitate = dbfDataReader.GetInt32(9) / 1000,
+                    pret_unitar = dbfDataReader.GetDecimal(10) / 10000,
+                    valoare = dbfDataReader.GetDecimal(11),
+                    //tva_ded = Convert.ToDecimal(record[12]),
+                    total = dbfDataReader.GetDecimal(13) / 100,
+                    adaos = dbfDataReader.GetDecimal(14) / 100,
+
+                    cont = dbfDataReader.GetString(15),
+                    text_supl = dbfDataReader.GetString(16),
+                    //discount = Convert.ToDecimal(record[17]),
+                    //plan = Convert.ToString(record[18]),
+                    //sector = Convert.ToString(record[19]),
+                    //sursa = Convert.ToString(record[20]),
+                    //articol = Convert.ToString(record[22]),
+                    //capitol = Convert.ToString(record[23]),
+                    //categorie = Convert.ToString(record[24]),
+                };
 
 
-            if (inventoryExitIds.Contains(exit.id_iesire))
-            {
-                inventoryExitRecords.Add(exit);
+                if (inventoryExitIds.Contains(exit.id_iesire))
+                {
+                    inventoryExitRecords.Add(exit);
+                }
             }
         }
+
+        //foreach(var record in dbfDataRecords)
+        //{
+        //    var exit = new InventoryExitModel()
+        //    {
+        //        //id_u = Convert.ToDecimal(record[0]),
+        //        id_iesire = Convert.ToDecimal(record[1]),
+        //        gestiune = Convert.ToString(record[2]),
+        //        den_gest = Convert.ToString(record[3]),
+        //        cod = Convert.ToString(record[4]),
+        //        denumire = Convert.ToString(record[5]),
+
+        //        den_tip = Convert.ToString(record[6]),
+        //        um = Convert.ToString(record[7]),
+        //        //tva_art = Convert.ToDecimal(record[8]),
+
+        //        //HACK: handle extra zeors
+        //        cantitate = Convert.ToInt32(record[9]) / 1000,
+        //        pret_unitar = Convert.ToDecimal(record[10]) / 10000,
+        //        valoare = Convert.ToDecimal(record[11]),
+        //        //tva_ded = Convert.ToDecimal(record[12]),
+        //        total = Convert.ToDecimal(record[13]) / 100,
+        //        adaos = Convert.ToDecimal(record[14]) / 100,
+
+        //        cont = Convert.ToString(record[15]),
+        //        text_supl = Convert.ToString(record[16]),
+        //        //discount = Convert.ToDecimal(record[17]),
+        //        //plan = Convert.ToString(record[18]),
+        //        //sector = Convert.ToString(record[19]),
+        //        //sursa = Convert.ToString(record[20]),
+        //        //articol = Convert.ToString(record[22]),
+        //        //capitol = Convert.ToString(record[23]),
+        //        //categorie = Convert.ToString(record[24]),
+        //    };
+
+
+        //    if (inventoryExitIds.Contains(exit.id_iesire))
+        //    {
+        //        inventoryExitRecords.Add(exit);
+        //    }
+        //}
 
         return inventoryExitRecords;
     }
