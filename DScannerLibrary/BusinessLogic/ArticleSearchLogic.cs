@@ -37,7 +37,7 @@ public class ArticleSearchLogic
                     cod = dbfDataReader.GetString(0),
                     denumire = dbfDataReader.GetString(1),
                     pret_vanz = dbfDataReader.GetDecimal(7),
-                    cod_bare = dbfDataReader.GetDecimal(15),
+                    cod_bare = dbfDataReader.GetString(14),
                 };
 
                 if (article.cod_bare != null)
