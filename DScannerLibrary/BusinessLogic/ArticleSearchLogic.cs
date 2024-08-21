@@ -1,5 +1,8 @@
+using System.Text;
 using DScannerLibrary.DataAccess;
 using DScannerLibrary.Models;
+using DScannerLibrary.Helpers;
+using DbfDataReader;
 
 namespace DScannerLibrary.BusinessLogic;
 
@@ -20,10 +23,9 @@ public class ArticleSearchLogic
             Encoding = Encoding.UTF8
         };
 
-        dbfName = "ARTICOLE.DBF";
-        dbfPath = $"{DatabaseDirectoryHelper.GetDatabaseDirectory()}/{dbfName}";
+        var dbfName = "ARTICOLE.DBF";
+        var dbfPath = $"{DatabaseDirectoryHelper.GetDatabaseDirectory()}/{dbfName}";
 
-	    var dbfDataRecords = _dataAccess.ReadDbf(dbDirectory, dbfName);
         var inventoryExitRecords = new List<InventoryExitModel>();
 
         using (var dbfDataReader = new DbfDataReader.DbfDataReader(dbfPath, options))
@@ -35,6 +37,7 @@ public class ArticleSearchLogic
                     cod = dbfDataReader.GetString(0),
                     denumire = dbfDataReader.GetString(1),
                     pret_vanz = dbfDataReader.GetDecimal(7),
+                    cod_bare = dbfDataReader.GetString(15),
                 };
 
                 if (article.cod_bare.Trim() != articleBarcode.Trim())
@@ -45,5 +48,7 @@ public class ArticleSearchLogic
                 return article;
             }
         }
+
+        return null;
     }
 }

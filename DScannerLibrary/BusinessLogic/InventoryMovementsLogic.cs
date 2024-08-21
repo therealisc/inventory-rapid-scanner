@@ -84,7 +84,6 @@ public class InventoryMovementsLogic
         dbfName = "IES_DET.DBF";
         dbfPath = $"{DatabaseDirectoryHelper.GetDatabaseDirectory(dbDirectory)}/{dbfName}";
 
-	    var dbfDataRecords = _dataAccess.ReadDbf(dbDirectory, dbfName);
         var inventoryExitRecords = new List<InventoryExitModel>();
 
         using (var dbfDataReader = new DbfDataReader.DbfDataReader(dbfPath, options))
