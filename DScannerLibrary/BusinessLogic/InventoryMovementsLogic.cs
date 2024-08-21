@@ -103,7 +103,6 @@ public class InventoryMovementsLogic
                     um = dbfDataReader.GetString(7),
                     //tva_art = Convert.ToDecimal(record[8]),
 
-                    //HACK: handle extra zeors
                     cantitate = dbfDataReader.GetDecimal(9),
                     pret_unitar = dbfDataReader.GetDecimal(10),
                     valoare = dbfDataReader.GetDecimal(11),
