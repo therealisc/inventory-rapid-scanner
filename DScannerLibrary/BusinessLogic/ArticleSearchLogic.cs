@@ -17,6 +17,8 @@ public class ArticleSearchLogic
 
     public ArticleModel? GetArticleByBarcode(string articleBarcode)
     {
+        var article = new ArticleModel();
+
         var options = new DbfDataReaderOptions
         {
             SkipDeletedRecords = true,
@@ -32,7 +34,7 @@ public class ArticleSearchLogic
         {
             while (dbfDataReader.Read())
             {
-                var article = new ArticleModel()
+                article = new ArticleModel()
                 {
                     cod = dbfDataReader.GetString(0),
                     denumire = dbfDataReader.GetString(1),
@@ -42,7 +44,7 @@ public class ArticleSearchLogic
 
                 if (article.cod_bare.Trim() != articleBarcode.Trim())
                 {
-                    return new ArticleModel();
+                    return null;
                 }
 
                 return article;
