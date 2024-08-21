@@ -167,8 +167,8 @@ public class InventoryMovementsLogic
             .GroupBy(x => new {x.cod_art, x.gestiune})
             .Select(i => new InventoryMovementModel()
                 {
-                    cod_art = i.cod_art,
-                    gesiune = i.gestiune,
+                    cod_art = i.Key.cod_art,
+                    gestiune = i.Key.gestiune,
                     cantitate = i.Sum(i => i.cantitate)
                 })
             .ToList();
