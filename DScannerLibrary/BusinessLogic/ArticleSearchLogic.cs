@@ -40,7 +40,14 @@ public class ArticleSearchLogic
                     cod_bare = dbfDataReader.GetString(15),
                 };
 
-                if (article.cod_bare.Contains(articleBarcode))
+                throw new Exception(article.cod_bare);
+
+                if (article.cod_bare == "")
+                {
+                    throw new Exception("Codul de bare nu exista sau e gresit! Verifica la articole!");
+                }
+
+                if (article.cod_bare != "" && article.cod_bare.Contains(articleBarcode))
                 {
                     articlesFound.Add(article);
                 }
