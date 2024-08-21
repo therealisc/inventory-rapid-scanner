@@ -42,7 +42,7 @@ public class ArticleSearchLogic
 
                 if (article.cod_bare.Trim() != articleBarcode.Trim())
                 {
-                    return null;
+                    return new ArticleModel();
                 }
 
                 return article;
