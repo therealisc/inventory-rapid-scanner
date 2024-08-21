@@ -134,10 +134,51 @@ public class InventoryMovementsLogic
 
     public List<InventoryMovementModel> GetInventoryMovementsForArticle(string? articleCode)
     {
-        var inventoryMovements = _dataAccess.ReadDbf<InventoryMovementModel>($"Select cod_art, gestiune, SUM(cantitate) as cantitate from miscari " +
-            $"where cod_art='{articleCode}' group by cod_art, gestiune order by gestiune");
+        var options = new DbfDataReaderOptions
+        {
+            SkipDeletedRecords = true,
+            Encoding = Encoding.UTF8
+        };
 
-        return inventoryMovements;
+        var dbfName = "MISCARI.DBF";
+        var dbfPath = $"{DatabaseDirectoryHelper.GetDatabaseDirectory()}\\{dbfName}";
+
+        var inventoryMovements = new List<InventoryMovementModel>();
+
+        using (var dbfDataReader = new DbfDataReader.DbfDataReader(dbfPath, options))
+        {
+            while (dbfDataReader.Read())
+            {
+                var inventoryMovement = new InventoryMovementModel()
+                {
+                    cod_art = dbfDataReader.GetString(3),
+                    gestiune = dbfDataReader.GetString(4),
+                    cantitate = dbfDataReader.GetDecimal(5),
+                };
+
+                if (inventoryMovement.cod_art == articleCode)
+                {
+                    inventoryMovements.Add(inventoryMovement);
+                }
+            }
+        }
+
+        var inventorySummary = inventoryMovements
+            .GroupBy(x => new {x.cod_art, x.gestiune})
+            .Select(i => new InventoryMovementModel()
+                {
+                    cod_art = i.cod_art,
+                    gesiune = i.gestiune,
+                    cantitate = i.Sum(i => i.cantitate)
+                })
+            .ToList();
+
+        //var inventoryMovements = _dataAccess
+        //    .ReadDbf<InventoryMovementModel>
+        //    ($"Select cod_art, gestiune, SUM(cantitate) as cantitate from miscari " +
+        //    $"where cod_art='{articleCode}' group by cod_art, gestiune order by gestiune");
+
+        return inventorySummary;
     }
 
     public async Task<int> GenerateInventoryExits(string barcode, decimal quantity)
@@ -153,13 +194,12 @@ public class InventoryMovementsLogic
         }
 
         var article = _articleSearchLogic.GetArticleByBarcode(barcode);
-        if (article != null)
-            throw new Exception("existing article");
 
         // inventoryMovements va avea atatea randuri cate gestiuni sunt
         var inventoryMovements = GetInventoryMovementsForArticle(article.cod.Trim());
 
         var numberOfInventories = inventoryMovements.Count;
+        throw new Exception(numberOfInventories + " inventories found");
 
         if (numberOfInventories == 1 && article != null)
         {
@@ -189,7 +229,7 @@ public class InventoryMovementsLogic
 
         if (numberOfInventories == 0)
         {
-            var errorMessage = "Nu au fost gasite intrari pentru acest produs!\n";
+            var errorMessage = "Nu au fost gasite intrari pentru acest articol!\n";
 
             if (article != null)
             {
