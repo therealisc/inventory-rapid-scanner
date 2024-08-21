@@ -91,8 +91,6 @@ public class InventoryMovementsLogic
         {
             while (dbfDataReader.Read())
             {
-                var exitDate = dbfDataReader.GetDateTime(5);
-
                 var exit = new InventoryExitModel()
                 {
                     //id_u = Convert.ToDecimal(record[0]),
