@@ -50,5 +50,7 @@ public class ArticleSearchLogic
                 return article;
             }
         }
+
+        return article;
     }
 }
