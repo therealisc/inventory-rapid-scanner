@@ -155,6 +155,8 @@ public class InventoryMovementsLogic
         }
 
         var article = _articleSearchLogic.GetArticleByBarcode(barcode);
+            throw new Exception(article.cod);
+
 
         // inventoryMovements va avea atatea randuri cate gestiuni sunt
         var inventoryMovements = GetInventoryMovementsForArticle(article?.cod.Trim());
