@@ -90,41 +90,47 @@ public class InventoryMovementsLogic
         {
             while (dbfDataReader.Read())
             {
-                var exit = new InventoryExitModel()
+                try
                 {
-                    //id_u = Convert.ToDecimal(record[0]),
-                    id_iesire = dbfDataReader.GetInt64(1),
-                    gestiune = dbfDataReader.GetString(2),
-                    den_gest = dbfDataReader.GetString(3),
-                    cod = dbfDataReader.GetString(4),
-                    denumire = dbfDataReader.GetString(5),
+                    var exit = new InventoryExitModel()
+                    {
+                        //id_u = Convert.ToDecimal(record[0]),
+                        id_iesire = dbfDataReader.GetInt64(1),
+                        gestiune = dbfDataReader.GetString(2),
+                        den_gest = dbfDataReader.GetString(3),
+                        cod = dbfDataReader.GetString(4),
+                        denumire = dbfDataReader.GetString(5),
 
-                    den_tip = dbfDataReader.GetString(6),
-                    um = dbfDataReader.GetString(7),
-                    //tva_art = Convert.ToDecimal(record[8]),
+                        den_tip = dbfDataReader.GetString(6),
+                        um = dbfDataReader.GetString(7),
+                        //tva_art = Convert.ToDecimal(record[8]),
 
-                    cantitate = dbfDataReader.GetDecimal(9),
-                    pret_unitar = dbfDataReader.GetDecimal(10),
-                    valoare = dbfDataReader.GetDecimal(11),
-                    //tva_ded = Convert.ToDecimal(record[12]),
-                    total = dbfDataReader.GetDecimal(13),
-                    adaos = dbfDataReader.GetDecimal(14),
+                        cantitate = dbfDataReader.GetDecimal(9),
+                        pret_unitar = dbfDataReader.GetDecimal(10),
+                        valoare = dbfDataReader.GetDecimal(11),
+                        //tva_ded = Convert.ToDecimal(record[12]),
+                        total = dbfDataReader.GetDecimal(13),
+                        adaos = dbfDataReader.GetDecimal(14),
 
-                    cont = dbfDataReader.GetString(15),
-                    text_supl = dbfDataReader.GetString(16),
-                    //discount = Convert.ToDecimal(record[17]),
-                    //plan = Convert.ToString(record[18]),
-                    //sector = Convert.ToString(record[19]),
-                    //sursa = Convert.ToString(record[20]),
-                    //articol = Convert.ToString(record[22]),
-                    //capitol = Convert.ToString(record[23]),
-                    //categorie = Convert.ToString(record[24]),
-                };
+                        cont = dbfDataReader.GetString(15),
+                        text_supl = dbfDataReader.GetString(16),
+                        //discount = Convert.ToDecimal(record[17]),
+                        //plan = Convert.ToString(record[18]),
+                        //sector = Convert.ToString(record[19]),
+                        //sursa = Convert.ToString(record[20]),
+                        //articol = Convert.ToString(record[22]),
+                        //capitol = Convert.ToString(record[23]),
+                        //categorie = Convert.ToString(record[24]),
+                    };
 
-
-                if (inventoryExitIds.Contains(exit.id_iesire))
+                    if (inventoryExitIds.Contains(exit.id_iesire))
+                    {
+                        inventoryExitRecords.Add(exit);
+                    }
+                }
+                catch (Exception ex)
                 {
-                    inventoryExitRecords.Add(exit);
+                    throw new Exception($"Unable to display inventory exits!\n{ex.Message}");
                 }
             }
         }
@@ -173,11 +179,6 @@ public class InventoryMovementsLogic
                 })
             .ToList();
 
-        //var inventoryMovements = _dataAccess
-        //    .ReadDbf<InventoryMovementModel>
-        //    ($"Select cod_art, gestiune, SUM(cantitate) as cantitate from miscari " +
-        //    $"where cod_art='{articleCode}' group by cod_art, gestiune order by gestiune");
-
         return inventorySummary;
     }
 
@@ -199,7 +200,6 @@ public class InventoryMovementsLogic
         var inventoryMovements = GetInventoryMovementsForArticle(article.cod.Trim());
 
         var numberOfInventories = inventoryMovements.Count;
-        throw new Exception(numberOfInventories + " inventories found");
 
         if (numberOfInventories == 1 && article != null)
         {
@@ -287,6 +287,7 @@ public class InventoryMovementsLogic
     {
 
         var generatedId = GenerateId(exitDocumentId);
+
         var inventoryName = _dataAccess
             .ReadDbf<InventoryMovementModel>($"Select denumire as gestiune from gestiuni where cod='{inventoryCode}'")
             .SingleOrDefault();

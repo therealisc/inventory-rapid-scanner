@@ -2,9 +2,15 @@
 using DScannerLibrary.DataAccess;
 using System;
 
+var logicCase = new InventoryMovementsLogic(null, null, null);
 
-var logicCase = new ArticleSearchLogic(new DbfDataAccess());
-logicCase.GetInventoryExitsByDate("/home/therealisc/sagadb", new DateTime(2024, 08, 21));
+var inventory = logicCase.GetInventoryExitsByDate("/home/therealisc/sagadb", new DateTime(2024, 05, 29));
+
+
+
+await logicCase.GenerateInventoryExits("", 2);
+
+//logicCase.GetInventoryExitsByDate("/home/therealisc/sagadb", new DateTime(2024, 08, 21));
 
 
 
