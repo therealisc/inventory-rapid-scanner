@@ -20,12 +20,11 @@ public class InventoryMovementsLogic
     private readonly string _dbDirectory;
     private List<InventoryExitModel> _inventoryExitRecords;
 
-    public InventoryMovementsLogic(DbfDataAccess dbfDataAccess, ArticleSearchLogic articleSearchLogic, ExitDocumentCheck exitDocumentCheck, string dbDirectory)
+    public InventoryMovementsLogic(DbfDataAccess dbfDataAccess, ArticleSearchLogic articleSearchLogic, ExitDocumentCheck exitDocumentCheck)
     {
         _dataAccess = dbfDataAccess;
         _articleSearchLogic = articleSearchLogic;
         _exitDocumentCheck = exitDocumentCheck;
-	_dbDirectory = dbDirectory;
         _inventoryExitRecords = new List<InventoryExitModel>();
     }
 
@@ -48,8 +47,9 @@ public class InventoryMovementsLogic
     //    return inventoryExists;
     //}
 
-    public List<InventoryExitModel> GetInventoryExitsByDate(DateTime? selectedExitDate, string dbfName="IESIRI.DBF")
+    public List<InventoryExitModel> GetInventoryExitsByDate(string dbDirectory, DateTime? selectedExitDate, string dbfName="IESIRI.DBF")
     {
+	_dbDirectory = dbDirectory;
         string dbfPath = $"{DatabaseDirectoryHelper.GetDatabaseDirectory(_dbDirectory)}/{dbfName}";
 
         exitDocumentIdToRetain = 0;
@@ -198,7 +198,7 @@ public class InventoryMovementsLogic
                     "Adauga in SAGA o iesire cu data selectata mai intai!\nAsigura-te ca documentul de iesire nu este validat!\n");
         }
 
-        var article = _articleSearchLogic.GetArticleByBarcode(barcode);
+        var article = _articleSearchLogic.GetArticleByBarcode(barcode, _dbDirectory);
 
         // inventoryMovements va avea atatea randuri cate gestiuni sunt
         var inventoryMovements = GetInventoryMovementsForArticle(article.cod.Trim());

@@ -11,14 +11,15 @@ public class ArticleSearchLogic
     private readonly DbfDataAccess _dataAccess;
     private readonly string _dbDirectory;
 
-    public ArticleSearchLogic(DbfDataAccess dbfDataAccess, string dbDirectory)
+    public ArticleSearchLogic(DbfDataAccess dbfDataAccess)
     {
         _dataAccess = dbfDataAccess;
-	_dbDirectory = dbDirectory;
     }
 
-    public ArticleModel? GetArticleByBarcode(string articleBarcode)
+    public ArticleModel? GetArticleByBarcode(string articleBarcode, string dbDirectory)
     {
+	_dbDirectory = dbDirectory;
+
         var options = new DbfDataReaderOptions
         {
             SkipDeletedRecords = true,
