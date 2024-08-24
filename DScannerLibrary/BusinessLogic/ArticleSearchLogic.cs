@@ -9,7 +9,7 @@ namespace DScannerLibrary.BusinessLogic;
 public class ArticleSearchLogic
 {
     private readonly DbfDataAccess _dataAccess;
-    private readonly string _dbDirectory;
+    private string _dbDirectory;
 
     public ArticleSearchLogic(DbfDataAccess dbfDataAccess)
     {

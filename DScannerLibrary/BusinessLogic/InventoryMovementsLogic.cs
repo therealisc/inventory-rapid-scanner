@@ -17,7 +17,7 @@ public class InventoryMovementsLogic
     private readonly DbfDataAccess _dataAccess;
     private readonly ArticleSearchLogic _articleSearchLogic;
     private readonly ExitDocumentCheck _exitDocumentCheck;
-    private readonly string _dbDirectory;
+    private string _dbDirectory;
     private List<InventoryExitModel> _inventoryExitRecords;
 
     public InventoryMovementsLogic(DbfDataAccess dbfDataAccess, ArticleSearchLogic articleSearchLogic, ExitDocumentCheck exitDocumentCheck)
