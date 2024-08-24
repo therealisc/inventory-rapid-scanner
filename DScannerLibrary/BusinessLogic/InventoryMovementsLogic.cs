@@ -17,36 +17,40 @@ public class InventoryMovementsLogic
     private readonly DbfDataAccess _dataAccess;
     private readonly ArticleSearchLogic _articleSearchLogic;
     private readonly ExitDocumentCheck _exitDocumentCheck;
+    private readonly string _dbDirectory;
+    private List<InventoryExitModel> _inventoryExitRecords;
 
-    public InventoryMovementsLogic(DbfDataAccess dbfDataAccess, ArticleSearchLogic articleSearchLogic, ExitDocumentCheck exitDocumentCheck)
+    public InventoryMovementsLogic(DbfDataAccess dbfDataAccess, ArticleSearchLogic articleSearchLogic, ExitDocumentCheck exitDocumentCheck, string dbDirectory)
     {
         _dataAccess = dbfDataAccess;
         _articleSearchLogic = articleSearchLogic;
         _exitDocumentCheck = exitDocumentCheck;
+	_dbDirectory = dbDirectory;
+        _inventoryExitRecords = new List<InventoryExitModel>();
     }
 
     private static decimal exitDocumentIdToRetain { get; set; }
     private static bool exitDocumentIsValidated { get; set; }
 
-    public List<InventoryExitModel> GetInventoryExitsByDate(DateTime? exitDate)
+    //public List<InventoryExitModel> GetInventoryExitsByDate(DateTime? exitDate)
+    //{
+    //    var parameters = new List<OleDbParameter>()
+    //    {
+    //        new OleDbParameter { Value = exitDate }
+    //    };
+
+    //    var inventoryExists = _dataAccess
+    //        .ReadDbf<InventoryExitModel>(
+    //                $"Select d.den_gest, d.cod, d.denumire, d.den_tip, d.um, d.cantitate, d.pret_unitar, d.valoare, d.total, d.adaos, d.cont, d.text_supl " +
+    //                "from ies_det d inner join iesiri i on d.id_iesire = i.id_iesire where i.data=?",
+    //                parameters.ToArray());
+
+    //    return inventoryExists;
+    //}
+
+    public List<InventoryExitModel> GetInventoryExitsByDate(DateTime? selectedExitDate, string dbfName="IESIRI.DBF")
     {
-        var parameters = new List<OleDbParameter>()
-        {
-            new OleDbParameter { Value = exitDate }
-        };
-
-        var inventoryExists = _dataAccess
-            .ReadDbf<InventoryExitModel>(
-                    $"Select d.den_gest, d.cod, d.denumire, d.den_tip, d.um, d.cantitate, d.pret_unitar, d.valoare, d.total, d.adaos, d.cont, d.text_supl " +
-                    "from ies_det d inner join iesiri i on d.id_iesire = i.id_iesire where i.data=?",
-                    parameters.ToArray());
-
-        return inventoryExists;
-    }
-
-    public List<InventoryExitModel> GetInventoryExitsByDate(string dbDirectory, DateTime? selectedExitDate, string dbfName="IESIRI.DBF")
-    {
-        string dbfPath = $"{DatabaseDirectoryHelper.GetDatabaseDirectory(dbDirectory)}/{dbfName}";
+        string dbfPath = $"{DatabaseDirectoryHelper.GetDatabaseDirectory(_dbDirectory)}/{dbfName}";
 
         exitDocumentIdToRetain = 0;
         exitDocumentIsValidated = false;
@@ -82,9 +86,9 @@ public class InventoryMovementsLogic
         }
 
         dbfName = "IES_DET.DBF";
-        dbfPath = $"{DatabaseDirectoryHelper.GetDatabaseDirectory(dbDirectory)}/{dbfName}";
+        dbfPath = $"{DatabaseDirectoryHelper.GetDatabaseDirectory(_dbDirectory)}/{dbfName}";
 
-        var inventoryExitRecords = new List<InventoryExitModel>();
+        _inventoryExitRecords = new List<InventoryExitModel>();
 
         using (var dbfDataReader = new DbfDataReader.DbfDataReader(dbfPath, options))
         {
@@ -125,7 +129,7 @@ public class InventoryMovementsLogic
 
                     if (inventoryExitIds.Contains(exit.id_iesire))
                     {
-                        inventoryExitRecords.Add(exit);
+                        _inventoryExitRecords.Add(exit);
                     }
                 }
                 catch (Exception ex)
@@ -135,7 +139,7 @@ public class InventoryMovementsLogic
             }
         }
 
-        return inventoryExitRecords;
+        return _inventoryExitRecords;
     }
 
     public List<InventoryMovementModel> GetInventoryMovementsForArticle(string? articleCode)
@@ -147,7 +151,7 @@ public class InventoryMovementsLogic
         };
 
         var dbfName = "MISCARI.DBF";
-        var dbfPath = $"{DatabaseDirectoryHelper.GetDatabaseDirectory()}\\{dbfName}";
+        var dbfPath = $"{DatabaseDirectoryHelper.GetDatabaseDirectory(_dbDirectory)}/{dbfName}";
 
         var inventoryMovements = new List<InventoryMovementModel>();
 
@@ -161,7 +165,7 @@ public class InventoryMovementsLogic
                     gestiune = dbfDataReader.GetString(4),
                     cantitate = dbfDataReader.GetDecimal(5),
                 };
-
+		
                 if (inventoryMovement.cod_art == articleCode)
                 {
                     inventoryMovements.Add(inventoryMovement);
@@ -278,19 +282,51 @@ public class InventoryMovementsLogic
         return nextInventory;
     }
 
-    public async Task<int> ProcessInventoryExit(decimal exitDocumentId,
+    public async Task<int> ProcessInventoryExit(
+	decimal exitDocumentId,
         ArticleModel article,
         decimal exitQuantity,
         string inventoryCode,
         decimal currentMultipleInventoryIteration,
         decimal totalQuantity)
     {
-
         var generatedId = GenerateId(exitDocumentId);
 
-        var inventoryName = _dataAccess
-            .ReadDbf<InventoryMovementModel>($"Select denumire as gestiune from gestiuni where cod='{inventoryCode}'")
-            .SingleOrDefault();
+        var dbfName = "gestiuni.dbf";
+        var dbfPath = $"{DatabaseDirectoryHelper.GetDatabaseDirectory(_dbDirectory)}/{dbfName}";
+
+        var inventoryMovements = new List<InventoryMovementModel>();
+
+        var options = new DbfDataReaderOptions
+        {
+            SkipDeletedRecords = true,
+            Encoding = Encoding.UTF8
+        };
+
+        using (var dbfDataReader = new DbfDataReader.DbfDataReader(dbfPath, options))
+        {
+            while (dbfDataReader.Read())
+            {
+                var inventory = new
+                {
+                    cod = dbfDataReader.GetString(0),
+                    denumire = dbfDataReader.GetString(1),
+                };
+
+                if (inventory.cod.Trim() == inventoryCode)
+                {
+  	            var inventoryMovement = new InventoryMovementModel()
+		    {
+			cod_art = inventory.cod,
+			gestiune = inventory.denumire
+		    };
+
+                    inventoryMovements.Add(inventoryMovement);
+                }
+            }
+        }
+
+	var inventoryName = inventoryMovements.SingleOrDefault();
 
         var inventoryExit = new InventoryExitModel
         {
@@ -339,15 +375,12 @@ public class InventoryMovementsLogic
 
     decimal GenerateId(decimal exitDocumentId)
     {
-        var numberOfExistsOnCurrentDocument = _dataAccess
-            .ReadDbf<InventoryExitModel>($"Select count(*) as id_u from ies_det where id_iesire={exitDocumentId}")
-            .SingleOrDefault();
-
-        if (numberOfExistsOnCurrentDocument == null)
-            numberOfExistsOnCurrentDocument.id_u = 0;
+        var numberOfExistsOnCurrentDocument = _inventoryExitRecords
+		.Where(x => x.id_iesire == exitDocumentId)
+		.Count();
 
         var id = DateTime.Now.ToString("yyMMdd");
-        id = id + numberOfExistsOnCurrentDocument.id_u.ToString();
+        id = id + numberOfExistsOnCurrentDocument.ToString();
 
         return Convert.ToDecimal(id);
     }

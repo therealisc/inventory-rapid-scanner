@@ -11,8 +11,13 @@ De eliminat o linie din csv atunci cand se adauga ceva nou si csv-ul are peste 1
 Other features:
 Installer
 
-Remove VFPOLEDB - in progress
+Still using VFPOLEDB for insert
 
 Obs:
 Pretul de vanzare si pretul unitar in urma carora rezulta adaosul se seteaza in intrari.
 Adaos = Pretul vanzare din intrari - pretul unitar articole
+
+verifica mai intai cu ifconfig ce ip ai(e ultimul care apare)
+scp -r "C:\SAGA C.3.0\0003" therealisc@192.168.100.47:/home/therealisc
+maybe new username soon?
+a c z i d i h m

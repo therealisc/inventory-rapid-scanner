@@ -9,10 +9,12 @@ namespace DScannerLibrary.BusinessLogic;
 public class ArticleSearchLogic
 {
     private readonly DbfDataAccess _dataAccess;
+    private readonly string _dbDirectory;
 
-    public ArticleSearchLogic(DbfDataAccess dbfDataAccess)
+    public ArticleSearchLogic(DbfDataAccess dbfDataAccess, string dbDirectory)
     {
         _dataAccess = dbfDataAccess;
+	_dbDirectory = dbDirectory;
     }
 
     public ArticleModel? GetArticleByBarcode(string articleBarcode)
@@ -24,7 +26,17 @@ public class ArticleSearchLogic
         };
 
         var dbfName = "ARTICOLE.DBF";
-        var dbfPath = $"{DatabaseDirectoryHelper.GetDatabaseDirectory()}\\{dbfName}";
+        var dbfPath = $"{DatabaseDirectoryHelper.GetDatabaseDirectory(_dbDirectory)}/{dbfName}";
+
+	try
+	{
+     	    var dbfDataReader = new DbfDataReader.DbfDataReader(dbfPath, options);
+	}
+	catch
+	{
+	    dbfName = "articole.dbf";
+	    dbfPath = $"{DatabaseDirectoryHelper.GetDatabaseDirectory(_dbDirectory)}/{dbfName}";
+	}
 
         using (var dbfDataReader = new DbfDataReader.DbfDataReader(dbfPath, options))
         {
