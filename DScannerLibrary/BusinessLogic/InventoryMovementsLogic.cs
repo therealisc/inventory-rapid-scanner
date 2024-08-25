@@ -31,22 +31,6 @@ public class InventoryMovementsLogic
     private static decimal exitDocumentIdToRetain { get; set; }
     private static bool exitDocumentIsValidated { get; set; }
 
-    //public List<InventoryExitModel> GetInventoryExitsByDate(DateTime? exitDate)
-    //{
-    //    var parameters = new List<OleDbParameter>()
-    //    {
-    //        new OleDbParameter { Value = exitDate }
-    //    };
-
-    //    var inventoryExists = _dataAccess
-    //        .ReadDbf<InventoryExitModel>(
-    //                $"Select d.den_gest, d.cod, d.denumire, d.den_tip, d.um, d.cantitate, d.pret_unitar, d.valoare, d.total, d.adaos, d.cont, d.text_supl " +
-    //                "from ies_det d inner join iesiri i on d.id_iesire = i.id_iesire where i.data=?",
-    //                parameters.ToArray());
-
-    //    return inventoryExists;
-    //}
-
     public List<InventoryExitModel> GetInventoryExitsByDate(string dbDirectory, DateTime? selectedExitDate, string dbfName="IESIRI.DBF")
     {
 	_dbDirectory = dbDirectory;

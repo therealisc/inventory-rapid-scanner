@@ -15,6 +15,7 @@ while (true)
     string? barcode;
 
     var quantity = InputQuantity();
+
     if (quantity > 10000)
     {
         barcode = quantity.ToString();
@@ -24,9 +25,6 @@ while (true)
     {
         barcode = InputBarCode();
     }
-
-    //var inventoryMovements = new InventoryMovementsLogic(null, null, null);
-    //inventoryMovements.GetInventoryMovementsForArticle("00000376");
 
     Console.WriteLine(barcode);
 

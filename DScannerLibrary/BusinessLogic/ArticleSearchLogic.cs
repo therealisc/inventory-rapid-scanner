@@ -13,7 +13,6 @@ public class ArticleSearchLogic
 
     public ArticleSearchLogic(DbfDataAccess dbfDataAccess)
     {
-        _dataAccess = dbfDataAccess;
     }
 
     public ArticleModel? GetArticleByBarcode(string articleBarcode, string dbDirectory)
@@ -64,7 +63,6 @@ public class ArticleSearchLogic
                             $"Verifica toate codurile de bare. E posibil sa fie produse care nu au cod de bare.\n{ex.Message}");
                 }
             }
-
             throw new Exception($"Codul de bare {articleBarcode} nu exista sau e gresit! Verifica la articole!");
         }
     }
