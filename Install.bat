@@ -7,6 +7,6 @@ git clone https://github.com/therealisc/inventory-rapid-scanner.git
 cd inventory-rapid-scanner
 git pull
 
-%~dp0VFPOLEDBSetup.msi
-%~dp0Launch.bat
+VFPOLEDBSetup.msi
+Launch.bat
 pause
