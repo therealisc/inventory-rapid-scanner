@@ -39,6 +39,8 @@ public partial class MainWindow : Window
             InventoryExitsForDisplay = _mapper.Map<List<InventoryExitDisplayModel>>(
                     _inventoryMovementsLogic.GetInventoryExitsByDate("C:\\SAGA C.3.0\\0003", ExitsDatePicker.SelectedDate));
 
+	    InventoryExitsForDisplay.ForEach(x => x.Nr = IndexOf(x) + 1);
+
             InventoryExitsDataGrid.ItemsSource = InventoryExitsForDisplay;
 
             if (InventoryExitsForDisplay.Any())

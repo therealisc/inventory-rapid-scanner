@@ -4,11 +4,11 @@ using System;
 using System.Linq;
 
 var dbDirectory = "/home/therealisc/0003";
-var inventoryMovements = new InventoryMovementsLogic(null, new ArticleSearchLogic(null, dbDirectory), null, dbDirectory);
+var inventoryMovements = new InventoryMovementsLogic(null, new ArticleSearchLogic(null), null);
 
-var inventory = inventoryMovements.GetInventoryExitsByDate(new DateTime(2024, 08, 23));
+var inventory = inventoryMovements.GetInventoryExitsByDate(dbDirectory, new DateTime(2024, 08, 25));
 
-inventory.ForEach(x => Console.WriteLine($"{x.id_iesire}-{x.cod}-{x.denumire}\n{x.um} {x.pret_unitar} {x.valoare} {x.cantitate} {x.cont} {x.total} {x.adaos} {x.text_supl}"));
+inventory.ForEach(x => Console.WriteLine($"line no:{inventory.IndexOf(x) + 1} _id:{x.id_iesire}-{x.cod}-{x.denumire}\n{x.um} {x.pret_unitar} {x.valoare} {x.cantitate} {x.cont} {x.total} {x.adaos} {x.text_supl}"));
 
 while (true)
 {

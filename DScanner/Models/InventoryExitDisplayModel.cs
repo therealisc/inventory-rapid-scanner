@@ -2,6 +2,7 @@ namespace DScanner.Models;
 
 public class InventoryExitDisplayModel
 {
+    public int Nr { get; set; }
     public string Gestiune { get; set; } = null!;
     public string Denumire { get; set; } = null!;
     public int CodProdus { get; set; }
