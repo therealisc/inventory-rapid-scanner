@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -37,7 +37,9 @@ public partial class MainWindow : Window
         try
         {
             InventoryExitsForDisplay = _mapper.Map<List<InventoryExitDisplayModel>>(
-                    _inventoryMovementsLogic.GetInventoryExitsByDate("C:\\SAGA C.3.0\\0003", ExitsDatePicker.SelectedDate));
+                    _inventoryMovementsLogic.GetInventoryExitsByDate(ExitsDatePicker.SelectedDate));
+
+	    InventoryExitsForDisplay.ForEach(x => x.Nr = InventoryExitsForDisplay.IndexOf(x) + 1);
 
 	    InventoryExitsForDisplay.ForEach(x => x.Nr = InventoryExitsForDisplay.IndexOf(x) + 1);
 
@@ -53,7 +55,7 @@ public partial class MainWindow : Window
         }
         catch (Exception ex)
         {
-            MessageBox.Show(ex.Message);
+            MessageBox.Show(ex.Message + " " + ex.StackTrace);
             return;
         }
     }
@@ -119,7 +121,7 @@ public partial class MainWindow : Window
         catch (Exception ex)
         {
             Barcode = string.Empty;
-            MessageBox.Show(ex.Message, "Atentie", MessageBoxButton.OK, MessageBoxImage.Warning);
+            MessageBox.Show(ex.Message + " " + ex.StackTrace, "Atentie", MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
         }
     }
@@ -142,7 +144,7 @@ public partial class MainWindow : Window
         }
         catch (Exception ex)
         {
-            MessageBox.Show(ex.Message, "Atentie", MessageBoxButton.OK, MessageBoxImage.Warning);
+            MessageBox.Show(ex.Message + " " + ex.StackTrace, "Atentie", MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
         }
     }

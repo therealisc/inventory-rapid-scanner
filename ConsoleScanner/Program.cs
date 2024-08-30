@@ -3,13 +3,24 @@ using DScannerLibrary.DataAccess;
 using System;
 using System.Linq;
 
-var dbDirectory = "/home/therealisc/0003";
-var inventoryMovements = new InventoryMovementsLogic(null, new ArticleSearchLogic(null), null);
+//var dbDirectory = "/home/therealisc/0003";
+var articleSearchLogic = new ArticleSearchLogic(new DbfDataAccess());
+var inventoryMovements = new InventoryMovementsLogic(new DbfDataAccess(), articleSearchLogic, null);
 
-var inventory = inventoryMovements.GetInventoryExitsByDate(dbDirectory, new DateTime(2024, 08, 25));
+var inventory = inventoryMovements.GetInventoryExitsByDate(new DateTime(2024, 08, 27));
+//var inventory = inventoryMovements.GetInventoryExitsByDate(dbDirectory, new DateTime(2024, 08, 25));
 
-inventory.ForEach(x => Console.WriteLine($"line no:{inventory.IndexOf(x) + 1} _id:{x.id_iesire}-{x.cod}-{x.denumire}\n{x.um} {x.pret_unitar} {x.valoare} {x.cantitate} {x.cont} {x.total} {x.adaos} {x.text_supl}"));
+//var article = articleSearchLogic.GetArticleByBarcode("9789731363882");
+//Console.WriteLine($"c:#{article.cod}# d:#{article.denumire}# t:{article.tva} p:{article.pret_vanz}");
 
+inventory.ForEach(x 
+    => Console.WriteLine(
+        $"line no:{inventory.IndexOf(x) + 1} _id:{x.id_iesire}-{x.cod}-{x.denumire}\n{x.pret_unitar} {x.valoare} {x.cantitate} {x.cont} {x.total} {x.adaos} {x.text_supl}"));
+
+
+Console.WriteLine($"Rows affected: {await inventoryMovements.GenerateInventoryExits("9789731363882", 1)}");
+
+return;
 while (true)
 {
     string? barcode;

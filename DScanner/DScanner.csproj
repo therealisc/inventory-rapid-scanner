@@ -11,14 +11,13 @@
     <Platforms>AnyCPU;x86</Platforms>
   </PropertyGroup>
 	
-	
     <ItemGroup>
-		<ProjectReference Include="..\DScannerLibrary\DScannerLibrary.csproj" />
-	</ItemGroup>
-	
+        <ProjectReference Include="..\DScannerLibrary\DScannerLibrary.csproj" />
+    </ItemGroup>
 	
     <ItemGroup>
       <PackageReference Include="Mapster" Version="7.4.0" />
       <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.0" />
     </ItemGroup>
+
 </Project>

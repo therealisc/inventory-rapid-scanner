@@ -31,10 +31,61 @@ public class InventoryMovementsLogic
     private static decimal exitDocumentIdToRetain { get; set; }
     private static bool exitDocumentIsValidated { get; set; }
 
+    public List<InventoryExitModel> GetInventoryExitsByDate(DateTime? exitDate, string dbfName="IESIRI.DBF")
+    {
+        string dbfPath = $"{DatabaseDirectoryHelper.GetDatabaseDirectory()}/{dbfName}";
+
+        exitDocumentIdToRetain = 0;
+        exitDocumentIsValidated = false;
+        var inventoryExitIds = new List<decimal>();
+
+        var options = new DbfDataReaderOptions
+        {
+            SkipDeletedRecords = true,
+            Encoding = Encoding.UTF8
+        };
+
+        using (var dbfDataReader = new DbfDataReader.DbfDataReader(dbfPath, options))
+        {
+            while (dbfDataReader.Read())
+            {
+                var exitDocumentDate = dbfDataReader.GetDateTime(5);
+
+                var validated = dbfDataReader.GetString(9);
+
+                if (exitDocumentDate == exitDate.Value.Date)
+                {
+                    var idIesire = dbfDataReader.GetInt64(1);
+                    inventoryExitIds.Add(idIesire);
+
+                    exitDocumentIdToRetain = idIesire;
+
+                    if (validated.Trim() == "V")
+                    {
+                        exitDocumentIsValidated = true;
+                    }
+                }
+            }
+        }
+
+        var parameters = new List<OleDbParameter>()
+	{
+	    new OleDbParameter { Value = exitDate }
+	};
+
+	    var inventoryExists = _dataAccess
+	        .ReadDbf<InventoryExitModel>(
+			    $"Select d.den_gest, d.cod, d.denumire, d.den_tip, d.um, d.cantitate, d.pret_unitar, d.valoare, d.total, d.adaos, d.cont, d.text_supl " +
+			    "from ies_det d inner join iesiri i on d.id_iesire = i.id_iesire where i.data=?",
+			    parameters.ToArray());
+
+      	return inventoryExists;
+    }
+
     public List<InventoryExitModel> GetInventoryExitsByDate(string dbDirectory, DateTime? selectedExitDate, string dbfName="IESIRI.DBF")
     {
 	_dbDirectory = dbDirectory;
-        string dbfPath = $"{DatabaseDirectoryHelper.GetDatabaseDirectory(_dbDirectory)}/{dbfName}";
+        string dbfPath = $"{DatabaseDirectoryHelper.GetDatabaseDirectory()}/{dbfName}";
 
         exitDocumentIdToRetain = 0;
         exitDocumentIsValidated = false;
@@ -70,7 +121,7 @@ public class InventoryMovementsLogic
         }
 
         dbfName = "IES_DET.DBF";
-        dbfPath = $"{DatabaseDirectoryHelper.GetDatabaseDirectory(_dbDirectory)}/{dbfName}";
+        dbfPath = $"{DatabaseDirectoryHelper.GetDatabaseDirectory()}/{dbfName}";
 
         _inventoryExitRecords = new List<InventoryExitModel>();
 
@@ -135,7 +186,7 @@ public class InventoryMovementsLogic
         };
 
         var dbfName = "MISCARI.DBF";
-        var dbfPath = $"{DatabaseDirectoryHelper.GetDatabaseDirectory(_dbDirectory)}/{dbfName}";
+        var dbfPath = $"{DatabaseDirectoryHelper.GetDatabaseDirectory()}/{dbfName}";
 
         var inventoryMovements = new List<InventoryMovementModel>();
 
@@ -174,6 +225,7 @@ public class InventoryMovementsLogic
     {
         //var exitDocumentId = _exitDocumentCheck.GetExitDocumentId();
         var exitDocumentId = exitDocumentIdToRetain;
+
         var isValidated = exitDocumentIsValidated;
 
         if (exitDocumentId == 0 || isValidated == true)
@@ -182,7 +234,10 @@ public class InventoryMovementsLogic
                     "Adauga in SAGA o iesire cu data selectata mai intai!\n(apasa pe butonul Refresh daca ai facut asta deja)\nAsigura-te ca documentul de iesire nu este validat!\n");
         }
 
-        var article = _articleSearchLogic.GetArticleByBarcode(barcode, _dbDirectory);
+        var article = _articleSearchLogic.GetArticleByBarcode(barcode);
+
+	if(article == null)
+     	    throw new Exception("NU AI ACEST COD DE BARE LA NICIUN ARTICOL!");
 
         // inventoryMovements va avea atatea randuri cate gestiuni sunt
         var inventoryMovements = GetInventoryMovementsForArticle(article.cod.Trim());
@@ -204,9 +259,23 @@ public class InventoryMovementsLogic
                 var lastMultipleInventoryExit = GetLastMultipleInventoryExit(article, exitDocumentId);
                 var actualInventoriesQuantities = CalculateAvailableInventory(inventoryMovements);
 
-                if (actualInventoriesQuantities.Sum(x => x.Value) == 0)
+		var allQuantity = actualInventoriesQuantities.Sum(x => x.Value);
+
+                if (allQuantity == 0)
                 {
-                    throw new Exception("Stocul este 0 din acest produs pe toate gestiunile! Adauga intrari mai intai!");
+                    throw new Exception("Stocul este 0 din acest articol pe toate gestiunile! Adauga intrari mai intai!");
+                }
+
+                if (allQuantity < 0)
+                {
+		    string stringQuantities = "";
+
+		    foreach (var item in actualInventoriesQuantities)
+		    {
+		        stringQuantities += $"\nStoc actual pe gestiunea: {item.Key} {item.Value}";
+		    }
+
+		    throw new Exception($"Stocul este negativ pe toate gestiunile pentru acest articol.\n{stringQuantities} \nAdauga intrari mai intai!");
                 }
 
                 var inventoryCode = GetCorrectInventoryCode(lastMultipleInventoryExit, inventoryMovements, actualInventoriesQuantities);
@@ -277,7 +346,7 @@ public class InventoryMovementsLogic
         var generatedId = GenerateId(exitDocumentId);
 
         var dbfName = "gestiuni.dbf";
-        var dbfPath = $"{DatabaseDirectoryHelper.GetDatabaseDirectory(_dbDirectory)}/{dbfName}";
+        var dbfPath = $"{DatabaseDirectoryHelper.GetDatabaseDirectory()}/{dbfName}";
 
         var inventoryMovements = new List<InventoryMovementModel>();
 
@@ -366,7 +435,8 @@ public class InventoryMovementsLogic
         var id = DateTime.Now.ToString("yyMMdd");
         id = id + numberOfExistsOnCurrentDocument.ToString();
 
-        return Convert.ToDecimal(id);
+	// initial was convert to decimal
+        return Convert.ToInt64(id);
     }
 
     InventoryExitModel? GetLastMultipleInventoryExit(ArticleModel article, decimal exitDocumentId)

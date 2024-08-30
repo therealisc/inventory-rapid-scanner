@@ -1,1 +1,1 @@
-dotnet run --project DSCanner\DSCanner.csproj
+dotnet run --project DScanner\DScanner.csproj
