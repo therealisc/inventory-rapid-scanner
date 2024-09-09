@@ -3,8 +3,32 @@ using DScannerLibrary.DataAccess;
 using System;
 using System.Linq;
 
+
+var articleSearchLogic = new ArticleSearchLogic(null);
+
+if (Environment.OSVersion.ToString().Contains("Unix"))
+{
+	Console.WriteLine(Environment.OSVersion);
+	var inventoryMovementsLogic = new InventoryMovementsLogic(null, articleSearchLogic, null);
+
+        //var articleInventoryMovements = inventoryMovementsLogic.GetInventoryMovementsForArticle("00001381");
+        var articleInventoryMovements = inventoryMovementsLogic.GetInventoryMovementsForArticle("00000004");
+	var articleInventoriesAsDict = inventoryMovementsLogic.AvailableInventoryAsDictionary(articleInventoryMovements);
+
+	foreach (var articleTotals in articleInventoriesAsDict)
+	{
+		Console.WriteLine(articleTotals.Key);
+		Console.WriteLine(articleTotals.Value);
+		Console.WriteLine();
+	}
+
+	Console.WriteLine(articleInventoriesAsDict.Sum(x => x.Value));
+
+	return;
+}
+
 //var dbDirectory = "/home/therealisc/0003";
-var articleSearchLogic = new ArticleSearchLogic(new DbfDataAccess());
+articleSearchLogic = new ArticleSearchLogic(new DbfDataAccess());
 var inventoryMovements = new InventoryMovementsLogic(new DbfDataAccess(), articleSearchLogic, null);
 
 var inventory = inventoryMovements.GetInventoryExitsByDate(new DateTime(2024, 08, 27));

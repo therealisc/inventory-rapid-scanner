@@ -239,9 +239,10 @@ public class InventoryMovementsLogic
 	if(article == null)
      	    throw new Exception("NU AI ACEST COD DE BARE LA NICIUN ARTICOL!");
 
-        // inventoryMovements va avea atatea randuri cate gestiuni sunt
+	// tested on linux works fine
         var inventoryMovements = GetInventoryMovementsForArticle(article.cod.Trim());
 
+        // inventoryMovements va avea atatea randuri cate gestiuni sunt
         var numberOfInventories = inventoryMovements.Count;
 
         if (numberOfInventories == 1 && article != null)
@@ -257,7 +258,8 @@ public class InventoryMovementsLogic
             for (int i = 0; i < quantity; i++)
             {
                 var lastMultipleInventoryExit = GetLastMultipleInventoryExit(article, exitDocumentId);
-                var actualInventoriesQuantities = CalculateAvailableInventory(inventoryMovements);
+
+                var actualInventoriesQuantities = AvailableInventoryAsDictionary(inventoryMovements);
 
 		var allQuantity = actualInventoriesQuantities.Sum(x => x.Value);
 
@@ -458,26 +460,32 @@ public class InventoryMovementsLogic
         return articleExistsList.Last();
     }
 
-    Dictionary<string, decimal> CalculateAvailableInventory(List<InventoryMovementModel> registeredInventory)
+    public Dictionary<string, decimal> AvailableInventoryAsDictionary(List<InventoryMovementModel> registeredInventory)
     {
-        var availableInventories = new Dictionary<string, decimal>();
-
-        foreach (var item in registeredInventory)
-        {
-            var exitQuantity = _dataAccess
-                .ReadDbf<InventoryExitModel>($"Select sum(cantitate) as cantitate from ies_det where cod='{item.cod_art}' and gestiune='{item.gestiune}'")
-                .SingleOrDefault();
-
-            if (exitQuantity == null)
-            {
-                exitQuantity = new InventoryExitModel { cantitate = 0 };
-            }
-
-            var actualQuantity = item.cantitate - exitQuantity.cantitate;
-
-            availableInventories.Add(item.gestiune, actualQuantity);
-        }
-
-        return availableInventories;
+	var inventoryAsDictionary = registeredInventory.ToDictionary(x => x.gestiune, x => x.cantitate);
+	return inventoryAsDictionary;
     }
+
+    //Dictionary<string, decimal> CalculateAvailableInventory(List<InventoryMovementModel> registeredInventory)
+    //{
+    //    var availableInventories = new Dictionary<string, decimal>();
+
+    //    foreach (var item in registeredInventory)
+    //    {
+    //        var exitQuantity = _dataAccess
+    //            .ReadDbf<InventoryExitModel>($"Select sum(cantitate) as cantitate from ies_det where cod='{item.cod_art}' and gestiune='{item.gestiune}'")
+    //            .SingleOrDefault();
+
+    //        if (exitQuantity == null)
+    //        {
+    //            exitQuantity = new InventoryExitModel { cantitate = 0 };
+    //        }
+
+    //        var actualQuantity = item.cantitate - exitQuantity.cantitate;
+
+    //        availableInventories.Add(item.gestiune, actualQuantity);
+    //    }
+
+    //    return availableInventories;
+    //}
 }
