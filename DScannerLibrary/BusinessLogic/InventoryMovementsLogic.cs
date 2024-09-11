@@ -177,6 +177,7 @@ public class InventoryMovementsLogic
         return _inventoryExitRecords;
     }
 
+    // returns quantity based on validated docs
     public List<InventoryMovementModel> GetInventoryMovementsForArticle(string? articleCode)
     {
         var options = new DbfDataReaderOptions
@@ -239,10 +240,8 @@ public class InventoryMovementsLogic
 	if(article == null)
      	    throw new Exception("NU AI ACEST COD DE BARE LA NICIUN ARTICOL!");
 
-	// tested on linux works fine
         var inventoryMovements = GetInventoryMovementsForArticle(article.cod.Trim());
 
-        // inventoryMovements va avea atatea randuri cate gestiuni sunt
         var numberOfInventories = inventoryMovements.Count;
 
         if (numberOfInventories == 1 && article != null)
@@ -259,7 +258,7 @@ public class InventoryMovementsLogic
             {
                 var lastMultipleInventoryExit = GetLastMultipleInventoryExit(article, exitDocumentId);
 
-                var actualInventoriesQuantities = AvailableInventoryAsDictionary(inventoryMovements);
+                var actualInventoriesQuantities = CalculateAvailableInventory(inventoryMovements);
 
 		var allQuantity = actualInventoriesQuantities.Sum(x => x.Value);
 
@@ -466,26 +465,65 @@ public class InventoryMovementsLogic
 	return inventoryAsDictionary;
     }
 
-    //Dictionary<string, decimal> CalculateAvailableInventory(List<InventoryMovementModel> registeredInventory)
-    //{
-    //    var availableInventories = new Dictionary<string, decimal>();
+    public Dictionary<string, decimal> CalculateAvailableInventory(List<InventoryMovementModel> registeredInventory)
+    {
+        var availableInventories = new Dictionary<string, decimal>();
 
-    //    foreach (var item in registeredInventory)
-    //    {
-    //        var exitQuantity = _dataAccess
-    //            .ReadDbf<InventoryExitModel>($"Select sum(cantitate) as cantitate from ies_det where cod='{item.cod_art}' and gestiune='{item.gestiune}'")
-    //            .SingleOrDefault();
+        foreach (var item in registeredInventory)
+        {
+            var entryQuantity = _dataAccess
+                .ReadDbf<OperationalInventoryModel>(
+	  	    "Select sum(cantitate) as cantitate " +
+		    "from intr_det " +
+		   $"where cod='{item.cod_art}' and gestiune='{item.gestiune}'")
+                .SingleOrDefault();
 
-    //        if (exitQuantity == null)
-    //        {
-    //            exitQuantity = new InventoryExitModel { cantitate = 0 };
-    //        }
+            if (entryQuantity == null)
+            {
+                entryQuantity = new OperationalInventoryModel { cantitate = 0 };
+            }
 
-    //        var actualQuantity = item.cantitate - exitQuantity.cantitate;
+            var operationalIncrease = _dataAccess
+                .ReadDbf<OperationalInventoryModel>(
+	  	    "Select sum(cantitate) as cantitate " +
+		    "from special " +
+		   $"where cod='{item.cod_art}' and gestiune='{item.gestiune}' and operatie='Incarcare cantitate'")
+                .SingleOrDefault();
 
-    //        availableInventories.Add(item.gestiune, actualQuantity);
-    //    }
+            if (operationalIncrease == null)
+            {
+                operationalIncrease = new OperationalInventoryModel { cantitate = 0 };
+            }
 
-    //    return availableInventories;
-    //}
+            var operationalDecrease = _dataAccess
+                .ReadDbf<OperationalInventoryModel>(
+	  	    "Select sum(cantitate) as cantitate " +
+		    "from special " +
+		   $"where cod='{item.cod_art}' and gestiune='{item.gestiune}' and operatie='Descarcare cantitate'")
+                .SingleOrDefault();
+
+            if (operationalDecrease == null)
+            {
+                operationalDecrease = new OperationalInventoryModel { cantitate = 0 };
+            }
+
+            var exitQuantity = _dataAccess
+                .ReadDbf<OperationalInventoryModel>(
+	  	    "Select sum(cantitate) as cantitate " +
+		    "from ies_det " +
+		   $"where cod='{item.cod_art}' and gestiune='{item.gestiune}'")
+                .SingleOrDefault();
+	    
+            if (exitQuantity == null)
+            {
+                exitQuantity = new OperationalInventoryModel { cantitate = 0 };
+            }
+
+            var actualQuantity = entryQuantity.cantitate - exitQuantity.cantitate + operationalIncrease.cantitate - operationalDecrease.cantitate;
+
+            availableInventories.Add(item.gestiune, actualQuantity);
+        }
+
+        return availableInventories;
+    }
 }

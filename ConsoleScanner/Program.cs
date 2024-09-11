@@ -1,31 +1,110 @@
 ﻿using DScannerLibrary.BusinessLogic;
 using DScannerLibrary.DataAccess;
+using DScannerLibrary.Helpers;
 using System;
 using System.Linq;
-
 
 var articleSearchLogic = new ArticleSearchLogic(null);
 
 if (Environment.OSVersion.ToString().Contains("Unix"))
 {
-	Console.WriteLine(Environment.OSVersion);
-	var inventoryMovementsLogic = new InventoryMovementsLogic(null, articleSearchLogic, null);
+var sql = @"
 
-        //var articleInventoryMovements = inventoryMovementsLogic.GetInventoryMovementsForArticle("00001381");
-        var articleInventoryMovements = inventoryMovementsLogic.GetInventoryMovementsForArticle("00000004");
-	var articleInventoriesAsDict = inventoryMovementsLogic.AvailableInventoryAsDictionary(articleInventoryMovements);
+DROP TABLE intr_det;
+DROP TABLE ies_det;
+DROP TABLE special;
 
-	foreach (var articleTotals in articleInventoriesAsDict)
-	{
-		Console.WriteLine(articleTotals.Key);
-		Console.WriteLine(articleTotals.Value);
-		Console.WriteLine();
-	}
+CREATE TABLE intr_det (
+		id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+		cod TEXT NOT NULL,
+		gestiune TEXT NOT NULL,
+		cantitate DECIMAL NOT NULL
+		);
 
-	Console.WriteLine(articleInventoriesAsDict.Sum(x => x.Value));
+INSERT INTO intr_det
+VALUES (1, '00001381', '0001', 18),
+       (2, '00001381', '0002', 2),
+       (3, '00000001', '0002', 2),
+       (4, '00000001', '0001', 10);
+
+CREATE TABLE ies_det (
+		id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+		cod TEXT NOT NULL,
+		gestiune TEXT NOT NULL,
+		cantitate DECIMAL NOT NULL
+		);
+
+INSERT INTO ies_det
+VALUES (1, '00001381', '0001', 1),
+       (2, '00001381', '0002', 1),
+       (3, '00000001', '0002', 1),
+       (4, '00000001', '0001', 1);
+
+CREATE TABLE special (
+		id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+		cod TEXT NOT NULL,
+		gestiune TEXT NOT NULL,
+		cantitate DECIMAL NOT NULL,
+		operatie TEXT NOT NULL
+		);
+
+INSERT INTO special
+VALUES (1, '00001381', '0001', 1, 'Descarcare cantitate'),
+       (2, '00001381', '0002', 1, 'Descarcare cantitate'),
+       (3, '00001381', '0002', 1, 'Incarcare cantitate'),
+       (4, '00001381', '0002', 9, 'Incarcare cantitate'),
+       (5, '00001381', '0002', 1, 'Incarcare cantitate'),
+       (6, '00000001', '0002', 1, 'Descarcare cantitate'),
+       (7, '00000001', '0001', 1, 'Descarcare cantitate');
+";
+
+    var dataAccess = new SqliteDataAccess();
+    dataAccess.InsertData(sql);
+
+    var inventoryMovementsLogic = new InventoryMovementsLogic(null, articleSearchLogic, null);
+    // throws an error due to null above
+    var articleInventoryMovements = inventoryMovementsLogic.GetInventoryMovementsForArticle("00001381");
+    var articleInventoriesAsDict = inventoryMovementsLogic.CalculateAvailableInventory(articleInventoryMovements);
+    var infoList = new List<string>();
+
+    foreach (var articleTotals in articleInventoriesAsDict)
+    {
+	    Console.WriteLine(articleTotals.Key);
+	    Console.WriteLine(articleTotals.Value);
+	    Console.WriteLine();
+    }
+
+    Console.WriteLine(articleInventoriesAsDict.Sum(x => x.Value));
+    articleInventoryMovements.ForEach(x => infoList.Add($"{x.gestiune} {x.cantitate} {DateTime.Now}"));
+
+    FileLoggerHelper.LogInfo(infoList);
 
 	return;
 }
+
+void TestAvaliableInventory()
+{
+    Console.WriteLine(Environment.OSVersion);
+    var inventoryMovementsLogic = new InventoryMovementsLogic(null, articleSearchLogic, null);
+
+    //var articleInventoryMovements = inventoryMovementsLogic.GetInventoryMovementsForArticle("00001381");
+    var articleInventoryMovements = inventoryMovementsLogic.GetInventoryMovementsForArticle("00001381");
+    var articleInventoriesAsDict = inventoryMovementsLogic.AvailableInventoryAsDictionary(articleInventoryMovements);
+    var infoList = new List<string>();
+
+    foreach (var articleTotals in articleInventoriesAsDict)
+    {
+	    Console.WriteLine(articleTotals.Key);
+	    Console.WriteLine(articleTotals.Value);
+	    Console.WriteLine();
+    }
+
+    Console.WriteLine(articleInventoriesAsDict.Sum(x => x.Value));
+    articleInventoryMovements.ForEach(x => infoList.Add($"{x.gestiune} {x.cantitate} {DateTime.Now}"));
+
+    FileLoggerHelper.LogInfo(infoList);
+}
+
 
 //var dbDirectory = "/home/therealisc/0003";
 articleSearchLogic = new ArticleSearchLogic(new DbfDataAccess());
