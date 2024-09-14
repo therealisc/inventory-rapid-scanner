@@ -1,10 +1,11 @@
 using System.Data;
 using DScannerLibrary.Extensions;
 using Microsoft.Data.Sqlite;
+using System.Data.OleDb;
 
 namespace DScannerLibrary.DataAccess;
 
-public class SqliteDataAccess
+public class SqliteDataAccess : IDataAccess
 {
     private readonly string _connectionString;
 
@@ -52,5 +53,15 @@ public class SqliteDataAccess
 
 	    connection.Close();
 	}
+    }
+
+    public int InsertData<T>(T item)
+    {
+        throw new NotImplementedException();
+    }
+
+    public List<T> ReadData<T>(string sqlCommand, OleDbParameter[] parameters)
+    {
+        throw new NotImplementedException();
     }
 }

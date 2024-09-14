@@ -14,15 +14,15 @@ namespace DScannerLibrary.BusinessLogic;
 
 public class InventoryMovementsLogic
 {
-    private readonly DbfDataAccess _dataAccess;
+    private readonly IDataAccess _dataAccess;
     private readonly ArticleSearchLogic _articleSearchLogic;
     private readonly ExitDocumentCheck _exitDocumentCheck;
     private string _dbDirectory;
     private List<InventoryExitModel> _inventoryExitRecords;
 
-    public InventoryMovementsLogic(DbfDataAccess dbfDataAccess, ArticleSearchLogic articleSearchLogic, ExitDocumentCheck exitDocumentCheck)
+    public InventoryMovementsLogic(IDataAccess dataAccess, ArticleSearchLogic articleSearchLogic, ExitDocumentCheck exitDocumentCheck)
     {
-        _dataAccess = dbfDataAccess;
+        _dataAccess = dataAccess;
         _articleSearchLogic = articleSearchLogic;
         _exitDocumentCheck = exitDocumentCheck;
         _inventoryExitRecords = new List<InventoryExitModel>();
@@ -74,7 +74,7 @@ public class InventoryMovementsLogic
 	};
 
 	    var inventoryExists = _dataAccess
-	        .ReadDbf<InventoryExitModel>(
+	        .ReadData<InventoryExitModel>(
 			    $"Select d.den_gest, d.cod, d.denumire, d.den_tip, d.um, d.cantitate, d.pret_unitar, d.valoare, d.total, d.adaos, d.cont, d.text_supl " +
 			    "from ies_det d inner join iesiri i on d.id_iesire = i.id_iesire where i.data=?",
 			    parameters.ToArray());
@@ -398,13 +398,13 @@ public class InventoryMovementsLogic
             tva_ded = ((article.tva / 100) * article.pret_vanz),
             cont = "707",
             den_tip = "Marfuri",
-            um = "BUC",
+            um = "",
             text_supl = $"{currentMultipleInventoryIteration}/{totalQuantity} articol(e) scanat(e) la {DateTime.Now}"
         };
 
         await AddExitToBackupFile(new List<InventoryExitModel>() { inventoryExit });
 
-        return _dataAccess.InsertIntoIesiriDbf(inventoryExit);
+        return _dataAccess.InsertData(inventoryExit);
     }
 
     async Task AddExitToBackupFile(List<InventoryExitModel> inventoryExits)
@@ -443,12 +443,12 @@ public class InventoryMovementsLogic
     InventoryExitModel? GetLastMultipleInventoryExit(ArticleModel article, decimal exitDocumentId)
     {
         var articleExistsList = _dataAccess
-            .ReadDbf<InventoryExitModel>($"Select * from ies_det where id_iesire={exitDocumentId} and cod='{article.cod}'");
+            .ReadData<InventoryExitModel>($"Select * from ies_det where id_iesire={exitDocumentId} and cod='{article.cod}'");
 
         if (articleExistsList.Count == 0)
         {
             articleExistsList = _dataAccess
-                .ReadDbf<InventoryExitModel>($"Select * from ies_det where cod='{article.cod}'");
+                .ReadData<InventoryExitModel>($"Select * from ies_det where cod='{article.cod}'");
         }
 
         if (articleExistsList.Count == 0)
@@ -472,7 +472,7 @@ public class InventoryMovementsLogic
         foreach (var item in registeredInventory)
         {
             var entryQuantity = _dataAccess
-                .ReadDbf<OperationalInventoryModel>(
+                .ReadData<OperationalInventoryModel>(
 	  	    "Select sum(cantitate) as cantitate " +
 		    "from intr_det " +
 		   $"where cod='{item.cod_art}' and gestiune='{item.gestiune}'")
@@ -484,7 +484,7 @@ public class InventoryMovementsLogic
             }
 
             var operationalIncrease = _dataAccess
-                .ReadDbf<OperationalInventoryModel>(
+                .ReadData<OperationalInventoryModel>(
 	  	    "Select sum(cantitate) as cantitate " +
 		    "from special " +
 		   $"where cod='{item.cod_art}' and gestiune='{item.gestiune}' and operatie='Incarcare cantitate'")
@@ -496,7 +496,7 @@ public class InventoryMovementsLogic
             }
 
             var operationalDecrease = _dataAccess
-                .ReadDbf<OperationalInventoryModel>(
+                .ReadData<OperationalInventoryModel>(
 	  	    "Select sum(cantitate) as cantitate " +
 		    "from special " +
 		   $"where cod='{item.cod_art}' and gestiune='{item.gestiune}' and operatie='Descarcare cantitate'")
@@ -508,7 +508,7 @@ public class InventoryMovementsLogic
             }
 
             var exitQuantity = _dataAccess
-                .ReadDbf<OperationalInventoryModel>(
+                .ReadData<OperationalInventoryModel>(
 	  	    "Select sum(cantitate) as cantitate " +
 		    "from ies_det " +
 		   $"where cod='{item.cod_art}' and gestiune='{item.gestiune}'")

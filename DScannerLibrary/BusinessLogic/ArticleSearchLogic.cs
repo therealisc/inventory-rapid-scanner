@@ -8,16 +8,16 @@ namespace DScannerLibrary.BusinessLogic;
 
 public class ArticleSearchLogic
 {
-    private readonly DbfDataAccess _dataAccess;
+    private readonly IDataAccess _dataAccess;
 
-    public ArticleSearchLogic(DbfDataAccess dbfDataAccess)
+    public ArticleSearchLogic(IDataAccess dataAccess)
     {
-	 _dataAccess = dbfDataAccess;
+	 _dataAccess = dataAccess;
     }
 
     public ArticleModel? GetArticleByBarcode(string articleBarcode)
     {
-	 var articles = _dataAccess.ReadDbf<ArticleModel>($"Select cod, denumire, tva, pret_vanz, cod_bare from articole where cod_bare={articleBarcode}");
+	 var articles = _dataAccess.ReadData<ArticleModel>($"Select cod, denumire, tva, pret_vanz, cod_bare from articole where cod_bare={articleBarcode}");
 	 var article = articles.SingleOrDefault();
 
 	 return article;

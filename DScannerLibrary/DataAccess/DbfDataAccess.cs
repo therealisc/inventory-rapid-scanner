@@ -7,7 +7,7 @@ using DbfReaderNET;
 
 namespace DScannerLibrary.DataAccess;
 
-public class DbfDataAccess
+public class DbfDataAccess : IDataAccess
 {
     private readonly string _connectionString;
 
@@ -31,7 +31,7 @@ public class DbfDataAccess
         return dbf.Records;
     }
 
-    public List<T> ReadDbf<T>(string sqlCommand, OleDbParameter[] parameters)
+    public List<T> ReadData<T>(string sqlCommand, OleDbParameter[] parameters)
     {
         using (var connection = new OleDbConnection(_connectionString))
         {
@@ -48,7 +48,7 @@ public class DbfDataAccess
         }
     }
 
-    public List<T> ReadDbf<T>(string str_sql)
+    public List<T> ReadData<T>(string str_sql)
     {
         using (var connection = new OleDbConnection(_connectionString))
         {
@@ -60,7 +60,7 @@ public class DbfDataAccess
         }
     }
 
-    public int InsertIntoIesiriDbf<T>(T item)
+    public int InsertData<T>(T item)
     {
         using (OleDbConnection myCon = new OleDbConnection(_connectionString))
         {

@@ -5,17 +5,17 @@ namespace DScannerLibrary.BusinessLogic;
 
 public class ExitDocumentCheck
 {
-    private DbfDataAccess _dataAccess;
+    private IDataAccess _dataAccess;
 
-    public ExitDocumentCheck(DbfDataAccess dbfDataAccess)
+    public ExitDocumentCheck(IDataAccess dataAccess)
     {
-        _dataAccess = dbfDataAccess;
+        _dataAccess = dataAccess;
     }
 
     public decimal GetExitDocumentId()
     {
         var exitDocument = _dataAccess
-            .ReadDbf<InventoryExitModel>("Select top 1 id_iesire from iesiri where data = DATE() and Validat <>'V' order by data desc")
+            .ReadData<InventoryExitModel>("Select top 1 id_iesire from iesiri where data = DATE() and Validat <>'V' order by data desc")
             .SingleOrDefault();
 
         if (exitDocument == null)

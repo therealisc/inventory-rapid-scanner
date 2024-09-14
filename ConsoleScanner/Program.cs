@@ -61,7 +61,7 @@ VALUES (1, '00001381', '0001', 1, 'Descarcare cantitate'),
     var dataAccess = new SqliteDataAccess();
     dataAccess.InsertData(sql);
 
-    var inventoryMovementsLogic = new InventoryMovementsLogic(null, articleSearchLogic, null);
+    var inventoryMovementsLogic = new InventoryMovementsLogic(dataAccess, articleSearchLogic, null);
     // throws an error due to null above
     var articleInventoryMovements = inventoryMovementsLogic.GetInventoryMovementsForArticle("00001381");
     var articleInventoriesAsDict = inventoryMovementsLogic.CalculateAvailableInventory(articleInventoryMovements);
