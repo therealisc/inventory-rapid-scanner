@@ -18,21 +18,30 @@ CREATE TABLE intr_det (
 		id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
 		cod TEXT NOT NULL,
 		gestiune TEXT NOT NULL,
-		cantitate DECIMAL NOT NULL
+		cantitate INTEGER NOT NULL
 		);
 
-INSERT INTO intr_det
-VALUES (1, '00001381', '0001', 18),
-       (2, '00001381', '0002', 2),
-       (3, '00000001', '0002', 2),
-       (4, '00000001', '0001', 10);
 
 CREATE TABLE ies_det (
 		id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
 		cod TEXT NOT NULL,
 		gestiune TEXT NOT NULL,
-		cantitate DECIMAL NOT NULL
+		cantitate INTEGER NOT NULL
 		);
+
+CREATE TABLE special (
+		id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+		cod TEXT NOT NULL,
+		gestiune TEXT NOT NULL,
+		cantitate INTEGER NOT NULL,
+		operatie TEXT NOT NULL
+		);
+
+INSERT INTO intr_det
+VALUES (1, '00001381', '0001', 18),
+       (2, '00001381', '0002', 2),
+       (3, '00000001', '0002', 20),
+       (4, '00000001', '0001', 10);
 
 INSERT INTO ies_det
 VALUES (1, '00001381', '0001', 1),
@@ -40,29 +49,22 @@ VALUES (1, '00001381', '0001', 1),
        (3, '00000001', '0002', 1),
        (4, '00000001', '0001', 1);
 
-CREATE TABLE special (
-		id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-		cod TEXT NOT NULL,
-		gestiune TEXT NOT NULL,
-		cantitate DECIMAL NOT NULL,
-		operatie TEXT NOT NULL
-		);
-
 INSERT INTO special
-VALUES (1, '00001381', '0001', 1, 'Descarcare cantitate'),
+VALUES (1, '00001381', '0001', 4, 'Descarcare cantitate'),
        (2, '00001381', '0002', 1, 'Descarcare cantitate'),
        (3, '00001381', '0002', 1, 'Incarcare cantitate'),
        (4, '00001381', '0002', 9, 'Incarcare cantitate'),
        (5, '00001381', '0002', 1, 'Incarcare cantitate'),
        (6, '00000001', '0002', 1, 'Descarcare cantitate'),
-       (7, '00000001', '0001', 1, 'Descarcare cantitate');
+       (7, '00000001', '0001', 2, 'Descarcare cantitate');
 ";
 
     var dataAccess = new SqliteDataAccess();
     dataAccess.InsertData(sql);
 
     var inventoryMovementsLogic = new InventoryMovementsLogic(dataAccess, articleSearchLogic, null);
-    // throws an error due to null above
+
+    // Metoda de mai jos cauta in miscari.dbf deci gestiunile vor fi luate de acolo
     var articleInventoryMovements = inventoryMovementsLogic.GetInventoryMovementsForArticle("00001381");
     var articleInventoriesAsDict = inventoryMovementsLogic.CalculateAvailableInventory(articleInventoryMovements);
     var infoList = new List<string>();
@@ -79,7 +81,7 @@ VALUES (1, '00001381', '0001', 1, 'Descarcare cantitate'),
 
     FileLoggerHelper.LogInfo(infoList);
 
-	return;
+    return;
 }
 
 void TestAvaliableInventory()

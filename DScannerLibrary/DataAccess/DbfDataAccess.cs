@@ -22,10 +22,10 @@ public class DbfDataAccess : IDataAccess
         return connectionString;
     }
 
-    public List<DbfRecord> ReadDbf(string dbDirectory, string dbfName)
+    public List<DbfRecord> ReadDbf(string dbfName)
     {
         var dbf = new Dbf();
-        string dbfPath = $"{DatabaseDirectoryHelper.GetDatabaseDirectory(dbDirectory)}/{dbfName}";
+        string dbfPath = $"{DatabaseDirectoryHelper.GetDatabaseDirectory()}/{dbfName}";
 
         dbf.Read(dbfPath);
         return dbf.Records;

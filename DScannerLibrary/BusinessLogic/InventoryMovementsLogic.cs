@@ -519,7 +519,8 @@ public class InventoryMovementsLogic
                 exitQuantity = new OperationalInventoryModel { cantitate = 0 };
             }
 
-            var actualQuantity = entryQuantity.cantitate - exitQuantity.cantitate + operationalIncrease.cantitate - operationalDecrease.cantitate;
+            var actualQuantity = Convert.ToInt32(entryQuantity.cantitate) - Convert.ToInt32(exitQuantity.cantitate) + 
+		    Convert.ToInt32(operationalIncrease.cantitate) - Convert.ToInt32(operationalDecrease.cantitate);
 
             availableInventories.Add(item.gestiune, actualQuantity);
         }
