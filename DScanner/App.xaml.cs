@@ -20,7 +20,7 @@ public partial class App : Application
         Thread.CurrentThread.CurrentUICulture = new CultureInfo("ro");
 
         HostApplicationBuilder builder = Host.CreateApplicationBuilder(e.Args);
-        builder.Services.AddTransient<IDataAccess>(DbfDataAccess);
+        builder.Services.AddTransient<IDataAccess, DbfDataAccess>();
         builder.Services.AddTransient<InventoryMovementsLogic>();
         builder.Services.AddTransient<ArticleSearchLogic>();
         builder.Services.AddTransient<ExitDocumentCheck>();
