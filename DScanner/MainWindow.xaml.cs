@@ -121,7 +121,7 @@ public partial class MainWindow : Window
         catch (Exception ex)
         {
             Barcode = string.Empty;
-            MessageBox.Show(ex.Message + " " + ex.StackTrace, "Atentie", MessageBoxButton.OK, MessageBoxImage.Warning);
+            MessageBox.Show(ex.Message, "Atentie", MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
         }
     }
