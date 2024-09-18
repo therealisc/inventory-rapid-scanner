@@ -232,7 +232,7 @@ public class InventoryMovementsLogic
         if (exitDocumentId == 0 || isValidated == true)
         {
             throw new Exception(
-                    "Adauga in SAGA o iesire cu data selectata mai intai!\n(apasa pe butonul Refresh daca ai facut asta deja)\nAsigura-te ca documentul de iesire nu este validat!\n");
+                    "CLICK REFRESH SAU ADAUGA IN SAGA O IESIRE DACA NU AI FACUT ASTA DEJA!\nVezi ca documentul de iesire sa nu fie validat!\n");
         }
 
         var article = _articleSearchLogic.GetArticleByBarcode(barcode);

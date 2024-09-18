@@ -41,7 +41,8 @@ INSERT INTO intr_det
 VALUES (1, '00001381', '0001', 18),
        (2, '00001381', '0002', 2),
        (3, '00000001', '0002', 20),
-       (4, '00000001', '0001', 10);
+       (4, '00000810', '0001', 20),
+       (5, '00000001', '0001', 13);
 
 INSERT INTO ies_det
 VALUES (1, '00001381', '0001', 1),
@@ -77,7 +78,23 @@ VALUES (1, '00001381', '0001', 4, 'Descarcare cantitate'),
     }
 
     Console.WriteLine(articleInventoriesAsDict.Sum(x => x.Value));
+	    Console.WriteLine();
+	    Console.WriteLine();
+
     articleInventoryMovements.ForEach(x => infoList.Add($"{x.gestiune} {x.cantitate} {DateTime.Now}"));
+
+    articleInventoryMovements = inventoryMovementsLogic.GetInventoryMovementsForArticle("00000810");
+    articleInventoriesAsDict = inventoryMovementsLogic.CalculateAvailableInventory(articleInventoryMovements);
+
+    foreach (var articleTotals in articleInventoriesAsDict)
+    {
+	    Console.WriteLine(articleTotals.Key);
+	    Console.WriteLine(articleTotals.Value);
+	    Console.WriteLine();
+    }
+
+    Console.WriteLine(articleInventoriesAsDict.Sum(x => x.Value));
+
 
     FileLoggerHelper.LogInfo(infoList);
 
