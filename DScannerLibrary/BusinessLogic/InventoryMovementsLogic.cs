@@ -248,11 +248,13 @@ public class InventoryMovementsLogic
         {
             var inventoryMovement = inventoryMovements.SingleOrDefault();
             if (inventoryMovement?.gestiune != null)
+
                 return await ProcessInventoryExit(exitDocumentId, article, quantity, inventoryMovement.gestiune, quantity, quantity);
         }
 
         if (numberOfInventories > 1)
         {
+	    //TODO: Refactor all of this
             int rowsInserted = 0;
             for (int i = 0; i < quantity; i++)
             {
@@ -440,7 +442,7 @@ public class InventoryMovementsLogic
         return Convert.ToInt64(id);
     }
 
-    InventoryExitModel? GetLastMultipleInventoryExit(ArticleModel article, decimal exitDocumentId)
+    private InventoryExitModel? GetLastMultipleInventoryExit(ArticleModel article, decimal exitDocumentId)
     {
         var articleExistsList = _dataAccess
             .ReadData<InventoryExitModel>($"Select * from ies_det where id_iesire={exitDocumentId} and cod='{article.cod}'");

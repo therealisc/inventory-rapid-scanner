@@ -89,6 +89,7 @@ public partial class MainWindow : Window
     {
         if (BarcodeTextbox.IsFocused || QuantityTextBox.IsFocused)
         {
+            Barcode = string.Empty;
             return;
         }
 
