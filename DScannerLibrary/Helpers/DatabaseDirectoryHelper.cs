@@ -71,9 +71,8 @@ public static class DatabaseDirectoryHelper
         foreach (var directory in Directory.GetDirectories(rootDirectory))
 	{
 	    var directoryName = Path.GetFileName(directory);
-	    var directoryFound = directoryName.Equals(directoryToSearch, StringComparison.InvariantCulture);
 
-            Console.WriteLine(directory);
+	    var directoryFound = directoryName.Equals(directoryToSearch, StringComparison.InvariantCulture);
 
 	    if (directoryFound)
 	    {

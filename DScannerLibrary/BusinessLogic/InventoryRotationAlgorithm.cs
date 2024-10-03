@@ -4,7 +4,7 @@ namespace DScannerLibrary.BusinessLogic;
 
 public class InventoryRotationAlgorithm
 {
-    public string GetNextInventoryForExitProcess(Dictionary<string, decimal> inventories, InventoryExitModel previousExit)
+    public string GetNextInventoryForExitProcess(Dictionary<string, decimal> inventories, OperationalInventoryModel previousExit)
     {
         var inventoryList = inventories.Select(x => x.Key).ToList();
         var lastExitIndexInList = inventoryList.IndexOf(previousExit.gestiune);

@@ -2,6 +2,7 @@ using DScannerLibrary.DataAccess;
 using DScannerLibrary.Helpers;
 using DScannerLibrary.Models;
 using DScannerLibrary.Helpers;
+using System.Runtime.InteropServices;
 using System.ComponentModel;
 using System.Globalization;
 using System.Data.OleDb;
@@ -254,37 +255,7 @@ public class InventoryMovementsLogic
 
         if (numberOfInventories > 1)
         {
-	    //TODO: Refactor all of this
-            int rowsInserted = 0;
-            for (int i = 0; i < quantity; i++)
-            {
-                var lastMultipleInventoryExit = GetLastMultipleInventoryExit(article, exitDocumentId);
-
-                var actualInventoriesQuantities = CalculateAvailableInventory(inventoryMovements);
-
-		var allQuantity = actualInventoriesQuantities.Sum(x => x.Value);
-
-                if (allQuantity == 0)
-                {
-                    throw new Exception("Stocul este 0 din acest articol pe toate gestiunile! Adauga intrari mai intai!");
-                }
-
-                if (allQuantity < 0)
-                {
-		    string stringQuantities = "";
-
-		    foreach (var item in actualInventoriesQuantities)
-		    {
-		        stringQuantities += $"\nStoc actual pe gestiunea: {item.Key} {item.Value}";
-		    }
-
-		    throw new Exception($"Stocul este negativ pe toate gestiunile pentru acest articol.\n{stringQuantities} \nAdauga intrari mai intai!");
-                }
-
-                var inventoryCode = GetCorrectInventoryCode(lastMultipleInventoryExit, inventoryMovements, actualInventoriesQuantities);
-                rowsInserted += await ProcessInventoryExit(exitDocumentId, article, 1, inventoryCode, i + 1, quantity);
-            }
-            return rowsInserted;
+	    return await CreateMultipleExits(quantity, article, exitDocumentId, inventoryMovements);
         }
 
         if (numberOfInventories == 0)
@@ -302,7 +273,51 @@ public class InventoryMovementsLogic
         return 0;
     }
 
-    string GetCorrectInventoryCode(InventoryExitModel lastMultipleInventoryExit,
+    public async Task<int> CreateMultipleExits(decimal quantity, ArticleModel article, decimal exitDocumentId, List<InventoryMovementModel> inventoryMovements)
+    {
+	 //TODO: Refactor all of this
+	 int rowsInserted = 0;
+	 for (int i = 0; i < quantity; i++)
+	 {
+	     var lastMultipleInventoryExit = GetLastMultipleInventoryExit(article, exitDocumentId);
+
+	     var actualInventoriesQuantities = CalculateAvailableInventory(inventoryMovements);
+
+	     var q = (quantity / actualInventoriesQuantities.Count);
+	     var r = (quantity % actualInventoriesQuantities.Count);
+
+	     Console.WriteLine(r);
+	     Console.WriteLine((int)q+1);
+	     Console.WriteLine(actualInventoriesQuantities.Count - r);
+	     Console.WriteLine((int)q);
+
+	     var allQuantity = actualInventoriesQuantities.Sum(x => x.Value);
+
+	     if (allQuantity == 0)
+	     {
+		throw new Exception("Stocul este 0 din acest articol pe toate gestiunile! Adauga intrari mai intai!");
+	     }
+
+	     if (allQuantity < 0)
+	     {
+	         string stringQuantities = "";
+
+		 foreach (var item in actualInventoriesQuantities)
+		 {
+		     stringQuantities += $"\nStoc actual pe gestiunea: {item.Key} {item.Value}";
+		 }
+
+		 throw new Exception($"Stocul este negativ pe toate gestiunile pentru acest articol.\n{stringQuantities} \nAdauga intrari mai intai!");
+	     }
+
+	     var inventoryCode = GetCorrectInventoryCode(lastMultipleInventoryExit, inventoryMovements, actualInventoriesQuantities);
+
+	     rowsInserted += await ProcessInventoryExit(exitDocumentId, article, 1, inventoryCode, i + 1, quantity);
+	 }
+	 return rowsInserted;
+    }
+
+    string GetCorrectInventoryCode(OperationalInventoryModel lastMultipleInventoryExit,
             List<InventoryMovementModel> inventoryMovements,
             Dictionary<string, decimal> actualInventoriesQuantities)
     {
@@ -328,11 +343,16 @@ public class InventoryMovementsLogic
         {
             foreach (var item in actualInventoriesQuantities)
             {
-                Console.WriteLine($"Stoc actual: {item.Key} {item.Value}");
+                Console.Write($"Gesiune: {item.Key}   ");
+                Console.Write($"Stoc inainte de iesire: {item.Value}\n");
             }
 
             var rotationAlgorithm = new InventoryRotationAlgorithm();
+
             nextInventory = rotationAlgorithm.GetNextInventoryForExitProcess(actualInventoriesQuantities, lastMultipleInventoryExit);
+
+	    //Console.WriteLine($"Va iesi {nextInventory}");
+	    Console.WriteLine();
         }
 
         return nextInventory;
@@ -346,8 +366,17 @@ public class InventoryMovementsLogic
         decimal currentMultipleInventoryIteration,
         decimal totalQuantity)
     {
-        var generatedId = GenerateId(exitDocumentId);
+	if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+	{
+		var sql = $@"
+			INSERT INTO ies_det (id_iesire, cod, gestiune, cantitate)
+			VALUES ({exitDocumentId}, '{article.cod}', '{inventoryCode}', {exitQuantity});";
 
+		_dataAccess.InsertData(sql);
+		return (int)exitQuantity;
+	}
+
+        var generatedId = GenerateId(exitDocumentId);
         var dbfName = "gestiuni.dbf";
         var dbfPath = $"{DatabaseDirectoryHelper.GetDatabaseDirectory()}/{dbfName}";
 
@@ -442,15 +471,15 @@ public class InventoryMovementsLogic
         return Convert.ToInt64(id);
     }
 
-    private InventoryExitModel? GetLastMultipleInventoryExit(ArticleModel article, decimal exitDocumentId)
+    private OperationalInventoryModel? GetLastMultipleInventoryExit(ArticleModel article, decimal exitDocumentId)
     {
         var articleExistsList = _dataAccess
-            .ReadData<InventoryExitModel>($"Select * from ies_det where id_iesire={exitDocumentId} and cod='{article.cod}'");
+            .ReadData<OperationalInventoryModel>($"Select * from ies_det where id_iesire={exitDocumentId} and cod='{article.cod}'");
 
         if (articleExistsList.Count == 0)
         {
             articleExistsList = _dataAccess
-                .ReadData<InventoryExitModel>($"Select * from ies_det where cod='{article.cod}'");
+                .ReadData<OperationalInventoryModel>($"Select * from ies_det where cod='{article.cod}'");
         }
 
         if (articleExistsList.Count == 0)

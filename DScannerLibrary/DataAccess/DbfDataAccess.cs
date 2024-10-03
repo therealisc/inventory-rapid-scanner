@@ -112,4 +112,9 @@ public class DbfDataAccess : IDataAccess
             return rowsAffected;
         }
     }
+
+    public void InsertData(string rawSql)
+    {
+        throw new NotImplementedException();
+    }
 }

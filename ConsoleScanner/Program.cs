@@ -1,6 +1,7 @@
 ﻿using DScannerLibrary.BusinessLogic;
 using DScannerLibrary.DataAccess;
 using DScannerLibrary.Helpers;
+using DScannerLibrary.Models;
 using System;
 using System.Linq;
 
@@ -24,6 +25,7 @@ CREATE TABLE intr_det (
 
 CREATE TABLE ies_det (
 		id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+		id_iesire INTEGER NOT NULL,
 		cod TEXT NOT NULL,
 		gestiune TEXT NOT NULL,
 		cantitate INTEGER NOT NULL
@@ -38,65 +40,42 @@ CREATE TABLE special (
 		);
 
 INSERT INTO intr_det
-VALUES (1, '00001381', '0001', 18),
-       (2, '00001381', '0002', 2),
+VALUES (1, '00001381', '0001', 818),
+       (2, '00001381', '0002', 200),
        (3, '00000001', '0002', 20),
        (4, '00000810', '0001', 20),
        (5, '00000001', '0001', 13);
 
 INSERT INTO ies_det
-VALUES (1, '00001381', '0001', 1),
-       (2, '00001381', '0002', 1),
-       (3, '00000001', '0002', 1),
-       (4, '00000001', '0001', 1);
+VALUES (1, 72807, '00001381', '0001', 1),
+       (2, 72807, '00001381', '0002', 1),
+       (3, 72807, '00000001', '0002', 1),
+       (4, 72807, '00000001', '0001', 1);
 
 INSERT INTO special
 VALUES (1, '00001381', '0001', 4, 'Descarcare cantitate'),
        (2, '00001381', '0002', 1, 'Descarcare cantitate'),
        (3, '00001381', '0002', 1, 'Incarcare cantitate'),
-       (4, '00001381', '0002', 9, 'Incarcare cantitate'),
-       (5, '00001381', '0002', 1, 'Incarcare cantitate'),
+       (4, '00001381', '0002', 2, 'Incarcare cantitate'),
+       (5, '00001381', '0002', 2, 'Incarcare cantitate'),
        (6, '00000001', '0002', 1, 'Descarcare cantitate'),
        (7, '00000001', '0001', 2, 'Descarcare cantitate');
 ";
 
     var dataAccess = new SqliteDataAccess();
-    dataAccess.InsertData(sql);
+    //dataAccess.InsertData(sql);
 
     var inventoryMovementsLogic = new InventoryMovementsLogic(dataAccess, articleSearchLogic, null);
 
     // Metoda de mai jos cauta in miscari.dbf deci gestiunile vor fi luate de acolo
-    var articleInventoryMovements = inventoryMovementsLogic.GetInventoryMovementsForArticle("00001381");
-    var articleInventoriesAsDict = inventoryMovementsLogic.CalculateAvailableInventory(articleInventoryMovements);
-    var infoList = new List<string>();
-
-    foreach (var articleTotals in articleInventoriesAsDict)
+    var article = new ArticleModel()
     {
-	    Console.WriteLine(articleTotals.Key);
-	    Console.WriteLine(articleTotals.Value);
-	    Console.WriteLine();
-    }
+	cod = "00001381", 
+    };
+    var articleInventoryMovements = inventoryMovementsLogic.GetInventoryMovementsForArticle(article.cod);
+    var rows = await inventoryMovementsLogic.CreateMultipleExits(4, article, 72807, articleInventoryMovements);
 
-    Console.WriteLine(articleInventoriesAsDict.Sum(x => x.Value));
-	    Console.WriteLine();
-	    Console.WriteLine();
-
-    articleInventoryMovements.ForEach(x => infoList.Add($"{x.gestiune} {x.cantitate} {DateTime.Now}"));
-
-    articleInventoryMovements = inventoryMovementsLogic.GetInventoryMovementsForArticle("00000810");
-    articleInventoriesAsDict = inventoryMovementsLogic.CalculateAvailableInventory(articleInventoryMovements);
-
-    foreach (var articleTotals in articleInventoriesAsDict)
-    {
-	    Console.WriteLine(articleTotals.Key);
-	    Console.WriteLine(articleTotals.Value);
-	    Console.WriteLine();
-    }
-
-    Console.WriteLine(articleInventoriesAsDict.Sum(x => x.Value));
-
-
-    FileLoggerHelper.LogInfo(infoList);
+	Console.WriteLine(rows);
 
     return;
 }
