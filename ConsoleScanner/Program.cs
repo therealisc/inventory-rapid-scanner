@@ -2,6 +2,7 @@
 using DScannerLibrary.DataAccess;
 using DScannerLibrary.Helpers;
 using DScannerLibrary.Models;
+using DScannerLibrary.Services;
 using System;
 using System.Linq;
 
@@ -75,7 +76,12 @@ VALUES (1, '00001381', '0001', 4, 'Descarcare cantitate'),
     var articleInventoryMovements = inventoryMovementsLogic.GetInventoryMovementsForArticle(article.cod);
     var rows = await inventoryMovementsLogic.CreateMultipleExits(4, article, 72807, articleInventoryMovements);
 
-	Console.WriteLine(rows);
+    Console.WriteLine(rows);
+    Console.WriteLine("Sending mail...");
+
+    var emailService = new EmailService();
+    await emailService.SendMailAsync();
+
 
     return;
 }
