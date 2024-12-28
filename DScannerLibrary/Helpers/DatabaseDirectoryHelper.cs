@@ -20,6 +20,7 @@ public static class DatabaseDirectoryHelper
 
 	var sagaDirectoryName = "SAGA C.3.0";
 	var drives = DriveInfo.GetDrives();
+	var isLinux = RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
 
 	foreach (var drive in drives)
 	{
@@ -30,8 +31,11 @@ public static class DatabaseDirectoryHelper
 
 		var rootDirectory = drive.RootDirectory.FullName;
 
-		if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+		if (isLinux)
 	    	    rootDirectory = "/home/therealisc";
+
+		if (isLinux && !Directory.Exists($"{rootDirectory}/{sagaDirectoryName}"))
+		    Directory.CreateDirectory($"{rootDirectory}/{sagaDirectoryName}/1000");
 
 	        var sagaDirectory = SearchDirectory(rootDirectory, sagaDirectoryName, 0);
 
