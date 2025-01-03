@@ -35,8 +35,10 @@ public static class DatabaseDirectoryHelper
 	    	    rootDirectory = "/home/therealisc";
 
 		if (isLinux && !Directory.Exists($"{rootDirectory}/{sagaDirectoryName}"))
+		{
 		    string currentPath = Environment.CurrentDirectory;
 		    Directory.CreateDirectory($"{currentPath}/{sagaDirectoryName}/1000");
+		}
 
 	        var sagaDirectory = SearchDirectory(rootDirectory, sagaDirectoryName, 0);
 
