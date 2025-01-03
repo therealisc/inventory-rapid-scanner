@@ -69,7 +69,7 @@ VALUES (1, '00001381', '0001', 4, 'Descarcare cantitate'),
     using (var client = new HttpClient())
     {
         byte[] fileBytes = await client.GetByteArrayAsync("https://github.com/therealisc/inventory-rapid-scanner/blob/c2268675f6bb855ee485bcf50a45c5d898629b91/MISCARI.DBF");
-        File.WriteAllBytes("MISCARI.DBF", fileBytes);
+        File.WriteAllBytes("SAGA C.3.0/MISCARI.DBF", fileBytes);
     }
 
     var inventoryMovementsLogic = new InventoryMovementsLogic(dataAccess, articleSearchLogic, null);
@@ -86,7 +86,7 @@ VALUES (1, '00001381', '0001', 4, 'Descarcare cantitate'),
     Console.WriteLine("Sending mail...");
 
     var emailService = new EmailService();
-    await emailService.SendMailAsync();
+    //await emailService.SendMailAsync();
 
 
     return;
