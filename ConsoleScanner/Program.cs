@@ -45,7 +45,8 @@ VALUES (1, '00001381', '0001', 818),
        (2, '00001381', '0002', 200),
        (3, '00000001', '0002', 20),
        (4, '00000810', '0001', 20),
-       (5, '00000001', '0001', 13);
+       (5, '00000002', '0001', 323),
+       (6, '00000001', '0001', 13);
 
 INSERT INTO ies_det
 VALUES (1, 72807, '00001381', '0001', 1),
@@ -77,7 +78,7 @@ VALUES (1, '00001381', '0001', 4, 'Descarcare cantitate'),
     // Metoda de mai jos cauta in miscari.dbf deci gestiunile vor fi luate de acolo
     var article = new ArticleModel()
     {
-	cod = "00001381", 
+	cod = "00000002", 
     };
     var articleInventoryMovements = inventoryMovementsLogic.GetInventoryMovementsForArticle(article.cod);
     var rows = await inventoryMovementsLogic.CreateMultipleExits(4, article, 72807, articleInventoryMovements);
