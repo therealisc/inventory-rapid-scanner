@@ -32,7 +32,10 @@ public static class DatabaseDirectoryHelper
 		var rootDirectory = drive.RootDirectory.FullName;
 
 		if (isLinux)
-	    	    rootDirectory = "/home/therealisc";
+		{
+			rootDirectory = "/home/therealisc";
+			sagaDirectoryName = "saga";
+		}
 
 		if (isLinux && !Directory.Exists($"{rootDirectory}/{sagaDirectoryName}"))
 		{
