@@ -67,12 +67,6 @@ VALUES (1, '00001381', '0001', 4, 'Descarcare cantitate'),
     var dataAccess = new SqliteDataAccess();
     dataAccess.InsertData(sql);
 
-    using (var client = new HttpClient())
-    {
-        byte[] fileBytes = await client.GetByteArrayAsync("https://github.com/therealisc/inventory-rapid-scanner/blob/c2268675f6bb855ee485bcf50a45c5d898629b91/MISCARI.DBF");
-        File.WriteAllBytes("SAGA C.3.0/1000/MISCARI.DBF", fileBytes);
-    }
-
     var inventoryMovementsLogic = new InventoryMovementsLogic(dataAccess, articleSearchLogic, null);
 
     // Metoda de mai jos cauta in miscari.dbf deci gestiunile vor fi luate de acolo
@@ -80,8 +74,10 @@ VALUES (1, '00001381', '0001', 4, 'Descarcare cantitate'),
     {
 	cod = "00000002", 
     };
+
+    //Sequence contains no elements
     var articleInventoryMovements = inventoryMovementsLogic.GetInventoryMovementsForArticle(article.cod);
-    var rows = await inventoryMovementsLogic.CreateMultipleExits(4, article, 72807, articleInventoryMovements);
+    var rows = await inventoryMovementsLogic.CreateMultipleExits(5, article, 72807, articleInventoryMovements);
 
     Console.WriteLine(rows);
     Console.WriteLine("Sending mail...");
@@ -92,49 +88,9 @@ VALUES (1, '00001381', '0001', 4, 'Descarcare cantitate'),
 
     return;
 }
+//Console.WriteLine(Environment.OSVersion);
 
-void TestAvaliableInventory()
-{
-    Console.WriteLine(Environment.OSVersion);
-    var inventoryMovementsLogic = new InventoryMovementsLogic(null, articleSearchLogic, null);
-
-    //var articleInventoryMovements = inventoryMovementsLogic.GetInventoryMovementsForArticle("00001381");
-    var articleInventoryMovements = inventoryMovementsLogic.GetInventoryMovementsForArticle("00001381");
-    var articleInventoriesAsDict = inventoryMovementsLogic.AvailableInventoryAsDictionary(articleInventoryMovements);
-    var infoList = new List<string>();
-
-    foreach (var articleTotals in articleInventoriesAsDict)
-    {
-	    Console.WriteLine(articleTotals.Key);
-	    Console.WriteLine(articleTotals.Value);
-	    Console.WriteLine();
-    }
-
-    Console.WriteLine(articleInventoriesAsDict.Sum(x => x.Value));
-    articleInventoryMovements.ForEach(x => infoList.Add($"{x.gestiune} {x.cantitate} {DateTime.Now}"));
-
-    FileLoggerHelper.LogInfo(infoList);
-}
-
-
-//var dbDirectory = "/home/therealisc/0003";
-articleSearchLogic = new ArticleSearchLogic(new DbfDataAccess());
-var inventoryMovements = new InventoryMovementsLogic(new DbfDataAccess(), articleSearchLogic, null);
-
-var inventory = inventoryMovements.GetInventoryExitsByDate(new DateTime(2024, 08, 27));
-//var inventory = inventoryMovements.GetInventoryExitsByDate(dbDirectory, new DateTime(2024, 08, 25));
-
-//var article = articleSearchLogic.GetArticleByBarcode("9789731363882");
-//Console.WriteLine($"c:#{article.cod}# d:#{article.denumire}# t:{article.tva} p:{article.pret_vanz}");
-
-inventory.ForEach(x 
-    => Console.WriteLine(
-        $"line no:{inventory.IndexOf(x) + 1} _id:{x.id_iesire}-{x.cod}-{x.denumire}\n{x.pret_unitar} {x.valoare} {x.cantitate} {x.cont} {x.total} {x.adaos} {x.text_supl}"));
-
-
-Console.WriteLine($"Rows affected: {await inventoryMovements.GenerateInventoryExits("9789731363882", 1)}");
-
-return;
+// Remember this code? So glad it was written in 2023
 while (true)
 {
     string? barcode;
@@ -153,7 +109,7 @@ while (true)
 
     Console.WriteLine(barcode);
 
-    Console.WriteLine($"Rows affected: {await inventoryMovements.GenerateInventoryExits(barcode, quantity)}");
+    //Console.WriteLine($"Rows affected: {await inventoryMovements.GenerateInventoryExits(barcode, quantity)}");
 }
 
 string InputBarCode()

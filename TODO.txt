@@ -8,9 +8,6 @@ De eliminat o linie din csv atunci cand se adauga ceva nou si csv-ul are peste 1
 - se face un nou folder pentru fiecare unitate implicit de catre SAGA
 - se foloseste momentan ultimul folder de 4 cifre
 
-Other features:
-Installer
-
 Still using VFPOLEDB for insert
 
 Obs:
@@ -19,5 +16,8 @@ Adaos = Pretul vanzare din intrari - pretul unitar articole
 
 verifica mai intai cu ifconfig ce ip ai(e ultimul care apare)
 scp -r "C:\SAGA C.3.0\0003" therealisc@192.168.100.47:/home/therealisc
-maybe new username soon?
-a c z i d i h m
+
+TODO: STAY
+Sa vezi atunci (time rst)
+Sa upgradam echipamente sa schimbam serverele vechi 
+Gateste foarte bine | usile deschise
