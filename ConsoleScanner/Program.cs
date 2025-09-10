@@ -69,13 +69,12 @@ VALUES (1, '00001381', '0001', 4, 'Descarcare cantitate'),
 
     var inventoryMovementsLogic = new InventoryMovementsLogic(dataAccess, articleSearchLogic, null);
 
-    // Metoda de mai jos cauta in miscari.dbf deci gestiunile vor fi luate de acolo
+    // searching in miscari.dbf => gestiunile
     var article = new ArticleModel()
     {
 	cod = "00000002", 
     };
 
-    //Sequence contains no elements
     var articleInventoryMovements = inventoryMovementsLogic.GetInventoryMovementsForArticle(article.cod);
     var rows = await inventoryMovementsLogic.CreateMultipleExits(5, article, 72807, articleInventoryMovements);
 
@@ -85,9 +84,9 @@ VALUES (1, '00001381', '0001', 4, 'Descarcare cantitate'),
     var emailService = new EmailService();
     //await emailService.SendMailAsync();
 
-
     return;
 }
+
 //Console.WriteLine(Environment.OSVersion);
 
 // Remember this code? So glad it was written in 2023
