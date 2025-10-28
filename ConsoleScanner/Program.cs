@@ -87,7 +87,9 @@ VALUES (1, '00001381', '0001', 4, 'Descarcare cantitate'),
     return;
 }
 
-//Console.WriteLine(Environment.OSVersion);
+Console.WriteLine(Environment.OSVersion);
+
+return;
 
 // Remember this code? So glad it was written in 2023
 while (true)
