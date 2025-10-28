@@ -87,6 +87,9 @@ jobs:
       env:
         Configuration: ${{ matrix.configuration }}
 
+    # Run the application
+    - name: Run the demo app
+      run: ConsoleScanner/bin/Release/ConsoleScanner.exe
     # Decode the base 64 encoded pfx and save the Signing_Certificate
     #- name: Decode the pfx
       #run: |
