@@ -89,7 +89,7 @@ jobs:
 
     # Run the application
     - name: Run the demo app
-      run: cd ConsoleScanner/bin && dir
+      run:  dir
       #run: ConsoleScanner/bin/Debug/ConsoleScanner.exe
     # Decode the base 64 encoded pfx and save the Signing_Certificate
     #- name: Decode the pfx
