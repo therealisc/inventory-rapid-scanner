@@ -88,8 +88,8 @@ VALUES (1, '00001381', '0001', 4, 'Descarcare cantitate'),
 }
 
 Console.WriteLine(Environment.OSVersion);
-string[] args = Environment.GetCommandLineArgs();
-foreach (var arg in args)
+string[] cmdArgs = Environment.GetCommandLineArgs();
+foreach (var arg in cmdArgs)
 {
     Console.WriteLine(arg);
 }
