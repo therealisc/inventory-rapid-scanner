@@ -89,10 +89,9 @@ VALUES (1, '00001381', '0001', 4, 'Descarcare cantitate'),
 
 Console.WriteLine(Environment.OSVersion);
 string[] cmdArgs = Environment.GetCommandLineArgs();
-foreach (var arg in cmdArgs)
-{
-    Console.WriteLine(arg);
-}
+
+var emailService = new EmailService();
+await emailService.SendMailAsync(cmdArgs[1]);
 
 return;
 
