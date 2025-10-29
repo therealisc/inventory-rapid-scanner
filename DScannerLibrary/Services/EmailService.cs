@@ -5,10 +5,10 @@ namespace DScannerLibrary.Services;
 
 public class EmailService
 {
-    public async Task SendMailAsync()
+    public async Task SendMailAsync(string key)
     {
 	var sender = "ioan.scafa@gmail.com";
-	var password = "";
+	var password = key;
 
         var smtpClient = new SmtpClient("smtp.gmail.com")
         {
