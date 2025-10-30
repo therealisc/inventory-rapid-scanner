@@ -91,7 +91,7 @@ Console.WriteLine(Environment.OSVersion);
 string[] cmdArgs = Environment.GetCommandLineArgs();
 
 var emailService = new EmailService();
-await emailService.SendMailAsync(cmdArgs[1]);
+await emailService.SendMailAsync("ruporfcjpzndjzhk");
 
 return;
 
