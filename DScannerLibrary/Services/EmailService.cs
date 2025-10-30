@@ -20,7 +20,7 @@ public class EmailService
         var mailMessage = new MailMessage
         {
             From = new MailAddress(sender),
-            Subject = "New Life!",
+            Subject = "Renew Life!",
             Body = "<a href=\"https://sihastria.mmb.ro\">Here we go out of matrix</a>",
             IsBodyHtml = true,
         };
