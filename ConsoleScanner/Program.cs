@@ -81,7 +81,7 @@ VALUES (1, '00001381', '0001', 4, 'Descarcare cantitate'),
     Console.WriteLine(rows);
     Console.WriteLine("Sending mail...");
 
-    var emailService = new EmailService();
+    //var emailService = new EmailService();
     //await emailService.SendMailAsync();
 
     return;
