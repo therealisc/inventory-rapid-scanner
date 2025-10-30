@@ -20,13 +20,13 @@ public class EmailService
         var mailMessage = new MailMessage
         {
             From = new MailAddress(sender),
-            Subject = "Error check!",
-            Body = "<a href=\"https://sihastria.mmb.ro\">sihastria.mmb.ro</a>",
+            Subject = "New Life!",
+            Body = "<a href=\"https://sihastria.mmb.ro\">Here we go out of matrix</a>",
             IsBodyHtml = true,
         };
 
         mailMessage.To.Add("therealisc@proton.me");
-        //mailMessage.CC.Add(senderEmail);
+        mailMessage.CC.Add("luminita_scafa@yahoo.com");
 
         await smtpClient.SendMailAsync(mailMessage);
     }
