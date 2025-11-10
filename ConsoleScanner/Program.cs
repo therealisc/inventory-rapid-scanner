@@ -72,7 +72,7 @@ VALUES (1, '00001381', '0001', 4, 'Descarcare cantitate'),
     // searching in miscari.dbf => gestiunile
     var article = new ArticleModel()
     {
-	cod = "00000002", 
+	    cod = "00000002", 
     };
 
     var articleInventoryMovements = inventoryMovementsLogic.GetInventoryMovementsForArticle(article.cod);
@@ -87,9 +87,7 @@ VALUES (1, '00001381', '0001', 4, 'Descarcare cantitate'),
     return;
 }
 
-Console.WriteLine(Environment.OSVersion);
-string[] cmdArgs = Environment.GetCommandLineArgs();
-
+//Env.OSV
 var emailService = new EmailService();
 await emailService.SendMailAsync("ruporfcjpzndjzhk");
 
