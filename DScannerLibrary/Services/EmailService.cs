@@ -21,7 +21,7 @@ public class EmailService
         {
             From = new MailAddress(sender),
             Subject = "Renew Life!",
-            Body = "<a href=\"https://sihastria.mmb.ro\">Here we go out of matrix</a>",
+            Body = "<a href=\"https://sihastria.mmb.ro\">Here we go out of matrix</a>" + "<a href=\"https://daniilsihastrul.mmb.ro\">Change the report</a>",
             IsBodyHtml = true,
         };
 
