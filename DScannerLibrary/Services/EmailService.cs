@@ -25,8 +25,10 @@ public class EmailService
             IsBodyHtml = true,
         };
 
+		mailMessage.Attachments.Add(new Attachment("~/inventory-rapid-scanner/MISCARI.dbf"));
+
         mailMessage.To.Add("therealisc@proton.me");
-        mailMessage.CC.Add("luminita_scafa@yahoo.com");
+        //mailMessage.CC.Add("luminita_scafa@yahoo.com");
 
         await smtpClient.SendMailAsync(mailMessage);
     }
