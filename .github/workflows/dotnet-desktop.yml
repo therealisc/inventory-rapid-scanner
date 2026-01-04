@@ -90,8 +90,9 @@ jobs:
 
     # Run the application
     - name: Run the demo app
-      run: cd ConsoleScanner && dotnet run $env:Mp_Temp
-      #run: ConsoleScanner/bin/Debug/ConsoleScanner.exe
+      #run: cd ConsoleScanner && dotnet run $env:Mp_Temp
+      run: cd DScanner && dotnet run $env:Mp_Temp
+      
     # Decode the base 64 encoded pfx and save the Signing_Certificate
     #- name: Decode the pfx
       #run: |
