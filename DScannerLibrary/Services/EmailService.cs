@@ -25,7 +25,7 @@ public class EmailService
             IsBodyHtml = true,
         };
 
-		mailMessage.Attachments.Add(new Attachment("~/inventory-rapid-scanner/MISCARI.DBF"));
+		mailMessage.Attachments.Add(new Attachment("Saga.db"));
 
         mailMessage.To.Add("therealisc@proton.me");
         //mailMessage.CC.Add("luminita_scafa@yahoo.com");
