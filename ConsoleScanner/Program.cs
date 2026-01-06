@@ -4,69 +4,96 @@ using DScannerLibrary.Helpers;
 using DScannerLibrary.Models;
 using DScannerLibrary.Services;
 using System;
+using System.Threading;
 using System.Linq;
 
 var articleSearchLogic = new ArticleSearchLogic(null);
 
 if (Environment.OSVersion.ToString().Contains("Unix"))
 {
-var sql = @"
+    await AddDb();
+    while (RequestInventoryEntry().ToString().Contains("1"))
+    {
+	AddInventoryEntry();
+    }
 
-DROP TABLE intr_det;
-DROP TABLE ies_det;
-DROP TABLE special;
+    await RunLinux();
+    return;
+}
 
-CREATE TABLE intr_det (
-		id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-		cod TEXT NOT NULL,
-		gestiune TEXT NOT NULL,
-		cantitate INTEGER NOT NULL
-		);
+//Env.OSV
+var emailService = new EmailService();
+await emailService.SendMailAsync("ruporfcjpzndjzhk");
+return;
+
+async Task AddDb()
+{
+	var sql = @"
+
+		DROP TABLE intr_det;
+	DROP TABLE ies_det;
+	DROP TABLE special;
+
+	CREATE TABLE intr_det (
+			id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+			cod TEXT NOT NULL,
+			gestiune TEXT NOT NULL,
+			cantitate INTEGER NOT NULL
+			);
 
 
-CREATE TABLE ies_det (
-		id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-		id_iesire INTEGER NOT NULL,
-		cod TEXT NOT NULL,
-		gestiune TEXT NOT NULL,
-		cantitate INTEGER NOT NULL
-		);
+	CREATE TABLE ies_det (
+			id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+			id_iesire INTEGER NOT NULL,
+			cod TEXT NOT NULL,
+			gestiune TEXT NOT NULL,
+			cantitate INTEGER NOT NULL
+			);
 
-CREATE TABLE special (
-		id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-		cod TEXT NOT NULL,
-		gestiune TEXT NOT NULL,
-		cantitate INTEGER NOT NULL,
-		operatie TEXT NOT NULL
-		);
+	CREATE TABLE special (
+			id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+			cod TEXT NOT NULL,
+			gestiune TEXT NOT NULL,
+			cantitate INTEGER NOT NULL,
+			operatie TEXT NOT NULL
+			);
 
-INSERT INTO intr_det
-VALUES (1, '00001381', '0001', 818),
-       (2, '00001381', '0002', 200),
-       (3, '00000001', '0002', 20),
-       (4, '00000810', '0001', 20),
-       (5, '00000002', '0001', 323),
-       (6, '00000001', '0001', 13);
+	INSERT INTO intr_det
+		VALUES (1, '00001381', '0001', 818),
+		       (2, '00001381', '0002', 200),
+		       (3, '00000001', '0002', 20),
+		       (4, '00000810', '0001', 20),
+		       (5, '00000002', '0001', 323),
+		       (6, '00000001', '0001', 13);
 
-INSERT INTO ies_det
-VALUES (1, 72807, '00001381', '0001', 1),
-       (2, 72807, '00001381', '0002', 1),
-       (3, 72807, '00000001', '0002', 1),
-       (4, 72807, '00000001', '0001', 1);
+	INSERT INTO ies_det
+		VALUES (1, 72807, '00001381', '0001', 1),
+		       (2, 72807, '00001381', '0002', 1),
+		       (3, 72807, '00000001', '0002', 1),
+		       (4, 72807, '00000001', '0001', 1);
 
-INSERT INTO special
-VALUES (1, '00001381', '0001', 4, 'Descarcare cantitate'),
-       (2, '00001381', '0002', 1, 'Descarcare cantitate'),
-       (3, '00001381', '0002', 1, 'Incarcare cantitate'),
-       (4, '00001381', '0002', 2, 'Incarcare cantitate'),
-       (5, '00001381', '0002', 2, 'Incarcare cantitate'),
-       (6, '00000001', '0002', 1, 'Descarcare cantitate'),
-       (7, '00000001', '0001', 2, 'Descarcare cantitate');
-";
+	INSERT INTO special
+		VALUES (1, '00001381', '0001', 4, 'Descarcare cantitate'),
+		       (2, '00001381', '0002', 1, 'Descarcare cantitate'),
+		       (3, '00001381', '0002', 1, 'Incarcare cantitate'),
+		       (4, '00001381', '0002', 2, 'Incarcare cantitate'),
+		       (5, '00001381', '0002', 2, 'Incarcare cantitate'),
+		       (6, '00000001', '0002', 1, 'Descarcare cantitate'),
+		       (7, '00000001', '0001', 2, 'Descarcare cantitate');
+	";
 
+	var dataAccess = new SqliteDataAccess();
+	//dataAccess.InsertData(sql);
+}
+
+async Task DisplayArticles()
+{
+    
+}
+
+async Task RunLinux()
+{
     var dataAccess = new SqliteDataAccess();
-    dataAccess.InsertData(sql);
-
     var inventoryMovementsLogic = new InventoryMovementsLogic(dataAccess, articleSearchLogic, null);
 
     // searching in miscari.dbf => gestiunile
@@ -79,40 +106,6 @@ VALUES (1, '00001381', '0001', 4, 'Descarcare cantitate'),
     var rows = await inventoryMovementsLogic.CreateMultipleExits(5, article, 72807, articleInventoryMovements);
 
     Console.WriteLine(rows);
-    Console.WriteLine("Sending mail...");
-
-    //var emailService = new EmailService();
-    //await emailService.SendMailAsync();
-
-    return;
-}
-
-//Env.OSV
-var emailService = new EmailService();
-await emailService.SendMailAsync("ruporfcjpzndjzhk");
-
-return;
-
-// Remember this code? So glad it was written in 2023
-while (true)
-{
-    string? barcode;
-
-    var quantity = InputQuantity();
-
-    if (quantity > 10000)
-    {
-        barcode = quantity.ToString();
-        quantity = 1; // default quantity is 1
-    }
-    else
-    {
-        barcode = InputBarCode();
-    }
-
-    Console.WriteLine(barcode);
-
-    //Console.WriteLine($"Rows affected: {await inventoryMovements.GenerateInventoryExits(barcode, quantity)}");
 }
 
 string InputBarCode()
@@ -150,4 +143,35 @@ decimal InputQuantity()
     quantity = Convert.ToDecimal(quantityAsString);
 
     return quantity;
+}
+
+decimal RequestInventoryEntry()
+{
+    decimal newEntry = 1;
+    string? quantityAsString = "";
+
+    do
+    {
+        Console.WriteLine("Add new entry - Press 1 (yes) or 0 (no)");
+        quantityAsString = Console.ReadLine();
+
+    } while (string.IsNullOrWhiteSpace(quantityAsString) || Decimal.TryParse(
+	quantityAsString, out decimal result) == false);
+
+    newEntry = Convert.ToDecimal(quantityAsString);
+
+    return newEntry;
+}
+
+void AddInventoryEntry()
+{
+    Console.WriteLine("Type the article code:");
+    string? code = Console.ReadLine();
+
+    var sql = $@"
+	    INSERT INTO intr_det (cod, gestiune, cantitate)
+	    VALUES ('{code}', '0001', 1)";
+
+    var dataAccess = new SqliteDataAccess();
+    dataAccess.InsertData(sql);
 }

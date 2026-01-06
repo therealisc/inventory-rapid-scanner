@@ -283,14 +283,6 @@ public class InventoryMovementsLogic
 
 	     var actualInventoriesQuantities = CalculateAvailableInventory(inventoryMovements);
 
-	     var q = (quantity / actualInventoriesQuantities.Count);
-	     var r = (quantity % actualInventoriesQuantities.Count);
-
-	     Console.WriteLine(r);
-	     Console.WriteLine((int)q+1);
-	     Console.WriteLine(actualInventoriesQuantities.Count - r);
-	     Console.WriteLine((int)q);
-
 	     var allQuantity = actualInventoriesQuantities.Sum(x => x.Value);
 
 	     if (allQuantity == 0)
@@ -350,9 +342,6 @@ public class InventoryMovementsLogic
             var rotationAlgorithm = new InventoryRotationAlgorithm();
 
             nextInventory = rotationAlgorithm.GetNextInventoryForExitProcess(actualInventoriesQuantities, lastMultipleInventoryExit);
-
-	    //Console.WriteLine($"Va iesi {nextInventory}");
-	    Console.WriteLine();
         }
 
         return nextInventory;
