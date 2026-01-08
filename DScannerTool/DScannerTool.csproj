@@ -13,6 +13,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\DScannerLibrary\DScannerLibrary.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="GtkSharp" Version="3.24.24.*" />
   </ItemGroup>
 

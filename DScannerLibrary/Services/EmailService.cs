@@ -21,11 +21,12 @@ public class EmailService
         {
             From = new MailAddress(sender),
             Subject = "Renew Life!",
-            Body = "<a href=\"https://sihastria.mmb.ro\">Here we go out of matrix</a>" + "<a href=\"https://daniilsihastrul.mmb.ro\">Change the report</a>",
+            Body = "<a href=\"https://sihastria.mmb.ro\">Here we go out of matrix</a> " + 
+	           "<a href=\"https://daniilsihastrul.mmb.ro\">Change the report</a>",
             IsBodyHtml = true,
         };
 
-		mailMessage.Attachments.Add(new Attachment("Saga.db"));
+	//mailMessage.Attachments.Add(new Attachment("Saga.db"));
 
         mailMessage.To.Add("therealisc@proton.me");
         //mailMessage.CC.Add("luminita_scafa@yahoo.com");

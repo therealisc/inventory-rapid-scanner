@@ -2,7 +2,6 @@
 using DScannerLibrary.DataAccess;
 using DScannerLibrary.Helpers;
 using DScannerLibrary.Models;
-using DScannerLibrary.Services;
 using System;
 using System.Threading;
 using System.Linq;
@@ -33,9 +32,6 @@ if (Environment.OSVersion.ToString().Contains("Unix"))
     return;
 }
 
-//Env.OSV
-var emailService = new EmailService();
-await emailService.SendMailAsync("ruporfcjpzndjzhk");
 return;
 
 async Task AddDb()

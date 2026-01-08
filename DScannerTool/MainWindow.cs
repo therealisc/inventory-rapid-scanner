@@ -1,6 +1,7 @@
 using System;
 using Gtk;
 using UI = Gtk.Builder.ObjectAttribute;
+using DScannerLibrary.Services;
 
 namespace DScannerTool
 {
@@ -26,10 +27,14 @@ namespace DScannerTool
             Application.Quit();
         }
 
-        private void Button1_Clicked(object sender, EventArgs a)
+        private async void Button1_Clicked(object sender, EventArgs a)
         {
+	    //Env.OSV
+    	    var emailService = new EmailService();
+	    await emailService.SendMailAsync("ruporfcjpzndjzhk");
+
             _counter++;
-            _label1.Text = "Hello World! This button has been clicked " + _counter + " time(s).";
+            _label1.Text = "Mail sent " + _counter + " time(s).";
         }
     }
 }
