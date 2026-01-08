@@ -12,12 +12,24 @@ var articleSearchLogic = new ArticleSearchLogic(null);
 if (Environment.OSVersion.ToString().Contains("Unix"))
 {
     await AddDb();
-    while (RequestInventoryEntry().ToString().Contains("1"))
+    await DisplayArticles();
+
+    while (true)
     {
-	AddInventoryEntry();
+	var input = RequestInventoryEntry().ToString();
+	if (input.Contains("1"))
+	{
+	    AddInventoryEntry();
+	}
+
+	if (input.Contains("0"))
+	{
+	    await AddInventoryExit();
+	}
+
+        await DisplayArticles();
     }
 
-    await RunLinux();
     return;
 }
 
@@ -88,10 +100,23 @@ async Task AddDb()
 
 async Task DisplayArticles()
 {
-    
+    Console.WriteLine("Inventory available:");
+
+    var sql = $@"
+	    SELECT * FROM intr_det";
+
+    var dataAccess = new SqliteDataAccess();
+    var entries = dataAccess.ReadData<OperationalInventoryModel>(sql);
+
+    Console.WriteLine("cod gestiune cantitate");
+
+    foreach (OperationalInventoryModel entry in entries)
+    {
+	Console.WriteLine($"{entry.cod} {entry.gestiune} {entry.cantitate}");
+    }
 }
 
-async Task RunLinux()
+async Task AddInventoryExit()
 {
     var dataAccess = new SqliteDataAccess();
     var inventoryMovementsLogic = new InventoryMovementsLogic(dataAccess, articleSearchLogic, null);
@@ -103,7 +128,7 @@ async Task RunLinux()
     };
 
     var articleInventoryMovements = inventoryMovementsLogic.GetInventoryMovementsForArticle(article.cod);
-    var rows = await inventoryMovementsLogic.CreateMultipleExits(5, article, 72807, articleInventoryMovements);
+    var rows = await inventoryMovementsLogic.CreateMultipleExits(1, article, 72807, articleInventoryMovements);
 
     Console.WriteLine(rows);
 }
@@ -117,13 +142,13 @@ string InputBarCode()
         Console.WriteLine("Enter the barcode:");
         articleBarCode = Console.ReadLine();
 
-    } while (string.IsNullOrWhiteSpace(articleBarCode) || Decimal.TryParse(articleBarCode, out decimal result) == false);
+    } while (string.IsNullOrWhiteSpace(articleBarCode) || Decimal.TryParse(
+	articleBarCode, out decimal result) == false);
 
     if (articleBarCode == "exit")
     {
         Environment.Exit(0);
     }
-
 
     return articleBarCode;
 }
@@ -135,10 +160,11 @@ decimal InputQuantity()
 
     do
     {
-        Console.WriteLine("Introdu cantitatea (dupa care apasa ENTER) sau scaneaza un articol si cantitatea va fi implicit 1:");
+        Console.WriteLine("Introdu cantitatea (apoi apasa ENTER) sau scaneaza un articol si cantitatea va fi 1:");
         quantityAsString = Console.ReadLine();
 
-    } while (string.IsNullOrWhiteSpace(quantityAsString) || Decimal.TryParse(quantityAsString, out decimal result) == false || result == 0);
+    } while (string.IsNullOrWhiteSpace(quantityAsString) || Decimal.TryParse(
+	quantityAsString, out decimal result) == false || result == 0);
 
     quantity = Convert.ToDecimal(quantityAsString);
 
@@ -152,7 +178,7 @@ decimal RequestInventoryEntry()
 
     do
     {
-        Console.WriteLine("Add new entry - Press 1 (yes) or 0 (no)");
+        Console.WriteLine("New entry - Press 1 or new exit - Press 0");
         quantityAsString = Console.ReadLine();
 
     } while (string.IsNullOrWhiteSpace(quantityAsString) || Decimal.TryParse(
