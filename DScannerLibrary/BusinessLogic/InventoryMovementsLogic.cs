@@ -547,4 +547,64 @@ public class InventoryMovementsLogic
 
         return availableInventories;
     }
+
+    public void AddTemporaryDb()
+    {
+	    var sql = @"
+
+	    DROP TABLE intr_det;
+	    DROP TABLE ies_det;
+	    DROP TABLE special;
+
+	    CREATE TABLE intr_det (
+			    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+			    cod TEXT NOT NULL,
+			    gestiune TEXT NOT NULL,
+			    cantitate INTEGER NOT NULL
+			    );
+
+
+	    CREATE TABLE ies_det (
+			    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+			    id_iesire INTEGER NOT NULL,
+			    cod TEXT NOT NULL,
+			    gestiune TEXT NOT NULL,
+			    cantitate INTEGER NOT NULL
+			    );
+
+	    CREATE TABLE special (
+			    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+			    cod TEXT NOT NULL,
+			    gestiune TEXT NOT NULL,
+			    cantitate INTEGER NOT NULL,
+			    operatie TEXT NOT NULL
+			    );
+
+	    INSERT INTO intr_det
+		    VALUES (1, '00001381', '0001', 818),
+			   (2, '00001381', '0002', 200),
+			   (3, '00000001', '0002', 20),
+			   (4, '00000810', '0001', 20),
+			   (5, '00000002', '0001', 323),
+			   (6, '00000001', '0001', 13);
+
+	    INSERT INTO ies_det
+		    VALUES (1, 72807, '00001381', '0001', 1),
+			   (2, 72807, '00001381', '0002', 1),
+			   (3, 72807, '00000001', '0002', 1),
+			   (4, 72807, '00000001', '0001', 1);
+
+	    INSERT INTO special
+		    VALUES (1, '00001381', '0001', 4, 'Descarcare cantitate'),
+			   (2, '00001381', '0002', 1, 'Descarcare cantitate'),
+			   (3, '00001381', '0002', 1, 'Incarcare cantitate'),
+			   (4, '00001381', '0002', 2, 'Incarcare cantitate'),
+			   (5, '00001381', '0002', 2, 'Incarcare cantitate'),
+			   (6, '00000001', '0002', 1, 'Descarcare cantitate'),
+			   (7, '00000001', '0001', 2, 'Descarcare cantitate');
+	    ";
+
+	    var dataAccess = new SqliteDataAccess();
+	    dataAccess.InsertData(sql);
+    }
 }
