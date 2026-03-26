@@ -10,22 +10,22 @@ public class ArticleSearchLogic
 {
     private readonly IDataAccess _dataAccess;
 
-    public ArticleSearchLogic(IDataAccess dataAccess)
+    public ArticleSearchLogic(IDataAccess dataAccess = null)
     {
-	 _dataAccess = dataAccess;
+		_dataAccess = dataAccess ?? new NullDataAccess();
     }
 
     public ArticleModel? GetArticleByBarcode(string articleBarcode)
     {
-	 var articles = _dataAccess.ReadData<ArticleModel>($"Select cod, denumire, tva, pret_vanz, cod_bare from articole where cod_bare={articleBarcode}");
-	 var article = articles.SingleOrDefault();
+		var articles = _dataAccess.ReadData<ArticleModel>($"Select cod, denumire, tva, pret_vanz, cod_bare from articole where cod_bare={articleBarcode}");
+		var article = articles.SingleOrDefault();
 
-	 return article;
+		return article;
     }
 
     public ArticleModel? GetArticleByBarcode(string articleBarcode, string dbDirectory)
     {
-	var _dbDirectory = dbDirectory;
+		var _dbDirectory = dbDirectory;
 
         var options = new DbfDataReaderOptions
         {

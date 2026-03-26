@@ -22,7 +22,8 @@ public class SqliteDataAccess : IDataAccess
 
     public List<T> ReadData<T>(string query)
     {
-	var dataTable = new DataTable();
+		var dataTable = new DataTable();
+
         using (var connection = new SqliteConnection(_connectionString))
         {
 	    connection.Open();
@@ -38,7 +39,7 @@ public class SqliteDataAccess : IDataAccess
 	    connection.Close();
         }
 
-	return DataTableToListExtension.ConvertDataTable<T>(dataTable);
+		return DataTableToListExtension.ConvertDataTable<T>(dataTable);
     }
 
     public void InsertData(string rawSql)

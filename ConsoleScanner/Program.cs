@@ -6,30 +6,33 @@ using System;
 using System.Threading;
 using System.Linq;
 
-var articleSearchLogic = new ArticleSearchLogic(null);
+var articleSearchLogic = new ArticleSearchLogic();
 
 if (Environment.OSVersion.ToString().Contains("Unix"))
 {
+	Console.WriteLine("------------ Demo interface ------------");
+
     var inventoryMovementsLogic = new InventoryMovementsLogic(null, null, null);
+
     inventoryMovementsLogic.AddTemporaryDb();
+	
     await DisplayArticles();
 
     while (true)
     {
-	var input = RequestInventoryEntry().ToString();
-	if (input.Contains("1"))
-	{
-	    AddInventoryEntry();
-	}
+		var input = RequestInventoryEntry().ToString();
+		if (input.Contains("1"))
+		{
+				AddInventoryEntry();
+		}
 
-	if (input.Contains("0"))
-	{
-	    await AddInventoryExit();
-	}
+		if (input.Contains("0"))
+		{
+				await AddInventoryExit();
+		}
 
-        await DisplayArticles();
+		await DisplayArticles();
     }
-
     return;
 }
 
