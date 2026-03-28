@@ -1,7 +1,6 @@
 using DScannerLibrary.DataAccess;
 using DScannerLibrary.Helpers;
 using DScannerLibrary.Models;
-using DScannerLibrary.Helpers;
 using System.Runtime.InteropServices;
 using System.ComponentModel;
 using System.Globalization;

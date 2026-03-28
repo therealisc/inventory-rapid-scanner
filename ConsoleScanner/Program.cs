@@ -12,7 +12,9 @@ if (Environment.OSVersion.ToString().Contains("Unix"))
 {
 	Console.WriteLine("------------ Demo interface ------------");
 
-    var inventoryMovementsLogic = new InventoryMovementsLogic(null, null, null);
+	var nullDataAccess = new NullDataAccess();
+
+    var inventoryMovementsLogic = new InventoryMovementsLogic(nullDataAccess, articleSearchLogic, new ExitDocumentCheck(nullDataAccess));
 
     inventoryMovementsLogic.AddTemporaryDb();
 	
