@@ -324,10 +324,10 @@ public class InventoryMovementsLogic
                     .OrderByDescending(x => x.cantitate)
                     .First().gestiune;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 // TODO: de testat cu first sa crape
-                throw e;
+                throw;
             }
         }
         else

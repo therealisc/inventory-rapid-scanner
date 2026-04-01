@@ -1,81 +1,248 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <requires lib="gtk+" version="3.18"/>
   <object class="GtkWindow" id="MainWindow">
     <property name="can_focus">False</property>
     <property name="title" translatable="yes">DScannerTool</property>
-    <property name="default_width">960</property>
-    <property name="default_height">480</property>
+    <property name="default_width">1024</property>
+    <property name="default_height">700</property>
     <child>
-      <object class="GtkNotebook">
+      <object class="GtkBox">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="margin_left">4</property>
-        <property name="margin_right">4</property>
-        <property name="margin_top">4</property>
-        <property name="margin_bottom">4</property>
+        <property name="orientation">vertical</property>
+        <property name="margin_left">5</property>
+        <property name="margin_right">5</property>
+        <property name="margin_top">5</property>
+        <property name="margin_bottom">5</property>
+        <property name="spacing">5</property>
         <child>
+          <!-- Top toolbar: DatePicker and Refresh button -->
           <object class="GtkBox">
             <property name="visible">True</property>
-            <property name="orientation">vertical</property>
+            <property name="can_focus">False</property>
+            <property name="spacing">10</property>
             <child>
-              <object class="GtkListBox" id="_list1">
+              <object class="GtkLabel">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
-              </object>
-	      <packing>
-	        <property name="expand">True</property>
-		<property name="fill">True</property>
-	      </packing>
-            </child>
-            <child>
-              <object class="GtkButton">
-                <property name="label" translatable="yes">Click me!</property>
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">Data:</property>
               </object>
             </child>
-          </object>
-        </child>
-	<child type="tab">
-          <object class="GtkLabel">
-            <property name="label">Start</property>
-          </object>
-	</child>
-        <child>
-          <object class="GtkLabel" id="_label1">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="label" translatable="yes">Mail Sender</property>
-          </object>
-          <packing>
-            <property name="expand">True</property>
-            <property name="fill">True</property>
-            <property name="position">1</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkLabel">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="label" translatable="yes">Mail Sender</property>
-          </object>
-          <packing>
-            <property name="expand">True</property>
-            <property name="fill">True</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkButton" id="_button1">
-            <property name="label" translatable="yes">Click me!</property>
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="receives_default">True</property>
+            <child>
+              <object class="GtkEntry" id="_dateEntry">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="width_chars">12</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkButton" id="_refreshButton">
+                <property name="label" translatable="yes">Refresh</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+              </object>
+            </child>
           </object>
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">2</property>
+          </packing>
+        </child>
+        <child>
+          <!-- Inventory Exits TreeView -->
+          <object class="GtkScrolledWindow">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="shadow_type">in</property>
+            <property name="vexpand">True</property>
+            <child>
+              <object class="GtkTreeView" id="_exitsTreeView">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="headers_clickable">True</property>
+                <property name="enable_search">False</property>
+                <child internal-child="selection">
+                  <object class="GtkTreeSelection" id="_exitsSelection">
+                    <property name="mode">multiple</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+          </packing>
+        </child>
+        <child>
+          <!-- Bottom section: controls and totals -->
+          <object class="GtkBox">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="spacing">10</property>
+            <child>
+              <!-- Left side: Barcode and quantity controls -->
+              <object class="GtkBox">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="orientation">vertical</property>
+                <property name="spacing">5</property>
+                <child>
+                  <!-- Quantity row -->
+                  <object class="GtkBox">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="spacing">3</property>
+                    <child>
+                      <object class="GtkButton" id="_decreaseQuantityButton">
+                        <property name="label" translatable="yes">-</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
+                        <property name="width_request">30</property>
+                        <property name="height_request">30</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkBox">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="orientation">vertical</property>
+                        <child>
+                          <object class="GtkLabel">
+                            <property name="visible">True</property>
+                            <property name="label" translatable="yes">Cantitate</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkEntry" id="_quantityEntry">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="width_chars">10</property>
+                            <property name="text" translatable="yes">1</property>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkButton" id="_increaseQuantityButton">
+                        <property name="label" translatable="yes">+</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
+                        <property name="width_request">30</property>
+                        <property name="height_request">30</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <!-- Barcode row -->
+                  <object class="GtkBox">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="spacing">5</property>
+                    <child>
+                      <object class="GtkBox">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="orientation">vertical</property>
+                        <child>
+                          <object class="GtkLabel">
+                            <property name="visible">True</property>
+                            <property name="label" translatable="yes">Cod de bare</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkEntry" id="_barcodeEntry">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="width_chars">20</property>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkBox">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="orientation">vertical</property>
+                        <child>
+                          <object class="GtkLabel">
+                            <property name="visible">True</property>
+                            <property name="label" translatable="no"></property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkButton" id="_processExitButton">
+                            <property name="label" translatable="yes">Proceseaza Iesire</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="receives_default">True</property>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <!-- Selected articles total -->
+                  <object class="GtkBox">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="spacing">5</property>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="visible">True</property>
+                        <property name="label" translatable="yes">Total pret articole selectate:</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkEntry" id="_selectedTotalEntry">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="width_chars">12</property>
+                        <property name="editable">False</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <!-- Right side: Totals TreeView -->
+              <object class="GtkScrolledWindow">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="shadow_type">in</property>
+                <property name="hexpand">True</property>
+                <child>
+                  <object class="GtkTreeView" id="_totalsTreeView">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="headers_clickable">True</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+          </packing>
+        </child>
+        <child>
+          <!-- Status label -->
+          <object class="GtkLabel" id="_statusLabel">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="label" translatable="yes">Pozitioneaza cursorul pe gridul de mai sus atunci cand scanezi</property>
+            <property name="halign">start</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
           </packing>
         </child>
       </object>

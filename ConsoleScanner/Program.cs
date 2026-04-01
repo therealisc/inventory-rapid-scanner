@@ -1,18 +1,18 @@
-﻿using DScannerLibrary.BusinessLogic;
-using DScannerLibrary.DataAccess;
-using DScannerLibrary.Helpers;
+﻿using DScannerLibrary.Helpers;
 using DScannerLibrary.Models;
+using DScannerLibrary.BusinessLogic;
+using DScannerLibrary.DataAccess;
 using System;
 using System.Threading;
 using System.Linq;
 
 var articleSearchLogic = new ArticleSearchLogic();
+var nullDataAccess = new NullDataAccess();
+var dataAccess = new SqliteDataAccess();
 
 if (Environment.OSVersion.ToString().Contains("Unix"))
 {
-	Console.WriteLine("------------ Demo interface ------------");
-
-	var nullDataAccess = new NullDataAccess();
+	Console.WriteLine("------------ Convert existing fox pro database to a relational database ------------");
 
     var inventoryMovementsLogic = new InventoryMovementsLogic(nullDataAccess, articleSearchLogic, new ExitDocumentCheck(nullDataAccess));
 
@@ -48,20 +48,18 @@ async Task DisplayArticles()
     var sql = $@"
 	    SELECT * FROM intr_det";
 
-    var dataAccess = new SqliteDataAccess();
     var entries = dataAccess.ReadData<OperationalInventoryModel>(sql);
 
     Console.WriteLine("cod gestiune cantitate");
 
     foreach (OperationalInventoryModel entry in entries)
     {
-	Console.WriteLine($"{entry.cod} {entry.gestiune} {entry.cantitate}");
+	    Console.WriteLine($"{entry.cod} {entry.gestiune} {entry.cantitate}");
     }
 }
 
 async Task AddInventoryExit()
 {
-    var dataAccess = new SqliteDataAccess();
     var inventoryMovementsLogic = new InventoryMovementsLogic(dataAccess, articleSearchLogic, null);
 
     // searching in miscari.dbf => gestiunile
@@ -141,6 +139,5 @@ void AddInventoryEntry()
 	    INSERT INTO intr_det (cod, gestiune, cantitate)
 	    VALUES ('{code}', '0001', 1)";
 
-    var dataAccess = new SqliteDataAccess();
     dataAccess.InsertData(sql);
 }
