@@ -40,7 +40,11 @@ namespace DScannerTool
             builder.Autoconnect(this);
 
             _mapper = new Mapper(MapperConfig.GetAdapterConfig());
+
+			//TODO: fix data access setting
             var dataAccess = new SqliteDataAccess();
+            //var dataAccess = new DbfDataAccess();
+
             var articleSearchLogic = new ArticleSearchLogic(dataAccess);
             var exitDocumentCheck = new ExitDocumentCheck(dataAccess);
             _inventoryMovementsLogic = new InventoryMovementsLogic(dataAccess, articleSearchLogic, exitDocumentCheck);

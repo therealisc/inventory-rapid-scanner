@@ -14,6 +14,8 @@ if (Environment.OSVersion.ToString().Contains("Unix"))
 {
 	Console.WriteLine("------------ Convert existing fox pro database to a relational database ------------");
 
+	AddIesiriTable();
+
     var inventoryMovementsLogic = new InventoryMovementsLogic(nullDataAccess, articleSearchLogic, new ExitDocumentCheck(nullDataAccess));
 
     inventoryMovementsLogic.AddTemporaryDb();
@@ -128,6 +130,15 @@ decimal RequestInventoryEntry()
     newEntry = Convert.ToDecimal(quantityAsString);
 
     return newEntry;
+}
+
+void AddIesiriTable()
+{
+	var sql = $@"CREATE TABLE iesiri (
+		id_iesire INTEGER NOT NULL
+		)";
+
+    dataAccess.InsertData(sql);
 }
 
 void AddInventoryEntry()

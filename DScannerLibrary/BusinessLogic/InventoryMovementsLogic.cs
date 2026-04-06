@@ -4,7 +4,6 @@ using DScannerLibrary.Models;
 using System.Runtime.InteropServices;
 using System.ComponentModel;
 using System.Globalization;
-using System.Data.OleDb;
 using System.Text;
 using System;
 using DbfReaderNET;
@@ -33,6 +32,11 @@ public class InventoryMovementsLogic
 
     public List<InventoryExitModel> GetInventoryExitsByDate(DateTime? exitDate, string dbfName="IESIRI.DBF")
     {
+        if (!exitDate.HasValue)
+        {
+            throw new ArgumentException("Data de iesire nu este specificata.", nameof(exitDate));
+        }
+
         string dbfPath = $"{DatabaseDirectoryHelper.GetDatabaseDirectory()}/{dbfName}";
 
         exitDocumentIdToRetain = 0;
@@ -68,16 +72,14 @@ public class InventoryMovementsLogic
             }
         }
 
-        var parameters = new List<OleDbParameter>()
-	{
-	    new OleDbParameter { Value = exitDate }
-	};
-
+	    //var inventoryExists = _dataAccess
+	    //    .ReadData<InventoryExitModel>(
+		//	    $"Select d.den_gest, d.cod, d.denumire, d.den_tip, d.um, d.cantitate, d.pret_unitar, d.valoare, d.total, d.adaos, d.cont, d.text_supl " +
+		//	    "from ies_det d inner join iesiri i on d.id_iesire = i.id_iesire");
+		
 	    var inventoryExists = _dataAccess
 	        .ReadData<InventoryExitModel>(
-			    $"Select d.den_gest, d.cod, d.denumire, d.den_tip, d.um, d.cantitate, d.pret_unitar, d.valoare, d.total, d.adaos, d.cont, d.text_supl " +
-			    "from ies_det d inner join iesiri i on d.id_iesire = i.id_iesire where i.data=?",
-			    parameters.ToArray());
+			    $"SELECT gestiune, den_gest, cod, denumire, den_tip, um, cantitate, pret_unitar, valoare, total, adaos, cont, text_supl FROM ies_det");
 
       	return inventoryExists;
     }

@@ -3,7 +3,7 @@
   <requires lib="gtk+" version="3.18"/>
   <object class="GtkWindow" id="MainWindow">
     <property name="can_focus">False</property>
-    <property name="title" translatable="yes">DScannerTool</property>
+    <property name="title">DScannerTool</property>
     <property name="default_width">1024</property>
     <property name="default_height">700</property>
     <child>
@@ -25,7 +25,7 @@
             <child>
               <object class="GtkLabel">
                 <property name="visible">True</property>
-                <property name="label" translatable="yes">Data:</property>
+                <property name="label">Data:</property>
               </object>
             </child>
             <child>
@@ -37,7 +37,7 @@
             </child>
             <child>
               <object class="GtkButton" id="_refreshButton">
-                <property name="label" translatable="yes">Refresh</property>
+                <property name="label">Refresh</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
@@ -96,7 +96,7 @@
                     <property name="spacing">3</property>
                     <child>
                       <object class="GtkButton" id="_decreaseQuantityButton">
-                        <property name="label" translatable="yes">-</property>
+                        <property name="label">-</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
@@ -112,7 +112,7 @@
                         <child>
                           <object class="GtkLabel">
                             <property name="visible">True</property>
-                            <property name="label" translatable="yes">Cantitate</property>
+                            <property name="label">Cantitate</property>
                           </object>
                         </child>
                         <child>
@@ -120,14 +120,14 @@
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="width_chars">10</property>
-                            <property name="text" translatable="yes">1</property>
+                            <property name="text">1</property>
                           </object>
                         </child>
                       </object>
                     </child>
                     <child>
                       <object class="GtkButton" id="_increaseQuantityButton">
-                        <property name="label" translatable="yes">+</property>
+                        <property name="label">+</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
@@ -151,7 +151,7 @@
                         <child>
                           <object class="GtkLabel">
                             <property name="visible">True</property>
-                            <property name="label" translatable="yes">Cod de bare</property>
+                            <property name="label">Cod de bare</property>
                           </object>
                         </child>
                         <child>
@@ -171,12 +171,12 @@
                         <child>
                           <object class="GtkLabel">
                             <property name="visible">True</property>
-                            <property name="label" translatable="no"></property>
+                            <property name="label"></property>
                           </object>
                         </child>
                         <child>
                           <object class="GtkButton" id="_processExitButton">
-                            <property name="label" translatable="yes">Proceseaza Iesire</property>
+                            <property name="label">Proceseaza Iesire</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">True</property>
@@ -195,7 +195,7 @@
                     <child>
                       <object class="GtkLabel">
                         <property name="visible">True</property>
-                        <property name="label" translatable="yes">Total pret articole selectate:</property>
+                        <property name="label">Total pret articole selectate:</property>
                       </object>
                     </child>
                     <child>
@@ -237,7 +237,7 @@
           <object class="GtkLabel" id="_statusLabel">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="label" translatable="yes">Pozitioneaza cursorul pe gridul de mai sus atunci cand scanezi</property>
+            <property name="label">Pozitioneaza cursorul pe gridul de mai sus atunci cand scanezi</property>
             <property name="halign">start</property>
           </object>
           <packing>
