@@ -12,7 +12,7 @@ var dataAccess = new SqliteDataAccess();
 
 if (Environment.OSVersion.ToString().Contains("Unix"))
 {
-	Console.WriteLine("------------ Convert existing fox pro database to a relational database ------------");
+	Console.WriteLine("--- Convert existing fox pro database to a relational database ---");
 
 	AddIesiriTable();
 
