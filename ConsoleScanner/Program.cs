@@ -40,6 +40,8 @@ if (Environment.OSVersion.ToString().Contains("Unix"))
     return;
 }
 
+Console.WriteLine("--- xproc conv ---");
+
 return;
 
 
