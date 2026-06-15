@@ -70,7 +70,7 @@ public static class DatabaseDirectoryHelper
 	        throw ex;
 	    }
 	}
-	throw new Exception("The SAGA C.3.0 directory was not found.");
+	throw new Exception("The SAGA C.3.0 directory is missing on xproc.");
     }
 
     static string SearchDirectory(string rootDirectory, string directoryToSearch, int depth)
