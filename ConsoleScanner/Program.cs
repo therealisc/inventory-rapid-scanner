@@ -42,7 +42,12 @@ if (Environment.OSVersion.ToString().Contains("Unix"))
 }
 
 Console.WriteLine("--- loadin dbf ---");
-Console.WriteLine(dbfDataAccess.ReadDbf("MISCARI.DBF").Count);
+
+var dbfLines = dbfDataAccess.ReadDbf("MISCARI.DBF");
+foreach (dbfLine in dbfLines)
+{
+	Console.WriteLine(dbfLine.ToString());
+}
 
 return;
 
