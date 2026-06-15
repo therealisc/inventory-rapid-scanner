@@ -9,6 +9,7 @@ using System.Linq;
 var articleSearchLogic = new ArticleSearchLogic();
 var nullDataAccess = new NullDataAccess();
 var dataAccess = new SqliteDataAccess();
+var dbfDataAccess = new DbfDataAccess();
 
 if (Environment.OSVersion.ToString().Contains("Unix"))
 {
@@ -40,7 +41,8 @@ if (Environment.OSVersion.ToString().Contains("Unix"))
     return;
 }
 
-Console.WriteLine("--- xproc conv ---");
+Console.WriteLine("--- loadin dbf ---");
+Console.WriteLine(dbfDataAccess.ReadDbf("MISCARI").Count);
 
 return;
 
