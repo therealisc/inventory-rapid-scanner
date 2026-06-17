@@ -42,13 +42,20 @@ if (Environment.OSVersion.ToString().Contains("Unix"))
 }
 
 Console.WriteLine("--- loadin dbf ---");
-var dbfLines = dbfDataAccess.ReadDbf("articole.dbf");
+var tableName = "articole";
+var dbfLines = dbfDataAccess.ReadDbf($"{tableName}.dbf");
 
 Console.WriteLine(dbfLines.Count);
 foreach (var dbfLine in dbfLines)
 {
 	Console.WriteLine(dbfLine.ToString());
 }
+
+var sql = $@"CREATE TABLE {tableName} (
+		id INTEGER NOT NULL
+		)";
+
+dataAccess.InsertData(sql);
 
 return;
 
