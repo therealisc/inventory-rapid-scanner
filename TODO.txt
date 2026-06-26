@@ -2,9 +2,6 @@
 - Calculare corecta adaos
 - Better backup
 - Optimizare spre final: mai putine call-uri la db
-
-De eliminat o linie din csv atunci cand se adauga ceva nou si csv-ul are peste 100.000 linii?
-
 - se face un nou folder pentru fiecare unitate implicit de catre SAGA
 - se foloseste momentan ultimul folder de 4 cifre
 
@@ -19,5 +16,4 @@ scp -r "C:\SAGA C.3.0\0003" therealisc@192.168.100.47:/home/therealisc
 
 TODO: STAY
 Sa vezi atunci (time rst)
-Sa upgradam echipamente sa schimbam serverele vechi 
-Gateste foarte bine | usile deschise
+Sa upgradam echipamente sa schimbam serverele vechi
