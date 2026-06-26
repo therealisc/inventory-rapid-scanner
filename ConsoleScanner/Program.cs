@@ -96,44 +96,6 @@ async Task AddInventoryExit()
     Console.WriteLine(rows);
 }
 
-string InputBarCode()
-{
-    string? articleBarCode = "";
-
-    do
-    {
-        Console.WriteLine("Enter the barcode:");
-        articleBarCode = Console.ReadLine();
-
-    } while (string.IsNullOrWhiteSpace(articleBarCode) || Decimal.TryParse(
-	articleBarCode, out decimal result) == false);
-
-    if (articleBarCode == "exit")
-    {
-        Environment.Exit(0);
-    }
-
-    return articleBarCode;
-}
-
-decimal InputQuantity()
-{
-    decimal quantity = 1;
-    string? quantityAsString = "";
-
-    do
-    {
-        Console.WriteLine("Introdu cantitatea (apoi apasa ENTER) sau scaneaza un articol si cantitatea va fi 1:");
-        quantityAsString = Console.ReadLine();
-
-    } while (string.IsNullOrWhiteSpace(quantityAsString) || Decimal.TryParse(
-	quantityAsString, out decimal result) == false || result == 0);
-
-    quantity = Convert.ToDecimal(quantityAsString);
-
-    return quantity;
-}
-
 decimal RequestInventoryEntry()
 {
     decimal newEntry = 1;
