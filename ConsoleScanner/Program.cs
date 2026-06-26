@@ -57,6 +57,9 @@ var sql = $@"CREATE TABLE {tableName} (
 
 dataAccess.InsertData(sql);
 
+var uniqueId = Guid.NewGuid();
+Console.WriteLine(uniqueId);
+
 return;
 
 
