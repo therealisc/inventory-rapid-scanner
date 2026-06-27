@@ -60,7 +60,7 @@ dataAccess.InsertData(sql);
 foreach (var dbfLine in dbfLines)
 {
 	var uniqueId = Guid.NewGuid();
-	//Console.WriteLine(uniqueId);
+	Console.WriteLine(uniqueId);
 
 	sql = $@"INSERT INTO TABLE {tableName} (id) VALUES ({uniqueId})";
 	dataAccess.InsertData(sql);
