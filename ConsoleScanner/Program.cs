@@ -57,11 +57,16 @@ var sql = $@"CREATE TABLE {tableName} (
 
 dataAccess.InsertData(sql);
 
-var uniqueId = Guid.NewGuid();
-Console.WriteLine(uniqueId);
+foreach (var dbfLine in dbfLines)
+{
+	var uniqueId = Guid.NewGuid();
+	//Console.WriteLine(uniqueId);
+
+	sql = $@"INSERT INTO TABLE {tableName} (id) VALUES ({uniqueId})";
+	dataAccess.InsertData(sql);
+}
 
 return;
-
 
 async Task DisplayArticles()
 {
