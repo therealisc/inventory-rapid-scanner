@@ -52,7 +52,7 @@ foreach (var dbfLine in dbfLines)
 }
 
 var sql = $@"CREATE TABLE {tableName} (
-		id VARCHAR(255) NOT NULL
+		id int NOT NULL
 		)";
 
 dataAccess.InsertData(sql);
@@ -60,7 +60,7 @@ dataAccess.InsertData(sql);
 foreach (var dbfLine in dbfLines)
 {
 	//var uniqueId = Guid.NewGuid();
-	var uniqueId = "8fb62e223434";
+	var uniqueId = "1200134";
 	Console.WriteLine(uniqueId);
 
 	sql = $@"INSERT INTO {tableName} (id) VALUES ({uniqueId})";
