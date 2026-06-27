@@ -52,7 +52,7 @@ foreach (var dbfLine in dbfLines)
 }
 
 var sql = $@"CREATE TABLE {tableName} (
-		id int NOT NULL
+		id int PRIMARY KEY
 		)";
 
 dataAccess.InsertData(sql);
