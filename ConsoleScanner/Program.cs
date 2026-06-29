@@ -11,10 +11,10 @@ var nullDataAccess = new NullDataAccess();
 var dataAccess = new SqliteDataAccess();
 var dbfDataAccess = new DbfDataAccess();
 
-if (Environment.OSVersion.ToString().Contains("Unix"))
-{
-	return;
-}
+//if (Environment.OSVersion.ToString().Contains("Unix"))
+//{
+	//return;
+//}
 
 Console.WriteLine("--- loadin dbf ---");
 var tableName = "articole";
@@ -46,44 +46,10 @@ foreach (var dbfLine in dbfLines)
 	dataAccess.InsertData(sql);
 }
 
-Console.WriteLine("Inventory available:");
+Console.WriteLine("Id available:");
 sql = $@"SELECT * FROM {tableName}";
 
 var entries = dataAccess.ReadData<List<int>>(sql);
 entries.ForEach(d => Console.WriteLine(d));
 
 return;
-
-//async Task AddInventoryExit()
-//{
-    //var inventoryMovementsLogic = new InventoryMovementsLogic(dataAccess, articleSearchLogic, null);
-
-    // searching in miscari.dbf => gestiunile
-    //var article = new ArticleModel()
-    //{
-	    //cod = "00000002", 
-    //};
-
-    //var articleInventoryMovements = inventoryMovementsLogic.GetInventoryMovementsForArticle(article.cod);
-    //var rows = await inventoryMovementsLogic.CreateMultipleExits(1, article, 72807, articleInventoryMovements);
-
-    //Console.WriteLine(rows);
-//}
-
-//decimal RequestInventoryEntry()
-//{
-    //decimal newEntry = 1;
-    //string? quantityAsString = "";
-
-    //do
-    //{
-        //Console.WriteLine("New entry - Press 1 or new exit - Press 0");
-        //quantityAsString = Console.ReadLine();
-
-    //} while (string.IsNullOrWhiteSpace(quantityAsString) || Decimal.TryParse(
-	//quantityAsString, out decimal result) == false);
-
-    //newEntry = Convert.ToDecimal(quantityAsString);
-
-    //return newEntry;
-//}
