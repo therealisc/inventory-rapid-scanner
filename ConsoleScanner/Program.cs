@@ -50,14 +50,7 @@ Console.WriteLine("Inventory available:");
 sql = $@"SELECT * FROM {tableName}";
 
 var entries = dataAccess.ReadData<List<int>>(sql);
-
-foreach (var entry in entries)
-{
-	if (int.TryParse(entry, out int result))
-	{
-		Console.WriteLine(result);
-	}
-}
+entries.ForEach(d => Console.WriteLine(d));
 
 return;
 
