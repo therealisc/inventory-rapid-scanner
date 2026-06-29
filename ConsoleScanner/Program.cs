@@ -47,15 +47,16 @@ foreach (var dbfLine in dbfLines)
 }
 
 Console.WriteLine("Inventory available:");
-
-sql = $@"
-	    SELECT * FROM {tableName}";
+sql = $@"SELECT * FROM {tableName}";
 
 var entries = dataAccess.ReadData<List<int>>(sql);
 
 foreach (var entry in entries)
 {
-	Console.WriteLine(entry);
+	if (int.TryParse(entry, out int result))
+	{
+		Console.WriteLine(result);
+	}
 }
 
 return;
