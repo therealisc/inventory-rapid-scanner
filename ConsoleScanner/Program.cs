@@ -13,10 +13,7 @@ var dbfDataAccess = new DbfDataAccess();
 
 if (Environment.OSVersion.ToString().Contains("Unix"))
 {
-    var inventoryMovementsLogic = new InventoryMovementsLogic(nullDataAccess, articleSearchLogic, new ExitDocumentCheck(nullDataAccess));
-
-    inventoryMovementsLogic.AddTemporaryDb();
-    return;
+	return;
 }
 
 Console.WriteLine("--- loadin dbf ---");
