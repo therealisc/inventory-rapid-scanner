@@ -13,31 +13,9 @@ var dbfDataAccess = new DbfDataAccess();
 
 if (Environment.OSVersion.ToString().Contains("Unix"))
 {
-	Console.WriteLine("--- Convert existing fox pro database to a relational database ---");
-
-	AddIesiriTable();
-
     var inventoryMovementsLogic = new InventoryMovementsLogic(nullDataAccess, articleSearchLogic, new ExitDocumentCheck(nullDataAccess));
 
     inventoryMovementsLogic.AddTemporaryDb();
-	
-    await DisplayArticles();
-
-    while (true)
-    {
-		var input = RequestInventoryEntry().ToString();
-		if (input.Contains("1"))
-		{
-				AddInventoryEntry();
-		}
-
-		if (input.Contains("0"))
-		{
-				await AddInventoryExit();
-		}
-
-		await DisplayArticles();
-    }
     return;
 }
 
