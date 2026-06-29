@@ -53,7 +53,7 @@ sql = $@"
 
 var entries = dataAccess.ReadData<List<int>>(sql);
 
-foreach (int entry in entries)
+foreach (var entry in entries)
 {
 	Console.WriteLine(entry);
 }
