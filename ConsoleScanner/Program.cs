@@ -49,6 +49,6 @@ Console.WriteLine("Id available:");
 sql = $@"SELECT id FROM {tableName}";
 
 var entries = dataAccess.ReadData<DisplayModel>(sql);
-entries.ForEach(d => Console.WriteLine(d));
+entries.ForEach(d => Console.WriteLine(d.Id));
 
 return;
