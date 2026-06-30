@@ -47,7 +47,7 @@ foreach (var dbfLine in dbfLines)
 Console.WriteLine("Id available:");
 sql = $@"SELECT id FROM {tableName}";
 
-var entries = dataAccess.ReadData<int>(sql);
+var entries = dataAccess.ReadData<dynamic>(sql);
 entries.ForEach(d => Console.WriteLine(d));
 
 return;
