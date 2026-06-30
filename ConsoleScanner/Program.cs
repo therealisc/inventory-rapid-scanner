@@ -50,6 +50,6 @@ sql = $@"SELECT * FROM {tableName}";
 var entries = dataAccess.ReadData<List<int>>(sql);
 //string result = string.Join(", ", entries);
 
-Console.WriteLine(entries.First().ToString()); 
+Console.WriteLine((int)entries.First()); 
 //entries.ForEach(d => Console.WriteLine(d));
 return;
