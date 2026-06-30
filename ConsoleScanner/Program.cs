@@ -48,6 +48,8 @@ Console.WriteLine("Id available:");
 sql = $@"SELECT * FROM {tableName}";
 
 var entries = dataAccess.ReadData<List<int>>(sql);
-entries.ForEach(d => Console.WriteLine(d));
+string result = string.Join(", ", entries);
 
+Console.WriteLine(result); 
+//entries.ForEach(d => Console.WriteLine(d));
 return;
