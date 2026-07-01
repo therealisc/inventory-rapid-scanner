@@ -19,7 +19,7 @@ var dbfDataAccess = new DbfDataAccess();
 
 Console.WriteLine("--- loadin dbf ---");
 var tableName = "articole";
-var dbfLines = dbfDataAccess.ReadDbf($"{tableName}.dbf");
+var dbfLines = dbfDataAccess.ReadDbf($"{ tableName }.dbf");
 
 Console.WriteLine(dbfLines.Count);
 foreach (var dbfLine in dbfLines)
@@ -42,9 +42,11 @@ foreach (var dbfLine in dbfLines)
 	Console.WriteLine(numberId);
 
 	// the sql db converted varchar to int down below 
-	sql = $@"INSERT INTO {tableName} (id) VALUES ({numberId})";
+	sql = $@"INSERT INTO { tableName } (id) VALUES ({ numberId })";
 	dataAccess.InsertData(sql);
 }
+
+dataAccess = new SqliteDataAccess();
 
 Console.WriteLine("Id available:");
 sql = $@"SELECT id FROM {tableName}";
