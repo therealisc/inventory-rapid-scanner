@@ -34,7 +34,7 @@ int counter = 0;
 foreach (var dbfLine in dbfLines)
 {
 	var lineSplit = dbfLine.ToString().Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-	var nameArray = lineSplit[counter + 1].ToString().Split(new char[] { '=' }, StringSplitOptions.RemoveEmptyEntries);
+	var nameArray = lineSplit[1].ToString().Split(new char[] { '=' }, StringSplitOptions.RemoveEmptyEntries);
 
 	itemName = nameArray[1];	
 	Console.WriteLine(itemName);
