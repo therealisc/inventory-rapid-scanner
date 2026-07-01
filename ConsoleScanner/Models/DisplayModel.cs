@@ -2,5 +2,5 @@ namespace ConsoleScanner.Models;
 
 public class DisplayModel
 {
-    public int Id { get; set; }
+    public long Id { get; set; }
 }
