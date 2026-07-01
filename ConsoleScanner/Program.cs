@@ -46,11 +46,11 @@ foreach (var dbfLine in dbfLines)
 	var numberId = $"{counter}";
 
 	// the sql db converted varchar to int down below 
-	sql = $@"INSERT INTO { tableName } (Id, Denumire) VALUES ({ numberId }, { finalSplit[1] })";
+	sql = $@"INSERT INTO { tableName } (Id, Denumire) VALUES ({ numberId }, '{ finalSplit[1] }' )";
 	dataAccess.InsertData(sql);
 }
 
-Console.WriteLine("Id available:");
+Console.WriteLine("--- Rows available ---");
 sql = $@"SELECT * FROM { tableName }";
 
 var entries = dataAccess.ReadData<DisplayModel>(sql);
