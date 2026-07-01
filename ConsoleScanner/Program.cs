@@ -24,7 +24,7 @@ var dbfLines = dbfDataAccess.ReadDbf($"{ tableName }.dbf");
 foreach (var dbfLine in dbfLines)
 {
 	var lineSplit = dbfLine.ToString().Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-	Console.WriteLine(lineSplit);
+	Console.WriteLine(lineSplit[1]);
 }
 
 var sql = $@"CREATE TABLE {tableName} (
