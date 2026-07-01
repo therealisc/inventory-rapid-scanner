@@ -21,12 +21,13 @@ Console.WriteLine("--- loadin dbf ---");
 var tableName = "articole";
 var dbfLines = dbfDataAccess.ReadDbf($"{ tableName }.dbf");
 
-string? finalSplit = null;
+string[] finalSplit = null;
 
 foreach (var dbfLine in dbfLines)
 {
 	var lineSplit = dbfLine.ToString().Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 	finalSplit = lineSplit[1].ToString().Split(new char[] { '=' }, StringSplitOptions.RemoveEmptyEntries);
+	
 	Console.WriteLine(finalSplit[1]);
 }
 
@@ -45,7 +46,7 @@ foreach (var dbfLine in dbfLines)
 	var numberId = $"{counter}";
 
 	// the sql db converted varchar to int down below 
-	sql = $@"INSERT INTO { tableName } (Id, Denumire) VALUES ({ numberId }, { finalSplit })";
+	sql = $@"INSERT INTO { tableName } (Id, Denumire) VALUES ({ numberId }, { finalSplit[1] })";
 	dataAccess.InsertData(sql);
 }
 
