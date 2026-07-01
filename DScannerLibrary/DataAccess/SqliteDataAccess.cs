@@ -26,17 +26,17 @@ public class SqliteDataAccess : IDataAccess
 
         using (var connection = new SqliteConnection(_connectionString))
         {
-	    connection.Open();
+	    	connection.Open();
 
-	    using (var command = new SqliteCommand(query, connection))
-	    {
-		using (var dataReader = command.ExecuteReader())
-		{
-		    dataTable.Load(dataReader);
-		}
+	    	using (var command = new SqliteCommand(query, connection))
+	    	{
+				using (var dataReader = command.ExecuteReader())
+				{
+		    		dataTable.Load(dataReader);
+				}
 	    }
 
-	    connection.Close();
+	    	connection.Close();
         }
 
 		return DataTableToListExtension.ConvertDataTable<T>(dataTable);
@@ -45,15 +45,15 @@ public class SqliteDataAccess : IDataAccess
     public void InsertData(string rawSql)
     {
         using (var connection = new SqliteConnection(_connectionString))
-	{
-	    connection.Open();
+		{
+	    	connection.Open();
 
-	    var command = connection.CreateCommand();
-	    command.CommandText = rawSql;
-	    command.ExecuteNonQuery();
+	    	var command = connection.CreateCommand();
+	    	command.CommandText = rawSql;
+	    	command.ExecuteNonQuery();
 
-	    connection.Close();
-	}
+	    	connection.Close();
+		}
     }
 
     public int InsertData<T>(T item)
