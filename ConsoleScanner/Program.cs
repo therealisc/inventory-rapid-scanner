@@ -21,6 +21,8 @@ Console.WriteLine("--- loadin dbf ---");
 var tableName = "articole";
 var dbfLines = dbfDataAccess.ReadDbf($"{ tableName }.dbf");
 
+string? finalSplit = null;
+
 foreach (var dbfLine in dbfLines)
 {
 	var lineSplit = dbfLine.ToString().Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
@@ -43,14 +45,15 @@ foreach (var dbfLine in dbfLines)
 	var numberId = $"{counter}";
 
 	// the sql db converted varchar to int down below 
-	sql = $@"INSERT INTO { tableName } (Id) VALUES ({ numberId })";
+	sql = $@"INSERT INTO { tableName } (Id, Denumire) VALUES ({ numberId }, { finalSplit })";
 	dataAccess.InsertData(sql);
 }
 
 Console.WriteLine("Id available:");
-sql = $@"SELECT Id FROM { tableName }";
+sql = $@"SELECT * FROM { tableName }";
 
 var entries = dataAccess.ReadData<DisplayModel>(sql);
 entries.ForEach(d => Console.WriteLine(d.Id));
+entries.ForEach(d => Console.WriteLine(d.Denumire));
 
 return;
