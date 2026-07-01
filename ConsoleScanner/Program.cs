@@ -21,14 +21,15 @@ Console.WriteLine("--- loadin dbf ---");
 var tableName = "articole";
 var dbfLines = dbfDataAccess.ReadDbf($"{ tableName }.dbf");
 
-Console.WriteLine(dbfLines.Count);
 foreach (var dbfLine in dbfLines)
 {
-	Console.WriteLine(dbfLine.ToString());
+	var lineSplit = dbfLine.ToString().Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+	Console.WriteLine(lineSplit);
 }
 
 var sql = $@"CREATE TABLE {tableName} (
-		Id int PRIMARY KEY
+		Id int PRIMARY KEY,
+		Denumire varchar(255) NOT NULL
 		)";
 
 dataAccess.InsertData(sql);
@@ -39,7 +40,6 @@ foreach (var dbfLine in dbfLines)
 	//var uniqueId = Guid.NewGuid();
 	counter++;
 	var numberId = $"{counter}";
-	Console.WriteLine(numberId);
 
 	// the sql db converted varchar to int down below 
 	sql = $@"INSERT INTO { tableName } (Id) VALUES ({ numberId })";
