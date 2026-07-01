@@ -23,16 +23,6 @@ var dbfLines = dbfDataAccess.ReadDbf($"{ tableName }.dbf");
 
 string itemName = "";
 
-foreach (var dbfLine in dbfLines)
-{
-	var lineSplit = dbfLine.ToString().Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-	var nameArray = lineSplit[1].ToString().Split(new char[] { '=' }, StringSplitOptions.RemoveEmptyEntries);
-
-	itemName = nameArray[1];
-	
-	Console.WriteLine(itemName);
-}
-
 var sql = $@"CREATE TABLE {tableName} (
 		Id int PRIMARY KEY,
 		Denumire varchar(255) NOT NULL
@@ -43,6 +33,12 @@ dataAccess.InsertData(sql);
 int counter = 0;
 foreach (var dbfLine in dbfLines)
 {
+	var lineSplit = dbfLine.ToString().Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+	var nameArray = lineSplit[counter + 1].ToString().Split(new char[] { '=' }, StringSplitOptions.RemoveEmptyEntries);
+
+	itemName = nameArray[1];	
+	Console.WriteLine(itemName);
+	
 	//var uniqueId = Guid.NewGuid();
 	counter++;
 	var numberId = $"{counter}";
