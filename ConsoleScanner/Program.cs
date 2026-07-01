@@ -39,6 +39,7 @@ foreach (var dbfLine in dbfLines)
 	//var uniqueId = Guid.NewGuid();
 	counter++;
 	var numberId = $"{counter}";
+	Console.WriteLine(numberId);
 
 	// the sql db converted varchar to int down below 
 	sql = $@"INSERT INTO {tableName} (id) VALUES ({numberId})";
