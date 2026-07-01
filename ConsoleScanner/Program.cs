@@ -28,7 +28,7 @@ foreach (var dbfLine in dbfLines)
 }
 
 var sql = $@"CREATE TABLE {tableName} (
-		id int PRIMARY KEY
+		Id int PRIMARY KEY
 		)";
 
 dataAccess.InsertData(sql);
@@ -42,14 +42,12 @@ foreach (var dbfLine in dbfLines)
 	Console.WriteLine(numberId);
 
 	// the sql db converted varchar to int down below 
-	sql = $@"INSERT INTO { tableName } (id) VALUES ({ numberId })";
+	sql = $@"INSERT INTO { tableName } (Id) VALUES ({ numberId })";
 	dataAccess.InsertData(sql);
 }
 
-dataAccess = new SqliteDataAccess();
-
 Console.WriteLine("Id available:");
-sql = $@"SELECT id FROM {tableName}";
+sql = $@"SELECT Id FROM { tableName }";
 
 var entries = dataAccess.ReadData<DisplayModel>(sql);
 entries.ForEach(d => Console.WriteLine(d.Id));
