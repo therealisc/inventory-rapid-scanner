@@ -54,7 +54,6 @@ Console.WriteLine("--- Rows available ---");
 sql = $@"SELECT * FROM { tableName }";
 
 var entries = dataAccess.ReadData<DisplayModel>(sql);
-entries.ForEach(d => Console.WriteLine(d.Id));
-entries.ForEach(d => Console.WriteLine(d.Denumire));
+entries.ForEach(d => Console.WriteLine($"{ d.Id } { d.Denumire }"));
 
 return;
