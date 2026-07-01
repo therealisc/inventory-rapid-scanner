@@ -26,7 +26,7 @@ string? finalSplit = null;
 foreach (var dbfLine in dbfLines)
 {
 	var lineSplit = dbfLine.ToString().Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-	var finalSplit = lineSplit[1].ToString().Split(new char[] { '=' }, StringSplitOptions.RemoveEmptyEntries);
+	finalSplit = lineSplit[1].ToString().Split(new char[] { '=' }, StringSplitOptions.RemoveEmptyEntries);
 	Console.WriteLine(finalSplit[1]);
 }
 
