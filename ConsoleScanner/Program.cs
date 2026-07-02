@@ -37,7 +37,7 @@ var sql = $@"CREATE TABLE { tableName } (
 		Id int PRIMARY KEY,
 		Name varchar(255) NOT NULL,
 		Barcode varchar(255) NOT NULL
-		)
+		);
 		
 		CREATE TABLE { storesTable } (
 		Id int PRIMARY KEY
