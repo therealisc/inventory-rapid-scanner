@@ -21,13 +21,26 @@ Console.WriteLine("--- loadin dbf ---");
 var tableName = "articole";
 var dbfLines = dbfDataAccess.ReadDbf($"{ tableName }.dbf");
 
+var storesTable = "gestiuni";
+var dbfStores = dbfDataAccess.ReadDbf($"{ storesTable }.dbf");
+
+// TODO: refactor
+foreach (var dbfStore in dbfStores)
+{
+	Console.WriteLine(dbfStore.ToString());
+}
+
 string itemName = "";
 string itemBarcode = "";
 
-var sql = $@"CREATE TABLE {tableName} (
+var sql = $@"CREATE TABLE { tableName } (
 		Id int PRIMARY KEY,
 		Name varchar(255) NOT NULL,
 		Barcode varchar(255) NOT NULL
+		)
+		
+		CREATE TABLE { storesTable } (
+		Id int PRIMARY KEY
 		)";
 
 dataAccess.InsertData(sql);
