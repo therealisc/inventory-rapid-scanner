@@ -37,7 +37,7 @@ foreach (var dbfLine in dbfLines)
 {
 	var lineSplit = dbfLine.ToString().Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 	var nameArray = lineSplit[1].ToString().Split(new char[] { '=' }, StringSplitOptions.RemoveEmptyEntries);
-	var barcodeArray = lineSplit[15].ToString().Split(new char[] { '=' }, StringSplitOptions.RemoveEmptyEntries);
+	var barcodeArray = lineSplit[14].ToString().Split(new char[] { '=' }, StringSplitOptions.RemoveEmptyEntries);
 
 	itemName = nameArray[1];
 	itemBarcode = barcodeArray[1];
