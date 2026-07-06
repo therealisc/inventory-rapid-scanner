@@ -41,6 +41,7 @@ var sql = $@"CREATE TABLE { tableName } (
 		
 		CREATE TABLE { storesTable } (
 		Id int PRIMARY KEY,
+		Name varchar(255) NOT NULL,
 		Quantity decimal NOT NULL
 		)";
 
@@ -64,7 +65,14 @@ foreach (var dbfLine in dbfLines)
 	var numberId = $"{counter}";
 
 	// the sql db converted varchar to int down below 
-	sql = $@"INSERT INTO { tableName } (Id, Name, Barcode) VALUES ({ numberId }, '{ itemName }', '{ itemBarcode }' )";
+	sql = $@"INSERT INTO { tableName } (Id, Name, Barcode) 
+		VALUES ({ numberId }, '{ itemName }', '{ itemBarcode }' );
+		
+		-- INSERT INTO { storesTable } ( Id, Name,  )
+		
+		
+		";
+	
 	dataAccess.InsertData(sql);
 }
 
@@ -73,5 +81,7 @@ sql = $@"SELECT * FROM { tableName }";
 
 var entries = dataAccess.ReadData<DisplayModel>(sql);
 entries.ForEach(d => Console.WriteLine($"{ d.Id } { d.Name } { d.Barcode }"));
+
+// test the mapping
 
 return;
