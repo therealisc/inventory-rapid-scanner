@@ -40,7 +40,8 @@ var sql = $@"CREATE TABLE { tableName } (
 		);
 		
 		CREATE TABLE { storesTable } (
-		Id int PRIMARY KEY
+		Id int PRIMARY KEY,
+		Quantity decimal NOT NULL
 		)";
 
 dataAccess.InsertData(sql);
