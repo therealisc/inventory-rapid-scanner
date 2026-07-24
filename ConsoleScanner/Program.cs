@@ -17,7 +17,6 @@ var dbfDataAccess = new DbfDataAccess();
 	//return;
 //}
 
-Console.WriteLine("--- loadin dbf ---");
 var tableName = "articole";
 var dbfLines = dbfDataAccess.ReadDbf($"{ tableName }.dbf");
 
