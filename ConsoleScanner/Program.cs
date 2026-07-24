@@ -57,9 +57,6 @@ foreach (var dbfLine in dbfLines)
 	itemName = nameArray[1];
 	itemBarcode = barcodeArray[1];
 	
-	Console.WriteLine(itemName);
-	Console.WriteLine(itemBarcode);
-	
 	//var uniqueId = Guid.NewGuid();
 	counter++;
 	var numberId = $"{counter}";
