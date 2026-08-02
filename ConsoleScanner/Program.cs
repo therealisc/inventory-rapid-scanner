@@ -75,8 +75,8 @@ foreach (var dbfLine in dbfLines)
 Console.WriteLine("--- Rows available ---");
 sql = $@"SELECT * FROM { tableName }";
 
-var entries = dataAccess.ReadData<DisplayModel>(sql);
-entries.ForEach(d => Console.WriteLine($"{ d.Id } { d.Name } { d.Barcode }"));
+//var entries = dataAccess.ReadData<DisplayModel>(sql);
+//entries.ForEach(d => Console.WriteLine($"{ d.Id } { d.Name } { d.Barcode }"));
 
 // test the mapping
 
