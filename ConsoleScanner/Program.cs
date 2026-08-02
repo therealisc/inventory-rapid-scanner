@@ -2,7 +2,6 @@
 using DScannerLibrary.Models;
 using DScannerLibrary.BusinessLogic;
 using DScannerLibrary.DataAccess;
-using ConsoleScanner.Models;
 using System;
 using System.Threading;
 using System.Linq;
