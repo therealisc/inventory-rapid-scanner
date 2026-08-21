@@ -71,9 +71,9 @@ public static class DatabaseDirectoryHelper
 	    {
 		continue;
 	    }
-	    catch (Exception ex)
+	    catch (Exception)
 	    {
-	        throw ex;
+	        throw;
 	    }
 	}
 	throw new Exception("The SAGA C.3.0 directory is missing on xproc.");
