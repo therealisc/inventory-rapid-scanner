@@ -11,7 +11,7 @@ public static class DatabaseDirectoryHelper
         return databaseDirectory;
     }
 
-    private static DirectoryInfo DatabaseDirectory = null;
+    private static DirectoryInfo? DatabaseDirectory = null;
 
     public static DirectoryInfo GetDatabaseDirectory()
     {
