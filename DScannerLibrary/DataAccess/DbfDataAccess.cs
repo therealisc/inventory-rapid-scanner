@@ -66,7 +66,7 @@ public class DbfDataAccess : IDataAccess
         {
             var command = new OleDbCommand();
             StringBuilder commandText = new("insert into ies_det (");
-            Type t = item.GetType();
+            var t = item.GetType();
             var props = t.GetProperties();
 
             foreach (var prop in props)
