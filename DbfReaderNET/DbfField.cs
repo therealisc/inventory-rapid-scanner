@@ -1,8 +1,9 @@
-﻿namespace DbfReaderNET
+using System;
+using System.IO;
+using System.Text;
+
+namespace DbfReaderNET
 {
-    using System;
-    using System.IO;
-    using System.Text;
 
     /// <summary>
     /// Encapsulates a field descriptor in a .dbf file.
