@@ -56,7 +56,6 @@ foreach (var dbfLine in dbfLines)
 	counter++;
 	var numberId = $"{counter}";
 
-	// the sql db converted varchar to int down below 
 	sql = $@"INSERT INTO { tableName } (Id, Name, Barcode) 
 		VALUES ({ numberId }, '{ itemName }', '{ itemBarcode }' );
 		
