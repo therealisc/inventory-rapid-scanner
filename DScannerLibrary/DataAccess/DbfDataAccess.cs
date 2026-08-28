@@ -31,23 +31,6 @@ public class DbfDataAccess : IDataAccess
         return dbf.Records;
     }
 
-    public List<T> ReadData<T>(string sqlCommand, OleDbParameter[] parameters)
-    {
-        using (var connection = new OleDbConnection(_connectionString))
-        {
-            using var command = new OleDbCommand();
-            command.CommandText = sqlCommand;
-            command.Parameters.AddRange(parameters);
-            command.Connection = connection;
-
-            using var adapter = new OleDbDataAdapter(command);
-            var dataTable = new DataTable();
-            adapter.Fill(dataTable);
-
-            return DataTableToListExtension.ConvertDataTable<T>(dataTable);
-        }
-    }
-
     public List<T> ReadData<T>(string str_sql)
     {
         using (var connection = new OleDbConnection(_connectionString))
