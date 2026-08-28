@@ -7,8 +7,6 @@ public interface IDataAccess
 {
     public List<T> ReadData<T>(string query);
 
-    public List<T> ReadData<T>(string sqlCommand, OleDbParameter[] parameters);
-
     public int InsertData<T>(T item);
 
     public void InsertData(string rawSql);
