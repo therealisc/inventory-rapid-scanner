@@ -3,7 +3,7 @@
 
 
 int main() {
-        int dec = 0;
+    int dec = 0;
 	int bit = 1;
 	int n = 10000000;
 
