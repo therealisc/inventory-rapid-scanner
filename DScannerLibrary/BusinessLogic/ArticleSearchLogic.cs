@@ -15,14 +15,6 @@ public class ArticleSearchLogic
 		_dataAccess = dataAccess ?? new NullDataAccess();
     }
 
-    public ArticleModel? GetArticleByBarcode(string articleBarcode)
-    {
-		var articles = _dataAccess.ReadData<ArticleModel>($"Select cod, denumire, tva, pret_vanz, cod_bare from articole where cod_bare={articleBarcode}");
-		var article = articles.SingleOrDefault();
-
-		return article;
-    }
-
     public ArticleModel? GetArticleByBarcode(string articleBarcode, string dbDirectory)
     {
 		var _dbDirectory = dbDirectory;
