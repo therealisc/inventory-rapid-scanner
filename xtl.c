@@ -15,7 +15,6 @@ int main() {
 	}
 	    
 	printf("%d\n", dec);
-	printf("%d\n", dec);
 
     return dec;
 }
