@@ -71,17 +71,6 @@ public class InventoryMovementsLogic
                 }
             }
         }
-
-	    //var inventoryExists = _dataAccess
-	    //    .ReadData<InventoryExitModel>(
-		//	    $"Select d.den_gest, d.cod, d.denumire, d.den_tip, d.um, d.cantitate, d.pret_unitar, d.valoare, d.total, d.adaos, d.cont, d.text_supl " +
-		//	    "from ies_det d inner join iesiri i on d.id_iesire = i.id_iesire");
-		
-	    var inventoryExists = _dataAccess
-	        .ReadData<InventoryExitModel>(
-			    $"SELECT gestiune, den_gest, cod, denumire, den_tip, um, cantitate, pret_unitar, valoare, total, adaos, cont, text_supl FROM ies_det");
-
-      	return inventoryExists;
     }
 
     public List<InventoryExitModel> GetInventoryExitsByDate(string dbDirectory, DateTime? selectedExitDate, string dbfName="IESIRI.DBF")
@@ -412,6 +401,7 @@ public class InventoryMovementsLogic
             cod = article.cod,
             denumire = article?.denumire,
             cantitate = exitQuantity,
+
             pret_unitar = article.pret_vanz,
             valoare = exitQuantity * article.pret_vanz,
             total = (exitQuantity * article.pret_vanz) + ((article.tva / 100) * article.pret_vanz),
