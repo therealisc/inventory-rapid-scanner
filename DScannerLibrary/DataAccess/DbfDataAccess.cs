@@ -6,7 +6,7 @@ using DbfReaderNET;
 
 namespace DScannerLibrary.DataAccess;
 
-public class DbfDataAccess : IDataAccess
+public class DbfDataAccess
 {
     private readonly string _connectionString;
 
