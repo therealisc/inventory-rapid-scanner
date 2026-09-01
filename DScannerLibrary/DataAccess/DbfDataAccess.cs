@@ -1,6 +1,5 @@
 using System.Data;
 using System.Text;
-using System.Data.OleDb;
 using DScannerLibrary.Extensions;
 using DScannerLibrary.Helpers;
 using DbfReaderNET;
@@ -29,59 +28,6 @@ public class DbfDataAccess : IDataAccess
 
         dbf.Read(dbfPath);
         return dbf.Records;
-    }
-
-    public int InsertData<T>(T item)
-    {
-        using (OleDbConnection myCon = new OleDbConnection(_connectionString))
-        {
-            var command = new OleDbCommand();
-            StringBuilder commandText = new("insert into ies_det (");
-            var t = item.GetType();
-            var props = t.GetProperties();
-
-            foreach (var prop in props)
-            {
-                commandText.Append($"[{prop.Name}],");
-
-                if (prop.GetIndexParameters().Length == 0)
-                {
-                    command.Parameters.AddWithValue($"@{prop.Name}", prop.GetValue(item));
-                }
-            }
-
-            commandText.Remove(commandText.Length - 1, 1);
-            commandText.Append(")");
-            commandText.Append("values(");
-
-            foreach (var prop in props)
-            {
-                commandText.Append($"?,");
-            }
-
-            commandText.Remove(commandText.Length - 1, 1);
-            commandText.Append(")");
-
-            command.CommandText = commandText.ToString();
-            command.Connection = myCon;
-
-            int rowsAffected = 0;
-            try
-            {
-                myCon.Open();
-                rowsAffected = command.ExecuteNonQuery();
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-            finally
-            {
-                myCon.Close();
-            }
-
-            return rowsAffected;
-        }
     }
 
     public void InsertData(string rawSql)
