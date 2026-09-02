@@ -53,9 +53,6 @@ public class SqliteDataAccess
 	}
     }
 
-        return DataTableToListExtension.ConvertDataTable<T>(dataTable);
-    }
-
     // Helper method to replace first occurrence of a string
     private static string ReplaceFirst(string text, string search, string replace)
     {
