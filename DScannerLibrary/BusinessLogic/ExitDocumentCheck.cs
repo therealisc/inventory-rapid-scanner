@@ -6,8 +6,7 @@ public class ExitDocumentCheck
 {
     private IDataAccess _dataAccess;
 
-    public ExitDocumentCheck(IDataAccess dataAccess)
+    public ExitDocumentCheck()
     {
-        _dataAccess = dataAccess;
     }
 }
