@@ -13,15 +13,13 @@ namespace DScannerLibrary.BusinessLogic;
 
 public class InventoryMovementsLogic
 {
-    private readonly IDataAccess _dataAccess;
     private readonly ArticleSearchLogic _articleSearchLogic;
     private readonly ExitDocumentCheck _exitDocumentCheck;
     private string _dbDirectory;
     private List<InventoryExitModel> _inventoryExitRecords;
 
-    public InventoryMovementsLogic(IDataAccess dataAccess, ArticleSearchLogic articleSearchLogic, ExitDocumentCheck exitDocumentCheck)
+    public InventoryMovementsLogic(ArticleSearchLogic articleSearchLogic, ExitDocumentCheck exitDocumentCheck)
     {
-        _dataAccess = dataAccess;
         _articleSearchLogic = articleSearchLogic;
         _exitDocumentCheck = exitDocumentCheck;
         _inventoryExitRecords = new List<InventoryExitModel>();
@@ -351,7 +349,6 @@ public class InventoryMovementsLogic
 			INSERT INTO ies_det (id_iesire, cod, gestiune, cantitate)
 			VALUES ({exitDocumentId}, '{article.cod}', '{inventoryCode}', {exitQuantity});";
 
-		_dataAccess.InsertData(sql);
 		return (int)exitQuantity;
 	}
 
@@ -415,7 +412,6 @@ public class InventoryMovementsLogic
 
         await AddExitToBackupFile(new List<InventoryExitModel>() { inventoryExit });
 
-        return _dataAccess.InsertData(inventoryExit);
     }
 
     async Task AddExitToBackupFile(List<InventoryExitModel> inventoryExits)
