@@ -10,14 +10,14 @@ public class ArticleSearchLogic
 {
     private readonly IDataAccess _dataAccess;
 
-    public ArticleSearchLogic(IDataAccess dataAccess = null)
+    public ArticleSearchLogic()
     {
-		_dataAccess = dataAccess ?? new NullDataAccess();
+	_dataAccess = dataAccess ?? new NullDataAccess();
     }
 
     public ArticleModel? GetArticleByBarcode(string articleBarcode, string dbDirectory)
     {
-		var _dbDirectory = dbDirectory;
+	var _dbDirectory = dbDirectory;
 
         var options = new DbfDataReaderOptions
         {
