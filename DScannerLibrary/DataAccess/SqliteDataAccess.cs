@@ -1,11 +1,10 @@
 using System.Data;
 using DScannerLibrary.Extensions;
 using Microsoft.Data.Sqlite;
-using System.Data.OleDb;
 
 namespace DScannerLibrary.DataAccess;
 
-public class SqliteDataAccess : IDataAccess
+public class SqliteDataAccess
 {
     private readonly string _connectionString;
 
@@ -22,43 +21,36 @@ public class SqliteDataAccess : IDataAccess
 
     public List<T> ReadData<T>(string query)
     {
-		var dataTable = new DataTable();
+	var dataTable = new DataTable();
 
         using (var connection = new SqliteConnection(_connectionString))
         {
-	    	connection.Open();
+	    connection.Open();
 
-	    	using (var command = new SqliteCommand(query, connection))
-	    	{
-				using (var dataReader = command.ExecuteReader())
-				{
-		    		dataTable.Load(dataReader);
-				}
+            using (var command = new SqliteCommand(query, connection))
+	    {
+		using (var dataReader = command.ExecuteReader())
+		{
+		    dataTable.Load(dataReader);
+		}
 	    }
-
-	    	connection.Close();
+	    connection.Close();
         }
-
-		return DataTableToListExtension.ConvertDataTable<T>(dataTable);
+	return DataTableToListExtension.ConvertDataTable<T>(dataTable);
     }
 
-    public void InsertData(string rawSql)
+    public void InsertData(string sqlInsert)
     {
         using (var connection = new SqliteConnection(_connectionString))
-		{
-	    	connection.Open();
+	{
+	    connection.Open();
 
-	    	var command = connection.CreateCommand();
-	    	command.CommandText = rawSql;
-	    	command.ExecuteNonQuery();
+	    var command = connection.CreateCommand();
+	    command.CommandText = sqlInsert;
+	    command.ExecuteNonQuery();
 
-	    	connection.Close();
-		}
-    }
-
-    public int InsertData<T>(T item)
-    {
-        throw new NotImplementedException();
+	    connection.Close();
+	}
     }
 
     public List<T> ReadData<T>(string sqlCommand, OleDbParameter[] parameters)
@@ -90,7 +82,6 @@ public class SqliteDataAccess : IDataAccess
                     dataTable.Load(dataReader);
                 }
             }
-
             connection.Close();
         }
 
