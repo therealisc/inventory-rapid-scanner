@@ -8,13 +8,6 @@ namespace DScannerLibrary.BusinessLogic;
 
 public class ArticleSearchLogic
 {
-    private readonly IDataAccess _dataAccess;
-
-    public ArticleSearchLogic()
-    {
-	_dataAccess = dataAccess ?? new NullDataAccess();
-    }
-
     public ArticleModel? GetArticleByBarcode(string articleBarcode, string dbDirectory)
     {
 	var _dbDirectory = dbDirectory;
@@ -59,10 +52,10 @@ public class ArticleSearchLogic
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception(
-                            $"Verifica toate codurile de bare. E posibil sa fie produse care nu au cod de bare.\n{ex.Message}");
+                    throw new Exception($"Verifica toate codurile de bare.\n{ex.Message}");
                 }
             }
+	    
             throw new Exception($"Codul de bare {articleBarcode} nu exista sau e gresit! Verifica la articole!");
         }
     }
