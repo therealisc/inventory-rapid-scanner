@@ -15,6 +15,8 @@ public class InventoryMovementsLogic
 {
     private readonly ArticleSearchLogic _articleSearchLogic;
     private readonly ExitDocumentCheck _exitDocumentCheck;
+    private readonly SqliteDataAccess _dataAccess;
+
     private string _dbDirectory;
     private List<InventoryExitModel> _inventoryExitRecords;
 
@@ -23,6 +25,8 @@ public class InventoryMovementsLogic
         _articleSearchLogic = articleSearchLogic;
         _exitDocumentCheck = exitDocumentCheck;
         _inventoryExitRecords = new List<InventoryExitModel>();
+
+	_dataAccess = new SqliteDataAccess();
     }
 
     private static decimal exitDocumentIdToRetain { get; set; }
@@ -420,18 +424,9 @@ public class InventoryMovementsLogic
         IEnumerable<PropertyDescriptor> props = TypeDescriptor.GetProperties(typeof(InventoryExitModel)).OfType<PropertyDescriptor>();
         var header = string.Join(",", props.ToList().Select(x => x.Name));
 
-        //lines.Add(header);
         var valueLines = inventoryExits.Select(row => string.Join(",", header.Split(',').Select(a => row.GetType().GetProperty(a).GetValue(row, null))));
         lines.AddRange(valueLines);
         await File.AppendAllLinesAsync($"{Directory.GetCurrentDirectory()}\\quick_backup.csv", lines);
-
-        //using (StreamWriter writer = new StreamWriter("myfile.csv"))
-        //{
-        //    foreach (Molecule molecule in molecules)
-        //    {
-        //        writer.WriteLine($"{molecule.property_A},{molecule.property_B}");
-        //    }
-        //}
     }
 
     decimal GenerateId(decimal exitDocumentId)
