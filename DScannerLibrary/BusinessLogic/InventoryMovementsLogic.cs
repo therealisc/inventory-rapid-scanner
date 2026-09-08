@@ -219,7 +219,6 @@ public class InventoryMovementsLogic
 
     public async Task<int> GenerateInventoryExits(string barcode, decimal quantity)
     {
-        //var exitDocumentId = _exitDocumentCheck.GetExitDocumentId();
         var exitDocumentId = exitDocumentIdToRetain;
 
         var isValidated = exitDocumentIsValidated;
@@ -227,13 +226,13 @@ public class InventoryMovementsLogic
         if (exitDocumentId == 0 || isValidated == true)
         {
             throw new Exception(
-                    "CLICK REFRESH SAU ADAUGA IN SAGA O IESIRE DACA NU AI FACUT ASTA DEJA!\nVezi ca documentul de iesire sa nu fie validat!\n");
+                    "ADAUGA IN SAGA O IESIRE!\n");
         }
 
-        var article = _articleSearchLogic.GetArticleByBarcode(barcode);
+        var article = _articleSearchLogic.GetArticleByBarcode(barcode, _dbDirectory);
 
 	if(article == null)
-     	    throw new Exception("NU AI ACEST COD DE BARE LA NICIUN ARTICOL!");
+     	    throw new Exception("COD DE BARE NaN");
 
         var inventoryMovements = GetInventoryMovementsForArticle(article.cod.Trim());
 
