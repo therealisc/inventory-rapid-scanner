@@ -270,6 +270,7 @@ public class InventoryMovementsLogic
     {
 	 //TODO: Refactor all of this
 	 int rowsInserted = 0;
+
 	 for (int i = 0; i < quantity; i++)
 	 {
 	     var lastMultipleInventoryExit = GetLastMultipleInventoryExit(article, exitDocumentId);
@@ -297,8 +298,9 @@ public class InventoryMovementsLogic
 
 	     var inventoryCode = GetCorrectInventoryCode(lastMultipleInventoryExit, inventoryMovements, actualInventoriesQuantities);
 
-	     rowsInserted += await ProcessInventoryExit(exitDocumentId, article, 1, inventoryCode, i + 1, quantity);
+	     rowsInserted += ProcessInventoryExit(exitDocumentId, article, 1, inventoryCode, i + 1, quantity);
 	 }
+
 	 return rowsInserted;
     }
 
@@ -320,7 +322,6 @@ public class InventoryMovementsLogic
             }
             catch (Exception)
             {
-                // TODO: de testat cu first sa crape
                 throw;
             }
         }
