@@ -66,8 +66,4 @@ foreach (var dbfLine in dbfLines)
 	
 	dataAccess.InsertData(sql);
 }
-
-Console.WriteLine("--- Rows available ---");
-sql = $@"SELECT * FROM { tableName }";
-
 return;

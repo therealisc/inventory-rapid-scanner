@@ -1,1 +1,7 @@
+print(0o000001)
+print(0o000010)
+print(0o000011)
+print(0o000100)
 print(0o000101)
+print(0o000110)
+print(0o000111)
