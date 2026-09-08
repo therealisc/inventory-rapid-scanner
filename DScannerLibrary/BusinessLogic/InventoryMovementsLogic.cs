@@ -340,7 +340,7 @@ public class InventoryMovementsLogic
         return nextInventory;
     }
 
-    public async Task<int> ProcessInventoryExit(
+    public int ProcessInventoryExit(
 	decimal exitDocumentId,
         ArticleModel article,
         decimal exitQuantity,
@@ -394,29 +394,28 @@ public class InventoryMovementsLogic
 
 	var inventoryName = inventoryMovements.SingleOrDefault();
 
-        var inventoryExit = new InventoryExitModel
-        {
-            id_u = generatedId,
-            id_iesire = exitDocumentId,
-            gestiune = inventoryCode,
-            den_gest = inventoryName?.gestiune,
-            cod = article.cod,
-            denumire = article?.denumire,
-            cantitate = exitQuantity,
+        //var inventoryExit = new InventoryExitModel
+        //{
+        //    id_u = generatedId,
+        //    id_iesire = exitDocumentId,
+        //    gestiune = inventoryCode,
+        //    den_gest = inventoryName?.gestiune,
+        //    cod = article.cod,
+        //    denumire = article?.denumire,
+        //    cantitate = exitQuantity,
 
-            pret_unitar = article.pret_vanz,
-            valoare = exitQuantity * article.pret_vanz,
-            total = (exitQuantity * article.pret_vanz) + ((article.tva / 100) * article.pret_vanz),
-            tva_art = article.tva,
-            tva_ded = ((article.tva / 100) * article.pret_vanz),
-            cont = "707",
-            den_tip = "Marfuri",
-            um = "",
-            text_supl = $"{currentMultipleInventoryIteration}/{totalQuantity} articol(e) scanat(e) la {DateTime.Now}"
-        };
-
-        await AddExitToBackupFile(new List<InventoryExitModel>() { inventoryExit });
-
+        //    pret_unitar = article.pret_vanz,
+        //    valoare = exitQuantity * article.pret_vanz,
+        //    total = (exitQuantity * article.pret_vanz) + ((article.tva / 100) * article.pret_vanz),
+        //    tva_art = article.tva,
+        //    tva_ded = ((article.tva / 100) * article.pret_vanz),
+        //    cont = "707",
+        //    den_tip = "Marfuri",
+        //    um = "",
+        //    text_supl = $"{currentMultipleInventoryIteration}/{totalQuantity} articol(e) scanat(e) la {DateTime.Now}"
+        //};
+	
+	return 0;
     }
 
     async Task AddExitToBackupFile(List<InventoryExitModel> inventoryExits)
@@ -439,7 +438,6 @@ public class InventoryMovementsLogic
         var id = DateTime.Now.ToString("yyMMdd");
         id = id + numberOfExistsOnCurrentDocument.ToString();
 
-	// initial was convert to decimal
         return Convert.ToInt64(id);
     }
 
