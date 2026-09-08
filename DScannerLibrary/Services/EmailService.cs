@@ -7,8 +7,8 @@ public class EmailService
 {
     public async Task SendMailAsync(string key)
     {
-	var sender = "ioan.scafa@gmail.com";
-	var password = key;
+		var sender = "ioan.scafa@gmail.com";
+		var password = key;
 
         var smtpClient = new SmtpClient("smtp.gmail.com")
         {
@@ -26,8 +26,7 @@ public class EmailService
             IsBodyHtml = true,
         };
 
-	//mailMessage.Attachments.Add(new Attachment("Saga.db"));
-
+		//mailMessage.Attachments.Add(new Attachment("Saga.db"));
         mailMessage.To.Add("therealisc@proton.me");
         //mailMessage.CC.Add("luminita_scafa@yahoo.com");
 
