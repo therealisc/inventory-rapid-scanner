@@ -45,5 +45,5 @@ jobs:
 
     # Run the application
     - name: Run the app
-      run: cd ConsoleScanner && dotnet run $env:Mp_Temp && python3 diagram.py
+      run: python3 diagram.py && cd ConsoleScanner && dotnet run $env:Mp_Temp
       
