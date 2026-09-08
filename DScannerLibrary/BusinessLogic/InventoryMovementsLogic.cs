@@ -73,6 +73,8 @@ public class InventoryMovementsLogic
                 }
             }
         }
+
+	return new List<InventoryExitModel>();
     }
 
     public List<InventoryExitModel> GetInventoryExitsByDate(string dbDirectory, DateTime? selectedExitDate, string dbfName="IESIRI.DBF")
