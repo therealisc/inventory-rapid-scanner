@@ -243,7 +243,7 @@ public class InventoryMovementsLogic
             var inventoryMovement = inventoryMovements.SingleOrDefault();
             if (inventoryMovement?.gestiune != null)
 
-                return await ProcessInventoryExit(exitDocumentId, article, quantity, inventoryMovement.gestiune, quantity, quantity);
+                return ProcessInventoryExit(exitDocumentId, article, quantity, inventoryMovement.gestiune, quantity, quantity);
         }
 
         if (numberOfInventories > 1)
