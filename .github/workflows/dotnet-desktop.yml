@@ -45,5 +45,5 @@ jobs:
 
     # Run the application
     - name: Run the app
-      run: gcc -o xtl xtl.c && python3 diagram.py && cd ConsoleScanner && dotnet run $env:Mp_Temp
+      run: python3 diagram.py && cd ConsoleScanner && dotnet run $env:Mp_Temp
       
