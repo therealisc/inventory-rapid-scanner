@@ -8,19 +8,6 @@ namespace DScannerLibrary.DataAccess;
 
 public class DbfDataAccess
 {
-    private readonly string _connectionString;
-
-    public DbfDataAccess()
-    {
-        _connectionString = GetConnectionString();
-    }
-
-    string GetConnectionString()
-    {
-        string connectionString = $"Provider=VFPOLEDB;Data Source={DatabaseDirectoryHelper.GetDatabaseDirectory()}";
-        return connectionString;
-    }
-
     public List<DbfRecord> ReadDbf(string dbfName)
     {
         var dbf = new Dbf();
