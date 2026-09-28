@@ -20,7 +20,7 @@ jobs:
 
     env:
       Mp_Temp: ${{ secrets.MP_TEMP }}
-      Solution_Name: ConsoleScanner/ConsoleScanner.csproj
+      Solution_Name: DScannerWebApp/RCommerce.WebApp.csproj
 
     steps:
     - name: Checkout
@@ -45,5 +45,5 @@ jobs:
 
     # Run the application
     - name: Run the app
-      run: python3 diagram.py && cd ConsoleScanner && dotnet run $env:Mp_Temp
+      run: python3 diagram.py && cd DScannerWebApp && dotnet run $env:Mp_Temp
       
