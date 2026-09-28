@@ -1,0 +1,9 @@
+@model Category
+
+@{
+    ViewData["Title"] = "Create a category";
+}
+
+@{ ViewBag.IsNew = true;}
+
+@await Html.PartialAsync(@"../Shared/Components/_Category.cshtml")

@@ -1,0 +1,10 @@
+@model Category
+
+@{
+    ViewData["Title"] = "Edit a category";
+}
+
+
+@{ ViewBag.IsNew = false;}
+
+@await Html.PartialAsync(@"../Shared/Components/_Category.cshtml")

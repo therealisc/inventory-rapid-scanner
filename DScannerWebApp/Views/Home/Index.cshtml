@@ -1,0 +1,78 @@
+﻿@model List<Product>
+
+@{
+    ViewData["Title"] = "Home Page";
+    var detailsRoute = "/Details/{0}";
+    var filterRoute = "Filter/{0}";
+
+    string GetFilterRoute()
+    {
+        return filterRoute = "Filter/{0}";
+    }
+
+    string SetFilterButtonContent()
+    {
+        var filterValues = Model.Select(x => x.Category).Select(x => new {x.Id, x.CategoryName}).DistinctBy(x => x.Id);
+        if(filterValues.Count() == 1)
+        {
+            return filterValues.First().CategoryName.ToString();
+        }
+        return "CategoryFilter";
+    }
+
+    bool SetFilterButtonDisabled()
+    {
+        var filterValues = Model.Select(x => x.Category).Select(x => new {x.Id, x.CategoryName}).DistinctBy(x => x.Id);
+        if(filterValues.Count() == 1)
+        {
+            return true;
+        }
+        return false;
+    }
+}
+
+<div class="row">
+    <div>
+        <div class="dropdown mb-4">
+
+            <a class="btn btn-warning dropdown-toggle w-a" 
+                disabled="@SetFilterButtonDisabled()" 
+                href="#" role="button"  data-bs-toggle="dropdown" aria-expanded="false">
+                @SetFilterButtonContent()
+            </a>
+
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" >
+                @foreach (var category in Model.Select(x => x.Category).Select(x => new {x.Id, x.CategoryName}).DistinctBy(x => x.Id))
+                {
+                    <a class="dropdown-item" href="@string.Format(GetFilterRoute(), category.Id)">@category.CategoryName</a>
+                }
+            </div>
+
+            <a href="/" class="btn pull-right btn-outline-warning">Clear Filter</a>
+        </div>
+
+</div>
+
+<div class="row">
+
+    @foreach (var product in Model)
+    {
+        <div class="col-12 col-sm-6 col-lg-4">
+          <div class="card mb-4">
+            <div class="card-header">
+                <h4 class="my-0 font-weight-normal">
+                    <label style="font-size:clamp(16px, 4vw, 23px); color:steelblue;">@product.ProductName</label>
+                </h4>
+            </div>
+            <img class="card-img-top" style="height:200px; object-fit:cover;" src="@product.ImagePath" alt="no image" />
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                    <label style="font-size:clamp(16px, 4vw, 20px); color:#fcba03"><b>Price: $@product.Price</b></label>
+                    <a href="@string.Format(detailsRoute, product.Id)" class="btn btn-outline-secondary">View Details</a>
+                </div>
+            </div>
+          </div>
+        </div>
+    }
+
+</div>

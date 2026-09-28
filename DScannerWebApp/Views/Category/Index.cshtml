@@ -1,0 +1,46 @@
+@model IEnumerable<Category>
+
+@{
+    ViewData["Title"] = "Category";
+}
+
+<div class="row mb-2 mt-2 ">
+    <div class="col-md-12">
+        <a href="/Category/New" class="btn btn-new btn-outline-new font-weight-bold mr-2" data-toggle="tooltip" title="New" data-placement="top">
+            <span class="fa fa-plus-circle"></span>
+        </a>
+
+        <button class="btn font-weight-bold mr-2" data-toggle="tooltip" title="Edit" data-placement="top" onclick="Category.onEditBtnPress()">
+            <span class="fa fa-edit"></span>
+        </button>
+
+        <button type="button" class="btn btn-delete btn-outline-delete font-weight-bold mr-2" id="btnDelete" data-toggle="tooltip" data-placement="top" title="Delete" onclick="Category.onDelete()">
+            <span class="fa fa-trash"></span>
+        </button>
+    </div>
+</div>
+
+<br />
+<br />
+
+<table id="table" class="table table-hover table-striped">
+    <thead>
+        <tr>
+            <th hidden>Id</th>
+            <th>Category name</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        @foreach (var item in Model)
+        {
+            <tr id="@item.Id">
+                <td hidden>@item.Id</td>
+                <td>@item.CategoryName</td>
+            </tr>
+        }
+
+    </tbody>
+
+</table>
