@@ -37,4 +37,4 @@ jobs:
 
     # Run the application
     - name: Run the app
-      run: cd DScannerWebApp && dotnet build $env:Mp_Temp
+      run: cd DScannerWebApp && dotnet run $env:Mp_Temp
