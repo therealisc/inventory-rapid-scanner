@@ -28,18 +28,13 @@ jobs:
       with:
         fetch-depth: 0
         
+        
     - name: Install .NET
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 8.0.x
-
-    # Restore the application to populate the obj folder with RuntimeIdentifiers
-    - name: Restore the application
-      run: msbuild $env:Solution_Name /t:Restore /p:Configuration=$env:Configuration
-      env:
-        Configuration: ${{ matrix.configuration }}
+        
 
     # Run the application
     - name: Run the app
       run: cd DScannerWebApp && dotnet build $env:Mp_Temp
-      
