@@ -37,4 +37,4 @@ jobs:
 
     # Run the application
     - name: Run the app
-      run: dotnet run $env:Solution_Name
+      run: dotnet run --project $env:Solution_Name
