@@ -19,7 +19,7 @@ jobs:
                              # https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idruns-on
 
     env:
-      Mp_Temp: ${{ secrets.MP_TEMP }}
+      Project_Name: ${{ secrets.MP_TEMP }}
       Solution_Name: DScannerWebApp/RCommerce.WebApp.csproj
 
     steps:
@@ -37,4 +37,4 @@ jobs:
 
     # Run the application
     - name: Run the app
-      run: cd DScannerWebApp && dotnet run $env:Mp_Temp
+      run: cd DScannerWebApp && dotnet run $env:Project_Name
