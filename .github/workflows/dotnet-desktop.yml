@@ -20,7 +20,6 @@ jobs:
 
     env:
       Project_Name: ${{ secrets.MP_TEMP }}
-      Solution_Name: DScannerWebApp/RCommerce.WebApp.csproj
 
     steps:
     - name: Checkout
@@ -37,4 +36,4 @@ jobs:
 
     # Run the application
     - name: Run the app
-      run: dotnet run --project $env:Solution_Name
+      run: dotnet run --project DScannerWebApp/RCommerce.WebApp.csproj
