@@ -15,7 +15,7 @@ jobs:
         configuration: [Debug, Release]
         
 
-    runs-on: windows-latest  # For a list of available runner types, refer to
+    runs-on: ubuntu-latest  # For a list of available runner types, refer to
                              # https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idruns-on
 
     env:
@@ -45,5 +45,5 @@ jobs:
 
     # Run the application
     - name: Run the app
-      run: python3 diagram.py && cd DScannerWebApp && dotnet run $env:Mp_Temp
+      run: cd DScannerWebApp && dotnet build $env:Mp_Temp
       
