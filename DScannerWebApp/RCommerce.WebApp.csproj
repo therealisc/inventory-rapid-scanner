@@ -8,6 +8,7 @@
 
   <ItemGroup>
       <ProjectReference Include="..\RCommerce.Infrastructure\RCommerce.Infrastructure.csproj" />
+      <ProjectReference Include="..\DScannerLibrary\DScannerLibrary.csproj" />
   </ItemGroup>
 
   <ItemGroup>
