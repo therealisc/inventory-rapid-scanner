@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using Mapster;
 using System.Security.Claims;
-
+//HACK:
 using DScannerLibrary.Helpers;
 using DScannerLibrary.Models;
 using DScannerLibrary.BusinessLogic;
