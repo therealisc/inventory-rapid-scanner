@@ -40,7 +40,7 @@ public static class DatabaseDirectoryHelper
 		if (isLinux && !Directory.Exists($"{rootDirectory}/{sagaDirectoryName}"))
 		{
 		    rootDirectory = Environment.CurrentDirectory;
-		    //Directory.CreateDirectory($"{rootDirectory}/{sagaDirectoryName}/1000");
+		    Directory.CreateDirectory($"{rootDirectory}/{sagaDirectoryName}/1000");
 		}
 
 		if (isLinux == false && !Directory.Exists($"{rootDirectory}/{sagaDirectoryName}"))
