@@ -43,12 +43,6 @@ public static class DatabaseDirectoryHelper
 		    Directory.CreateDirectory($"{rootDirectory}/{sagaDirectoryName}/1000");
 		}
 
-		if (isLinux == false && !Directory.Exists($"{rootDirectory}/{sagaDirectoryName}"))
-		{
-			rootDirectory = Environment.CurrentDirectory;
-			sagaDirectoryName = "saga";
-		}
-
 	    var sagaDirectory = SearchDirectory(rootDirectory, sagaDirectoryName, 0);
 			
 		if (string.IsNullOrEmpty(sagaDirectory))
