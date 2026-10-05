@@ -30,7 +30,6 @@ public static class DatabaseDirectoryHelper
 		   break;
 
 		//var rootDirectory = drive.RootDirectory.FullName;
-		//rootDirectory = "/home/therealisc";
 		sagaDirectoryName = "saga";
 		var rootDirectory = Environment.CurrentDirectory;
 	    var sagaDirectory = SearchDirectory(rootDirectory, sagaDirectoryName, 0);
@@ -65,20 +64,22 @@ public static class DatabaseDirectoryHelper
 
     static string SearchDirectory(string rootDirectory, string directoryToSearch, int depth)
     {
-	if (depth > 0)
-	    return string.Empty;
+		if (depth > 0)
+		{
+			return string.Empty;
+		}
 
         foreach (var directory in Directory.GetDirectories(rootDirectory))
-	{
-	    var directoryName = Path.GetFileName(directory);
-	    var directoryFound = directoryName.Equals(directoryToSearch, StringComparison.InvariantCulture);
+		{
+	    	var directoryName = Path.GetFileName(directory);
+	    	var directoryFound = directoryName.Equals(directoryToSearch, StringComparison.InvariantCulture);
 
-	    if (directoryFound)
-	    {
-			return directory;
-	    }
-	    SearchDirectory(directory, directoryToSearch, depth + 1);
-	}
-	    return string.Empty;
-    }
+	    	if (directoryFound)
+	    	{
+				return directory;
+	    	}
+	    	SearchDirectory(directory, directoryToSearch, depth + 1);
+		}
+	    	return string.Empty;
+    	}
 }
