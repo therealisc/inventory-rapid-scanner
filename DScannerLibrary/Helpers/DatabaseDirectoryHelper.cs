@@ -33,8 +33,9 @@ public static class DatabaseDirectoryHelper
 		//rootDirectory = "/home/therealisc";
 		sagaDirectoryName = "saga";
 		var rootDirectory = Environment.CurrentDirectory;
-		Console.WriteLine(rootDirectory);
 	    var sagaDirectory = SearchDirectory(rootDirectory, sagaDirectoryName, 0);
+			
+		Console.WriteLine(sagaDirectory);
 			
 		if (string.IsNullOrEmpty(sagaDirectory))
 		    continue;
