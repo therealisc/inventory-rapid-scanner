@@ -29,20 +29,11 @@ public static class DatabaseDirectoryHelper
 		if (drive.IsReady == false)
 		   break;
 
-		var rootDirectory = drive.RootDirectory.FullName;
-
-		if (isLinux)
-		{
-			rootDirectory = "/home/therealisc";
-			sagaDirectoryName = "saga";
-		}
-
-		if (isLinux && !Directory.Exists($"{rootDirectory}/{sagaDirectoryName}"))
-		{
-		    rootDirectory = Environment.CurrentDirectory;
-		    Directory.CreateDirectory($"{rootDirectory}/{sagaDirectoryName}/1000");
-		}
-
+		//var rootDirectory = drive.RootDirectory.FullName;
+		//rootDirectory = "/home/therealisc";
+		sagaDirectoryName = "saga";
+		var rootDirectory = Environment.CurrentDirectory;
+		Console.WriteLine(rootDirectory);
 	    var sagaDirectory = SearchDirectory(rootDirectory, sagaDirectoryName, 0);
 			
 		if (string.IsNullOrEmpty(sagaDirectory))
@@ -55,7 +46,7 @@ public static class DatabaseDirectoryHelper
 		    .OrderByDescending(x => x.Name)
 		    .First();
 
-		    return DatabaseDirectory;
+		return DatabaseDirectory;
 	    }
 	    catch (UnauthorizedAccessException)
 	    {
@@ -70,7 +61,7 @@ public static class DatabaseDirectoryHelper
 	        throw;
 	    }
 	}
-	    throw new Exception("The SAGA C.3.0 directory is missing on xproc.");
+	    throw new Exception("The SAGA C.3.0 missing");
     }
 
     static string SearchDirectory(string rootDirectory, string directoryToSearch, int depth)
@@ -81,17 +72,14 @@ public static class DatabaseDirectoryHelper
         foreach (var directory in Directory.GetDirectories(rootDirectory))
 	{
 	    var directoryName = Path.GetFileName(directory);
-
 	    var directoryFound = directoryName.Equals(directoryToSearch, StringComparison.InvariantCulture);
 
 	    if (directoryFound)
 	    {
-		return directory;
+			return directory;
 	    }
-
 	    SearchDirectory(directory, directoryToSearch, depth + 1);
 	}
-
 	    return string.Empty;
     }
 }
