@@ -35,8 +35,6 @@ public static class DatabaseDirectoryHelper
 		var rootDirectory = Environment.CurrentDirectory;
 	    var sagaDirectory = SearchDirectory(rootDirectory, sagaDirectoryName, 0);
 			
-		Console.WriteLine(sagaDirectory);
-			
 		if (string.IsNullOrEmpty(sagaDirectory))
 		    continue;
 
