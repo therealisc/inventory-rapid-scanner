@@ -32,9 +32,10 @@ public static class DatabaseDirectoryHelper
 				}
 			
 				var sagaDirectoryName = "saga";
-				var rootDirectory = Environment.CurrentDirectory;
-	    		var sagaDirectoryInfo = new DirectoryInfo(rootDirectory);
-				Console.WriteLine(rootDirectory);
+				var runnerDirectory = Environment.CurrentDirectory;
+				var sagaRunnerDirectory = $"../{ runnerDirectory }";
+	    		var sagaDirectoryInfo = new DirectoryInfo(sagaRunnerDirectory);
+				Console.WriteLine(sagaDirectoryInfo);
 
 				return sagaDirectoryInfo;
 	    	}
