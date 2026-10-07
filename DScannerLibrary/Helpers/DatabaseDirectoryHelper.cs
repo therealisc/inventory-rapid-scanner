@@ -30,14 +30,10 @@ public static class DatabaseDirectoryHelper
 				{
 					break;
 				}
-			
-				var sagaDirectoryName = "saga";
-				var runnerDirectory = Environment.CurrentDirectory;
-				var sagaRunnerDirectory = $"../{ runnerDirectory }";
-	    		var sagaDirectoryInfo = new DirectoryInfo(sagaRunnerDirectory);
-				Console.WriteLine(sagaDirectoryInfo);
+				
+	    		var sagaDirectory = "/home/runner/work/inventory-rapid-scanner/saga/1000";
 
-				return sagaDirectoryInfo;
+				return sagaDirectory;
 	    	}
 	    	catch (UnauthorizedAccessException)
 	    	{
