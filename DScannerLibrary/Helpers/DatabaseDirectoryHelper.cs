@@ -31,7 +31,7 @@ public static class DatabaseDirectoryHelper
 					break;
 				}
 			
-				sagaDirectoryName = "saga";
+				var sagaDirectoryName = "saga";
 				var rootDirectory = Environment.CurrentDirectory;
 	    		var sagaDirectoryInfo = new DirectoryInfo(rootDirectory);
 				Console.WriteLine(sagaDirectoryInfo);
