@@ -33,7 +33,7 @@ public static class DatabaseDirectoryHelper
 				
 	    		var sagaDirectory = "/home/runner/work/inventory-rapid-scanner/saga/1000";
 				
-				var sagaDirectoryInfo = DirectoryInfo(sagaDirectory);
+				var sagaDirectoryInfo = new DirectoryInfo(sagaDirectory);
 
 				return sagaDirectoryInfo;
 	    	}
