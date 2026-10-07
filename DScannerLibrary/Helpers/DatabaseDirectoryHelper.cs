@@ -31,7 +31,7 @@ public static class DatabaseDirectoryHelper
 					break;
 				}
 				
-	    		var sagaDirectory = "/home/runner/work/inventory-rapid-scanner/saga/1000";
+	    		var sagaDirectory = "/home/runner/work/inventory-rapid-scanner/inventory-rapid-scanner/saga/1000";
 				
 				var sagaDirectoryInfo = new DirectoryInfo(sagaDirectory);
 
