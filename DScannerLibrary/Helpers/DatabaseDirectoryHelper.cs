@@ -54,7 +54,7 @@ public static class DatabaseDirectoryHelper
 	    throw new Exception("The SAGA C.3.0 missing");
     }
 
-	private string SearchDirectory(string rootDirectory, string directoryToSearch, int depth)
+	private static string SearchDirectory(string rootDirectory, string directoryToSearch, int depth)
     {
 		var directories = Directory.GetDirectories(rootDirectory);
         foreach (var directory in directories)
