@@ -31,9 +31,9 @@ public static class DatabaseDirectoryHelper
 					break;
 				}
 				// hardcoded path of the repo while building the app
-				Console.WriteLine(drive);
-	    		var sagaDirectory = "/home/runner/work/inventory-rapid-scanner/inventory-rapid-scanner/saga/1000";
-				
+				var sagaDirectory = SearchDirectory(drive, "inventory-rapid-scanner", 0);
+				Console.WriteLine(sagaDirectory);
+	    		sagaDirectory = "/home/runner/work/inventory-rapid-scanner/inventory-rapid-scanner/saga/1000";
 				var sagaDirectoryInfo = new DirectoryInfo(sagaDirectory);
 
 				return sagaDirectoryInfo;
@@ -52,5 +52,25 @@ public static class DatabaseDirectoryHelper
 	    	}
 		}
 	    throw new Exception("The SAGA C.3.0 missing");
+    }
+
+	static string SearchDirectory(string rootDirectory, string directoryToSearch, int depth)
+    {
+		if (depth > 0)
+	    	return string.Empty;
+
+        foreach (var directory in Directory.GetDirectories(rootDirectory))
+		{
+	    	var directoryName = Path.GetFileName(directory);
+	    	var directoryFound = directoryName.Equals(directoryToSearch, StringComparison.InvariantCulture);
+
+	    	if (directoryFound)
+	    	{
+				return directory;
+	    	}
+
+	    	SearchDirectory(directory, directoryToSearch, depth + 1);
+		}
+		return string.Empty;
     }
 }
