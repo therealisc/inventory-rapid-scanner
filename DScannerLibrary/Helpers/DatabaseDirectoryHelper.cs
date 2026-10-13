@@ -56,8 +56,8 @@ public static class DatabaseDirectoryHelper
 
 	static string SearchDirectory(string rootDirectory, string directoryToSearch, int depth)
     {
-		if (depth > 0)
-	    	return string.Empty;
+		//if (depth > 0)
+	    	//return string.Empty;
 
         foreach (var directory in Directory.GetDirectories(rootDirectory))
 		{
