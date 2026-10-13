@@ -58,7 +58,6 @@ public static class DatabaseDirectoryHelper
     {
 		//if (depth > 0)
 	    	//return string.Empty;
-
         foreach (var directory in Directory.GetDirectories(rootDirectory))
 		{
 	    	var directoryName = Path.GetFileName(directory);
@@ -68,7 +67,10 @@ public static class DatabaseDirectoryHelper
 	    	{
 				SearchDirectory(directory, directoryToSearch, depth + 1);
 	    	}
-			return directory;
+			else
+			{
+				return directory;
+			}
 		}
     }
 }
