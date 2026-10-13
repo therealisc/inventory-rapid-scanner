@@ -35,7 +35,6 @@ public static class DatabaseDirectoryHelper
 				Console.WriteLine(sagaDirectory);
 	    		sagaDirectory = "/home/runner/work/inventory-rapid-scanner/inventory-rapid-scanner/saga/1000";
 				var sagaDirectoryInfo = new DirectoryInfo(sagaDirectory);
-
 				return sagaDirectoryInfo;
 	    	}
 	    	catch (UnauthorizedAccessException)
@@ -72,5 +71,6 @@ public static class DatabaseDirectoryHelper
 				return directory;
 			}
 		}
+		return "";
     }
 }
