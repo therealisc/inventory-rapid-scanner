@@ -59,7 +59,7 @@ public static class DatabaseDirectoryHelper
         foreach (var directory in directories)
 		{
 	    	var directoryName = Path.GetFileName(directory);
-			Console.WriteLine(directoryName);
+			//Console.WriteLine(directoryName);
 			
 	    	if (directoryName == directoryToSearch)
 	    	{
