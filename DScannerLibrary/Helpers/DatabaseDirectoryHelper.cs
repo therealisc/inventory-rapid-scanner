@@ -54,12 +54,13 @@ public static class DatabaseDirectoryHelper
 	    throw new Exception("The SAGA C.3.0 missing");
     }
 
-	static string SearchDirectory(string rootDirectory, string directoryToSearch, int depth)
+	private string SearchDirectory(string rootDirectory, string directoryToSearch, int depth)
     {
-        foreach (var directory in Directory.GetDirectories(rootDirectory))
+		var directories = Directory.GetDirectories(rootDirectory);
+        foreach (var directory in directories)
 		{
 	    	var directoryName = Path.GetFileName(directory);
-			Console.WriteLine(directoryName);
+			Console.WriteLine(directoryName);			
 	    	var directoryFound = directoryName.Equals(directoryToSearch, StringComparison.InvariantCulture);
 			
 	    	if (directoryFound == false)
