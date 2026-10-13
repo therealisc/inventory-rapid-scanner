@@ -31,6 +31,7 @@ public static class DatabaseDirectoryHelper
 					break;
 				}
 				// hardcoded path of the repo while building the app
+				Console.WriteLine(drive);
 	    		var sagaDirectory = "/home/runner/work/inventory-rapid-scanner/inventory-rapid-scanner/saga/1000";
 				
 				var sagaDirectoryInfo = new DirectoryInfo(sagaDirectory);
