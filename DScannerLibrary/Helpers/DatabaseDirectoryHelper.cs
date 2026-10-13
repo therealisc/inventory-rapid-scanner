@@ -63,12 +63,12 @@ public static class DatabaseDirectoryHelper
 		{
 	    	var directoryName = Path.GetFileName(directory);
 	    	var directoryFound = directoryName.Equals(directoryToSearch, StringComparison.InvariantCulture);
-	    	if (directoryFound)
+			
+	    	if (directoryFound == false)
 	    	{
-				return directory;
+				SearchDirectory(directory, directoryToSearch, depth + 1);
 	    	}
-
-	    	SearchDirectory(directory, directoryToSearch, depth + 1);
+			return directory;
 		}
     }
 }
