@@ -31,7 +31,7 @@ public static class DatabaseDirectoryHelper
 					break;
 				}
 				// hardcoded path of the repo while building the app
-				var sagaDirectory = SearchDirectory(drive.Name, "/etc", 0);
+				var sagaDirectory = SearchDirectory(drive.Name, "etc", 0);
 				Console.WriteLine(sagaDirectory);
 	    		sagaDirectory = "/home/runner/work/inventory-rapid-scanner/inventory-rapid-scanner/saga/1000";
 				var sagaDirectoryInfo = new DirectoryInfo(sagaDirectory);
@@ -59,18 +59,18 @@ public static class DatabaseDirectoryHelper
         foreach (var directory in directories)
 		{
 	    	var directoryName = Path.GetFileName(directory);
-			Console.WriteLine(directoryName);			
-	    	var directoryFound = directoryName.Equals(directoryToSearch, StringComparison.InvariantCulture);
+			Console.WriteLine(directoryName);
 			
-	    	if (directoryFound == false)
+	    	if (directoryName == directoryToSearch)
 	    	{
-				SearchDirectory(directory, directoryToSearch, depth + 1);
+				return directory;
 	    	}
 			else
 			{
-				return directory;
+				SearchDirectory(directory, directoryToSearch, depth + 1);
 			}
 		}
+		
 		return "";
     }
 }
