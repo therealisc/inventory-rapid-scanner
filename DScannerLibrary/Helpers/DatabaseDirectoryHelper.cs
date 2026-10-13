@@ -62,10 +62,10 @@ public static class DatabaseDirectoryHelper
         foreach (var directory in Directory.GetDirectories(rootDirectory))
 		{
 	    	var directoryName = Path.GetFileName(directory);
-			Console.WriteLine(directoryName);
 	    	var directoryFound = directoryName.Equals(directoryToSearch, StringComparison.InvariantCulture);
 	    	if (directoryFound)
 	    	{
+				Console.WriteLine(directoryName);
 				return directory;
 	    	}
 
