@@ -30,8 +30,8 @@ public static class DatabaseDirectoryHelper
 					break;
 				}
 				var sagaDirectory = AppDomain.CurrentDomain.BaseDirectory;
-				var sagaDirectories = sagaDirectory.Split("/");				
-				var userPath = sagaDirectories.Substring(0, sagaDirectories.IndexOf("/", pathList.Length - 1));
+				var directoryList = sagaDirectory.Split("/");				
+				var userPath = sagaDirectory.Substring(0, sagaDirectory.IndexOf("/", directoryList.Length - 1));
 	    		sagaDirectory = $"{ userPath }/work/inventory-rapid-scanner/inventory-rapid-scanner/saga/1000";
 				Console.WriteLine(sagaDirectory);
 				var sagaDirectoryInfo = new DirectoryInfo(sagaDirectory);
