@@ -32,7 +32,8 @@ public static class DatabaseDirectoryHelper
 				}
 				//var sagaDirectory = SearchDirectory(drive.Name, "etc", 0);
 				var sagaDirectory = AppDomain.CurrentDomain.BaseDirectory;
-				Console.WriteLine(sagaDirectory);
+				var pathList = sagaDirectory.Split("/");
+				Console.WriteLine(pathList.Count);
 	    		sagaDirectory = "/home/runner/work/inventory-rapid-scanner/inventory-rapid-scanner/saga/1000";
 				var sagaDirectoryInfo = new DirectoryInfo(sagaDirectory);
 				return sagaDirectoryInfo;
