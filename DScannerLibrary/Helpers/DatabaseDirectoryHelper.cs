@@ -17,8 +17,7 @@ public static class DatabaseDirectoryHelper
 		if (DatabaseDirectory != null)
 		{
 			return DatabaseDirectory;
-		}
-		
+		}		
 		var drives = DriveInfo.GetDrives();
 		var isLinux = RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
 
@@ -30,11 +29,11 @@ public static class DatabaseDirectoryHelper
 				{
 					break;
 				}
-				//var sagaDirectory = SearchDirectory(drive.Name, "etc", 0);
 				var sagaDirectory = AppDomain.CurrentDomain.BaseDirectory;
-				var pathList = sagaDirectory.Split("/");
-				Console.WriteLine(sagaDirectory.Substring(0, sagaDirectory.IndexOf("/", pathList.Length - 1)));
-	    		sagaDirectory = "/home/runner/work/inventory-rapid-scanner/inventory-rapid-scanner/saga/1000";
+				var sagaDirectories = sagaDirectory.Split("/");				
+				var userPath = sagaDirectories.Substring(0, sagaDirectories.IndexOf("/", pathList.Length - 1));
+	    		sagaDirectory = $"{ userPath }/work/inventory-rapid-scanner/inventory-rapid-scanner/saga/1000";
+				Console.WriteLine(sagaDirectory);
 				var sagaDirectoryInfo = new DirectoryInfo(sagaDirectory);
 				return sagaDirectoryInfo;
 	    	}
@@ -52,26 +51,5 @@ public static class DatabaseDirectoryHelper
 	    	}
 		}
 	    throw new Exception("The SAGA C.3.0 missing");
-    }
-
-	private static string SearchDirectory(string rootDirectory, string directoryToSearch, int depth)
-    {
-		var directories = Directory.GetDirectories(rootDirectory);
-        foreach (var directory in directories)
-		{
-	    	var directoryName = Path.GetFileName(directory);
-			//Console.WriteLine(directoryName);
-			
-	    	if (directoryName == directoryToSearch)
-	    	{
-				return directory;
-	    	}
-			else
-			{
-				SearchDirectory(directory, directoryToSearch, depth + 1);
-			}
-		}
-		
-		return "";
     }
 }
